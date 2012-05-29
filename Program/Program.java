@@ -20,6 +20,8 @@ public abstract class Program {
     	execBuildBipartiteGraph();
     	
     	execFindBestMatching();
+    	
+    	execResultTransfer();
     }
     
     abstract protected void execQueryTransfer() throws Exception;
@@ -27,4 +29,6 @@ public abstract class Program {
     abstract protected void execBuildBipartiteGraph() throws Exception;
     
     abstract protected void execFindBestMatching() throws Exception;
+    
+    abstract protected void execResultTransfer() throws Exception;
 }

@@ -29,9 +29,9 @@ public abstract class ProgServer extends Program {
     protected Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
 	
 	private HashMap<String, Vector<VideoFrame>> imageClustersMap = new HashMap<String, Vector<VideoFrame>>();
-	private String[] allTags = null;
+	protected String[] allTags = null;
 	
-	private double[][] mTagAverageHistogram = null;
+	protected double[][] mTagAverageHistogram = null;
     
     public void run() throws Exception {
     	create_socket_and_listen();
