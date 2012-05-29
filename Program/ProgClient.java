@@ -14,9 +14,10 @@ public abstract class ProgClient extends Program {
     private final int    serverPort   = 23456;                   // server port number
     private Socket       sock         = null;                    // Socket object for communicating
     
-    private String queryDirName = null;
-	private File[] queryDataFile = null;	
-	private Vector<VideoFrame> videoFrames = new Vector<VideoFrame>();
+    protected static final int BIN_HISTO = 16; 
+    protected String queryDirName = null;
+    protected File[] queryDataFile = null;	
+    protected Vector<VideoFrame> videoFrames = new Vector<VideoFrame>();
 
     public void run() throws Exception {
     	create_socket_and_connect();

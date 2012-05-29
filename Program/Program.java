@@ -13,10 +13,14 @@ public abstract class Program {
     abstract protected void initialize() throws Exception;
     
     protected void execute() throws Exception {
+    	execQueryTransfer();
+    	
     	execBuildBipartiteGraph();
     	
     	execFindBestMatching();
     }
+    
+    abstract protected void execQueryTransfer() throws Exception;
     
     abstract protected void execBuildBipartiteGraph() throws Exception;
     

@@ -16,6 +16,10 @@ public class TaggingSystemServer extends ProgServer {
     	super.init();
     }
     
+    protected void execQueryTransfer() throws Exception {
+    	
+    }
+    
     protected void execBuildBipartiteGraph() throws Exception {
     	
     }

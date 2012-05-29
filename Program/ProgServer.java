@@ -19,10 +19,10 @@ public abstract class ProgServer extends Program {
     private ServerSocket       sock         = null;              // original server socket
     private Socket             clientSocket = null;              // socket created by accept
     
-    private String databaseDirName = null;
-    private File[] databaseTagDirFile = null;	
-	private Vector<File[]> databaseDataFile = new Vector<File[]>();
-	private Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
+    protected String databaseDirName = null;
+    protected File[] databaseTagDirFile = null;	
+    protected Vector<File[]> databaseDataFile = new Vector<File[]>();
+    protected Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
 	
 	private HashMap<String, Vector<VideoFrame>> imageClustersMap = new HashMap<String, Vector<VideoFrame>>();
 	private String[] allTags = null;
