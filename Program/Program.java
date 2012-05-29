@@ -4,6 +4,8 @@ public abstract class Program {
 
 	public void run() throws Exception {
 		init();
+		
+		execute();
 	}
 	
     protected void init() throws Exception {

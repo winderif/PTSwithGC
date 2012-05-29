@@ -18,18 +18,18 @@ public abstract class ProgServer extends Program {
     final private  int         serverPort   = 23456;             // server port number
     private ServerSocket       sock         = null;              // original server socket
     private Socket             clientSocket = null;              // socket created by accept
+
+	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
+    protected static final int BIN_HISTO = 16; 
+    protected static final int FILTER_NUM = 2;
     
-    protected String databaseDirName = null;
+    public static String databaseDirName;
     protected File[] databaseTagDirFile = null;	
     protected Vector<File[]> databaseDataFile = new Vector<File[]>();
     protected Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
 	
 	private HashMap<String, Vector<VideoFrame>> imageClustersMap = new HashMap<String, Vector<VideoFrame>>();
 	private String[] allTags = null;
-	
-	private final static int FILTER_NUM = 2;	
-	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
-	private final static int BIN_HISTO = 16;
 	
 	private double[][] mTagAverageHistogram = null;
     

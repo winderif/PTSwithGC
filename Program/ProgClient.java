@@ -15,7 +15,8 @@ public abstract class ProgClient extends Program {
     private Socket       sock         = null;                    // Socket object for communicating
     
     protected static final int BIN_HISTO = 16; 
-    protected String queryDirName = null;
+    
+    public static String queryDirName = null;
     protected File[] queryDataFile = null;	
     protected Vector<VideoFrame> videoFrames = new Vector<VideoFrame>();
 

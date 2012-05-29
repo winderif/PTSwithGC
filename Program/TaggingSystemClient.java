@@ -2,8 +2,6 @@
 
 package Program;
 
-import java.math.*;
-
 public class TaggingSystemClient extends ProgClient {
 	public TaggingSystemClient() {
 	
@@ -16,7 +14,8 @@ public class TaggingSystemClient extends ProgClient {
     protected void execQueryTransfer() throws Exception {
 		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
-		TaggingSystemCommon.oos.writeDouble(videoFrames.size());		
+		TaggingSystemCommon.oos.writeInt(videoFrames.size());
+		//System.out.println(videoFrames.size());
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");
@@ -24,8 +23,7 @@ public class TaggingSystemClient extends ProgClient {
 			}
 			//System.out.println();
 		}
-		//System.out.println();
-		//mMode.setMode(Mode.SEND_QUERY);
+		TaggingSystemCommon.oos.flush();
     }
     
     protected void execBuildBipartiteGraph() throws Exception {
