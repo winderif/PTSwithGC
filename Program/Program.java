@@ -9,7 +9,7 @@ public abstract class Program {
 	}
 	
     protected void init() throws Exception {
-    	initialize();
+    	initialize();    	    	
     }
     
     abstract protected void initialize() throws Exception;
@@ -22,7 +22,7 @@ public abstract class Program {
     	execFindBestMatching();
     	
     	execResultTransfer();
-    }
+    }    
     
     abstract protected void execQueryTransfer() throws Exception;
     
