@@ -37,7 +37,7 @@ class TestEncTaggingSystemClient {
 	//	StopWatch.pointTimeStamp("Starting program");
     	process_cmdline_args(args);
 	
-    	TaggingSystemClient taggingclient = new TaggingSystemClient();
-    	taggingclient.run();
+    	EncTaggingSystemClient enctaggingclient = new EncTaggingSystemClient();
+    	enctaggingclient.run();
     }
 }

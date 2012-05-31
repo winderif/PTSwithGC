@@ -29,9 +29,10 @@ public class EncTaggingSystemClient extends ProgClient {
 		//System.out.println(videoFrames.size());
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
-				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");
+				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");				
 				EncTaggingSystemCommon.oos.writeObject(
-						EncTaggingSystemCommon.encryption(mPaillier, videoFrames.elementAt(i).getHistogram()[j]));				
+						EncTaggingSystemCommon.encryption(mPaillier, videoFrames.elementAt(i).getHistogram()[j]));
+										
 			}
 			//System.out.println();
 		}
@@ -43,12 +44,12 @@ public class EncTaggingSystemClient extends ProgClient {
     protected void execFindBestMatching() throws Exception {
     }
     
-    protected void execResultTransfer() throws Exception {    	
+    protected void execResultTransfer() throws Exception {/*    	
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
     		mMatchingTags[i] = TaggingSystemCommon.ois.readObject().toString();
     		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
     	}    	
-    	System.out.println("[C][SUCCESS]\tRecv result from server.");
+    	System.out.println("[C][SUCCESS]\tRecv result from server.");*/
     }
 }

@@ -6,7 +6,7 @@ import java.math.*;
 
 import Crypto.CryptosystemAbstract;
 
-class EncTaggingSystemCommon extends ProgCommon {	
+public class EncTaggingSystemCommon extends ProgCommon {	
 	private static final double SCALAR = 1000.0;
 	
 	public static BigInteger encryption(CryptosystemAbstract cryptosystem, double plaintext) {
@@ -15,6 +15,20 @@ class EncTaggingSystemCommon extends ProgCommon {
 	
 	public static BigInteger encryption(CryptosystemAbstract cryptosystem, BigInteger plaintext) {
 		return cryptosystem.Encryption(plaintext);
+	}
+	
+	public static BigInteger[][] encryption(CryptosystemAbstract cryptosystem, double[][] plaintexts) {
+		return encryption(cryptosystem, DoubleToBigInteger2DArray(plaintexts));
+	}
+	
+	public static BigInteger[][] encryption(CryptosystemAbstract cryptosystem, BigInteger[][] plaintexts) {
+		BigInteger[][] ciphertexts = new BigInteger[plaintexts.length][plaintexts[0].length];
+		for(int i=0; i<ciphertexts.length; i++) {
+			for(int j=0; j<ciphertexts[0].length; j++) {
+				ciphertexts[i][j] = encryption(cryptosystem, plaintexts[i][j]);
+			}
+		}
+		return ciphertexts;
 	}
 	
     /**

@@ -31,7 +31,7 @@ class TestEncTaggingSystemServer {
     	//StopWatch.pointTimeStamp("Starting program");
     	process_cmdline_args(args);
 	
-    	TaggingSystemServer taggingserver = new TaggingSystemServer();
-    	taggingserver.run();
+    	EncTaggingSystemServer enctaggingserver = new EncTaggingSystemServer();
+    	enctaggingserver.run();
     }
 }

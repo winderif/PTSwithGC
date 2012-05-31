@@ -21,7 +21,7 @@ public abstract class ProgServer extends Program {
 
 	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
     protected static final int BIN_HISTO = 16; 
-    protected static final int FILTER_NUM = 2;
+    protected static final int FILTER_NUM = 4;
     
     public static String databaseDirName;
     protected File[] databaseTagDirFile = null;	

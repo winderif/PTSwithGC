@@ -8,6 +8,5 @@ import Utils.Mode;
 
 public abstract class ProgCommon {
     public static ObjectOutputStream oos        = null;              // socket output stream
-    public static ObjectInputStream  ois        = null;              // socket input stream
-    public Mode mMode;
+    public static ObjectInputStream  ois        = null;              // socket input stream    
 }

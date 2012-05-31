@@ -6,14 +6,15 @@ import java.math.BigInteger;
 
 import Utils.FastHungarianAlgorithm;
 import Crypto.CryptosystemPaillierServer;
+import Score.ComputingScoreServer;
 
 public class EncTaggingSystemServer extends ProgServer {
 
 	private CryptosystemPaillierServer mPaillier = null;
-	
-	private double[][] mQueryHistogram = null;	
+		
 	private BigInteger[][] mEncQueryHistogram = null;
-	private double[][] mHungarianMatrix = null;
+	private BigInteger[][] mEncTagAverageHistogram = null;	
+	private BigInteger[][] mEncHungarianMatrix = null;
 	private String[] mMatchingTags = null;
 	
     public EncTaggingSystemServer() {
@@ -28,14 +29,23 @@ public class EncTaggingSystemServer extends ProgServer {
     	pkey[1] = new BigInteger(EncTaggingSystemCommon.ois.readObject().toString());
     	this.mPaillier = new CryptosystemPaillierServer(pkey);
     	System.out.println("\t[S][SUCCESS]\treceive public key pair (n, g).");
+    	
+    	EncrptTagAverageHistogram();
     }
+    
+	private void EncrptTagAverageHistogram() {		
+		System.out.println("\t[S][START]\tEncrypt Database.");
+		this.mEncTagAverageHistogram = 
+			EncTaggingSystemCommon.encryption(mPaillier, mTagAverageHistogram);			
+		System.out.println("\t[S][SUCCESS]\tEncrypt Database.");
+	}
     
     protected void execQueryTransfer() throws Exception {    	    	
     	mEncQueryHistogram = new BigInteger[EncTaggingSystemCommon.ois.readInt()][BIN_HISTO]; 		
  		for(int i=0; i<mEncQueryHistogram.length; i++) {
  			for(int j=0; j<BIN_HISTO; j++) {
  				mEncQueryHistogram[i][j] = new BigInteger(EncTaggingSystemCommon.ois.readObject().toString());
- 				//System.out.print(mQueryHistogram[i][j] + " ");
+ 				//System.out.print(mEncQueryHistogram[i][j] + " ");
  			}
  			//System.out.println();
  		}
@@ -43,70 +53,34 @@ public class EncTaggingSystemServer extends ProgServer {
     }
     
     protected void execBuildBipartiteGraph() throws Exception {
-		System.out.println("\t[S][START]\tBuild Bipartile Graph.");
-		double startTime = System.nanoTime();		
-		mHungarianMatrix = new double[mQueryHistogram.length][mTagAverageHistogram.length];
+    	System.out.println("\t[S][START]\tBuild Encrypted Bipartile Graph.");
+		double startTime = System.nanoTime();
 		
-		for(int i=0; i<mQueryHistogram.length; i++) {
-			for(int j=0; j<mTagAverageHistogram.length; j++) {				
-				mHungarianMatrix[i][j] = Score(mQueryHistogram[i], mTagAverageHistogram[j]);
-				//this.mHungarianMatrix[i][j] = Score(this.mQueryHistogram[i], this.mTagAverageHistogram[j], j);
-				//System.out.print(this.mHungarianMatrix[i][j] + " ");
+		this.mEncHungarianMatrix = new BigInteger[this.mEncQueryHistogram.length][this.mEncTagAverageHistogram.length];
+		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
+			for(int j=0; j<this.mEncTagAverageHistogram.length; j++) {
+				System.out.printf("\t[S][START]\tComputing D(%d, %d)\n", i, j);
+				this.mEncHungarianMatrix[i][j] = 
+					EncScore(this.mEncQueryHistogram[i], mTagAverageHistogram[j]);
 			}
-			//System.out.println();
-		}
-		//System.out.println();
+		}				
+		
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
-		System.out.println("\t[S][SUCCESS]\tBuild Bipartile Graph." + time);
+		System.out.println("\t[S][SUCCESS]\tBuild Encrypted Bipartile Graph." + time);
     }    
     
-    protected void execFindBestMatching() throws Exception {
-		System.out.println("\t[S][START]\tFind Bset Matching for Bipartile Graph.");
-		
-		String sumType = "max";
-		int[][] assignment = new int[mHungarianMatrix.length][2];
-		
-		double startTime = System.nanoTime();
-		/*** ***/
-		assignment = FastHungarianAlgorithm.hgAlgorithm(mHungarianMatrix, sumType);
-		/*** ***/
-		double endTime = System.nanoTime();		
-		double time = (endTime - startTime)/1000000000.0;
-		
-		for(int k=0; k<assignment.length; k++) {
-			System.out.printf("array(%d,%d) = %.2f %s\n", 
-					(assignment[k][0]+1), 
-					(assignment[k][1]+1),
-					mHungarianMatrix[assignment[k][0]][assignment[k][1]], 
-					allTags[assignment[k][1]]);			
-		}
-		
-		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);
-		
-		mMatchingTags = new String[mQueryHistogram.length];		
-		for(int i=0; i<mQueryHistogram.length; i++) {
-			mMatchingTags[i] = allTags[assignment[i][1]];
-			//System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
-		}
+    protected void execFindBestMatching() throws Exception {	
     }
     
     protected void execResultTransfer() throws Exception {
-    	System.out.println("\t[S][START]\tSend result to client.");
-    	for(int i=0; i<mMatchingTags.length; i++) {
-    		TaggingSystemCommon.oos.writeObject(mMatchingTags[i]);
-    	}
-    	TaggingSystemCommon.oos.flush();
-    }
+    }    
     
 	// Calculating score with square Euclidain distance
-	private double Score(double[] keyframeHistogram, double[] tagPhotosHistogram) {
-		double tmpScore = 0.0;
-		double diff = 0.0;
-		for(int i=0; i<BIN_HISTO; i++) {
-			diff = keyframeHistogram[i] - tagPhotosHistogram[i];
-			tmpScore += diff*diff;
-		}
-		return tmpScore;
+	private BigInteger EncScore(BigInteger[] EncQueryHistogram,  double[] mDatabaseHistogram) throws Exception {
+		ComputingScoreServer computeServer = 
+			new ComputingScoreServer(this.mPaillier, EncQueryHistogram, mDatabaseHistogram);
+		computeServer.run();
+		return computeServer.getScore();
 	}
 }
