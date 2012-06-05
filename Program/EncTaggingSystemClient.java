@@ -2,7 +2,9 @@
 
 package Program;
 
+import Score.ComputingScoreClient;
 import Crypto.CryptosystemPaillierClient;
+import Protocol.ComparisonProtocolOnClient;
 
 public class EncTaggingSystemClient extends ProgClient {
 	private String[] mMatchingTags = null;
@@ -39,17 +41,25 @@ public class EncTaggingSystemClient extends ProgClient {
 		EncTaggingSystemCommon.oos.flush();
     }
     
-    protected void execBuildBipartiteGraph() throws Exception {    	
+    protected void execBuildBipartiteGraph() throws Exception {    
+    	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
+    	ComputingScoreClient computeClient = 
+    		new ComputingScoreClient(mPaillier);
+    	computeClient.run();    	    
     }    
     protected void execFindBestMatching() throws Exception {
+    	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");	
+    	ComparisonProtocolOnClient protocolClient = 
+    		new ComparisonProtocolOnClient(mPaillier); 
+    	protocolClient.run();
     }
     
-    protected void execResultTransfer() throws Exception {/*    	
+    protected void execResultTransfer() throws Exception {
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
-    		mMatchingTags[i] = TaggingSystemCommon.ois.readObject().toString();
+    		mMatchingTags[i] = EncTaggingSystemCommon.ois.readObject().toString();
     		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
     	}    	
-    	System.out.println("[C][SUCCESS]\tRecv result from server.");*/
+    	System.out.println("[C][SUCCESS]\tRecv result from server.");
     }
 }

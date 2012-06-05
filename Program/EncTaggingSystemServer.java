@@ -4,7 +4,8 @@ package Program;
 
 import java.math.BigInteger;
 
-import Utils.FastHungarianAlgorithm;
+import Protocol.ComparisonProtocolOnServer;
+import Utils.EncFastHungarianAlgorithm;
 import Crypto.CryptosystemPaillierServer;
 import Score.ComputingScoreServer;
 
@@ -52,7 +53,7 @@ public class EncTaggingSystemServer extends ProgServer {
  		System.out.println("\t[S][SUCCESS]\treceive Query datas.");
     }
     
-    protected void execBuildBipartiteGraph() throws Exception {
+    protected void execBuildBipartiteGraph() throws Exception {    	    	
     	System.out.println("\t[S][START]\tBuild Encrypted Bipartile Graph.");
 		double startTime = System.nanoTime();
 		
@@ -67,13 +68,49 @@ public class EncTaggingSystemServer extends ProgServer {
 		
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
-		System.out.println("\t[S][SUCCESS]\tBuild Encrypted Bipartile Graph." + time);
+		System.out.println("\t[S][SUCCESS]\tBuild Encrypted Bipartile Graph." + time);		
+		EncTaggingSystemCommon.oos.writeObject(null);
     }    
     
     protected void execFindBestMatching() throws Exception {	
+		System.out.println("\t[S][START]\tFind Bset Matching for Encrypted Bipartile Graph.");		
+		
+		String sumType = "max";
+		int[][] assignment = new int[this.mEncHungarianMatrix.length][2];
+		EncFastHungarianAlgorithm EncFHA = 
+			new EncFastHungarianAlgorithm(new ComparisonProtocolOnServer(mPaillier), mPaillier, null);
+		
+		double startTime = System.nanoTime();
+		/*** ***/
+		assignment = EncFHA.hgAlgorithm(this.mEncHungarianMatrix, sumType);
+		/*** ***/
+		double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;
+		
+		for(int k=0; k<assignment.length; k++) {
+			System.out.printf("array(%d,%d) = %s %s\n", 
+					(assignment[k][0]+1), 
+					(assignment[k][1]+1),
+					this.mEncHungarianMatrix[assignment[k][0]][assignment[k][1]].toString(), 
+					this.allTags[assignment[k][1]]);			
+		}
+		
+		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);
+		
+		mMatchingTags = new String[this.mEncQueryHistogram.length];		
+		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
+			this.mMatchingTags[i] = this.allTags[assignment[i][1]];
+			//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
+		}
+		EncTaggingSystemCommon.oos.writeObject(null);
     }
     
     protected void execResultTransfer() throws Exception {
+    	System.out.println("\t[S][START]\tSend result to client.");
+    	for(int i=0; i<mMatchingTags.length; i++) {
+    		EncTaggingSystemCommon.oos.writeObject(mMatchingTags[i]);
+    	}
+    	EncTaggingSystemCommon.oos.flush();
     }    
     
 	// Calculating score with square Euclidain distance

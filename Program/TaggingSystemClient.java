@@ -36,7 +36,7 @@ public class TaggingSystemClient extends ProgClient {
     	
     }
     
-    protected void execResultTransfer() throws Exception {    	
+    protected void execResultTransfer() throws Exception {    	    	
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
     		mMatchingTags[i] = TaggingSystemCommon.ois.readObject().toString();

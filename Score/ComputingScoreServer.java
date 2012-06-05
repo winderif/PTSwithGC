@@ -1,14 +1,11 @@
 package Score;
 
 import java.math.BigInteger;
-
 import Crypto.CryptosystemPaillierServer;
 import Utils.AdditivelyBlindProtocol;
 import Program.EncTaggingSystemCommon;
 
-public class ComputingScoreServer extends ComputingScore {	
-	private static final int BIN_HISTO = 16; 
-	
+public class ComputingScoreServer extends ComputingScore {
 	private CryptosystemPaillierServer mPaillier = null;	
 	private BigInteger[] EncQueryHistogram = null;
 	private double[] mDatabaseHistogram = null;
@@ -26,7 +23,7 @@ public class ComputingScoreServer extends ComputingScore {
 	public ComputingScoreServer(CryptosystemPaillierServer arg0, BigInteger[] arg1, double[] arg2) {
 		this.mPaillier = arg0;
 		this.EncQueryHistogram = arg1;		
-		this.mDatabaseHistogram = arg2;		
+		this.mDatabaseHistogram = arg2;			
 	}	
 	
 	public void run() throws Exception {
@@ -72,10 +69,12 @@ public class ComputingScoreServer extends ComputingScore {
 	
 	private void sendDistanceAdditivelyBlindDatas(BigInteger[] x) throws Exception {
  		System.out.println("\t[S][STRAT]\tsend AB datas of distance.");
+ 		//EncTaggingSystemCommon.oos.reset();
  		for(int i=0; i<BIN_HISTO; i++) { 		
- 			EncTaggingSystemCommon.oos.writeObject(x[i]);
+ 			//System.out.println(x[i]); 			
+ 			EncTaggingSystemCommon.oos.writeObject(x[i]); 			
  		}
- 		EncTaggingSystemCommon.oos.flush();
+ 		EncTaggingSystemCommon.oos.flush(); 		
  	}
 	
 	public BigInteger getScore() {
