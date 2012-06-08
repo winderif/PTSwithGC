@@ -4,7 +4,7 @@ package FastGC.YaoGC;
 
 import java.math.*;
 
-import Cipher.*;
+import FastGC.Cipher.*;
 
 public abstract class AND_2_1 extends SimpleCircuit_2_1 {
     public AND_2_1() {

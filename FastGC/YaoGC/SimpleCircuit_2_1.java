@@ -3,7 +3,7 @@
 package FastGC.YaoGC;
 
 import java.math.*;
-import Cipher.Cipher;
+import FastGC.Cipher.Cipher;
 import FastGC.Utils.*;
 
 public abstract class SimpleCircuit_2_1 extends Circuit {

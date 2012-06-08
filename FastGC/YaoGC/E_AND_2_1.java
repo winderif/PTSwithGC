@@ -3,7 +3,7 @@
 package FastGC.YaoGC;
 
 import java.math.*;
-import Cipher.*;
+import FastGC.Cipher.*;
 
 class E_AND_2_1 extends AND_2_1 {
     public E_AND_2_1() {
