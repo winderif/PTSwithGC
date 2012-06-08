@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
    
-package YaoGC;
+package FastGC.YaoGC;
 
 import java.util.*;
    

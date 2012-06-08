@@ -1,6 +1,6 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
 
-package YaoGC;
+package FastGC.YaoGC;
 
 public class MIN_2L_L extends CompositeCircuit {
     private final int L;

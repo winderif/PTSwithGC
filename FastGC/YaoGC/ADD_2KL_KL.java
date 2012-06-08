@@ -1,16 +1,16 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
 
-package YaoGC;
+package FastGC.YaoGC;
 
 /*
  * Fig. 1 of [KSS09]
  */
-public class SUB_2KL_KL extends CompositeCircuit {
+public class ADD_2KL_KL extends CompositeCircuit {
     private final int L;
     private final int K;
 
-    public SUB_2KL_KL(int l, int k) {
-    	super(2*l*k, l*k, k, "SUB_" + (2*l) + "_" + (l+1));
+    public ADD_2KL_KL(int l, int k) {
+    	super(2*l*k, l*k, k, "ADD_" + (2*l) + "_" + (l+1));
     	
     	L = l;
     	K = k;
@@ -18,7 +18,7 @@ public class SUB_2KL_KL extends CompositeCircuit {
 
     protected void createSubCircuits() throws Exception {
     	for (int i = 0; i < K; i++) 
-    	    subCircuits[i] = new SUB_2L_L(L);
+    	    subCircuits[i] = new ADD_2L_L(L);
 
     	super.createSubCircuits();
     }

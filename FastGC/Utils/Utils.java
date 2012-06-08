@@ -1,6 +1,6 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
 
-package Utils;
+package FastGC.Utils;
 
 import java.math.*;
 import java.io.*;

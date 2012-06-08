@@ -1,10 +1,10 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
 
-package YaoGC;
+package FastGC.YaoGC;
 
 import java.math.*;
 import Cipher.Cipher;
-import Utils.*;
+import FastGC.Utils.*;
 
 public abstract class SimpleCircuit_2_1 extends Circuit {
 

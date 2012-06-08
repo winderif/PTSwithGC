@@ -1,6 +1,6 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
 
-package YaoGC;
+package FastGC.YaoGC;
 
 public class MUX_3_1 extends CompositeCircuit {
     private final static int XOR0 = 0;

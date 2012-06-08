@@ -1,6 +1,6 @@
 // Copyright (C) 2010 by Yan Huang <yhuang@virginia.edu>
 
-package YaoGC;
+package FastGC.YaoGC;
 
 public abstract class CompositeCircuit extends Circuit {
     protected Circuit[] subCircuits;
