@@ -7,10 +7,14 @@ import java.math.*;
 import FastGC.Utils.*;
 import FastGC.YaoGC.*;
 
-class FindMinimumCommon extends ProgCommon {		
+class FindMinimumCommon extends ProgCommon {
+	private final static int MIN = 0;
+	private final static int MAX = 1;
     static int bitVecLen;
     static int valueNum;
-    static int RandomValueNum; 
+    static int RandomValueNum;
+    // 0 is Minimum, 1 is Maximum
+    static int circuitType;
 
     static int bitLength(int x) {
     	return BigInteger.valueOf(x).bitLength();
@@ -18,7 +22,14 @@ class FindMinimumCommon extends ProgCommon {
 
     protected static void initCircuits() {
     	ccs = new Circuit[1];
-    	ccs[0] = new MinimumHybrid_2KLplusL_L(bitVecLen, valueNum);
+    	if(circuitType == MIN)
+    		ccs[0] = new MinimumHybrid_2KLplusL_L(bitVecLen, valueNum);
+    	else if(circuitType == MAX) 
+    		ccs[0] = new MaximumHybrid_2KLplusL_L(bitVecLen, valueNum);
+    	else {
+    		System.out.println("The circuit type is error. (Not 0 or 1)");
+    		ccs[0] = null;
+    	}
     }
 
     public static State execCircuit(BigInteger[] slbs, BigInteger[] clbs) throws Exception {

@@ -156,7 +156,7 @@ public class EncFastHungarianAlgorithm {
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
 				//if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {
-				if(gcc_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {
+				if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2])) {
 					tmpMax[j] = tmp1DArray[j*2+1];
 					tmpMax[j+(length+1)/2] = tmp1DArray[j*2];
 				}
@@ -353,7 +353,7 @@ public class EncFastHungarianAlgorithm {
 	   	    minval = cost[i][0];
 	   	    for(int j=0; j<cost[i].length; j++) {//1st inner loop finds min val in row.	   	    
 	   	        //if(cp_s.findMinimumOfTwoEncValues(minval, cost[i][j]).equals(cost[i][j])) {
-	   	        if(gcc_s.findMinimumOfTwoEncValues(minval, cost[i][j]).equals(cost[i][j])) {
+	   	        if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{minval, cost[i][j]}, 0).equals(cost[i][j])) {
 	   	            minval = cost[i][j];
 	   	        }
 			}
@@ -625,7 +625,7 @@ public class EncFastHungarianAlgorithm {
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
 				//if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {
-				if(gcc_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {
+				if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2+1])) {
 					tmpMin[j] = tmp1DArray[j*2+1];
 					tmpMin[j+(length+1)/2] = tmp1DArray[j*2];
 				}
@@ -695,7 +695,7 @@ public class EncFastHungarianAlgorithm {
 				/*** If minval > cost[i][j] ***/
 				System.out.print(len++ + " ");
 				//if((rowCover[i]==0) && (colCover[j]==0) && (cp_s.findMinimumOfTwoEncValues(minval, cost[i][j]).equals(cost[i][j]))) {
-				if((rowCover[i]==0) && (colCover[j]==0) && (gcc_s.findMinimumOfTwoEncValues(minval, cost[i][j]).equals(cost[i][j]))) {					
+				if((rowCover[i]==0) && (colCover[j]==0) && (gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{minval, cost[i][j]}, 0).equals(cost[i][j]))) {					
 					minval = cost[i][j];
 				}
 			}

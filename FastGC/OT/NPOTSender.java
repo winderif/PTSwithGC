@@ -23,9 +23,9 @@ public class NPOTSender extends Sender {
 		      ObjectOutputStream out) throws Exception {
     	super(numOfPairs, msgBitLength, in, out);
 
-    	StopWatch.pointTimeStamp("right before NPOT public key generation");
+    	//StopWatch.pointTimeStamp("right before NPOT public key generation");
     	initialize();
-    	StopWatch.taskTimeStamp("NPOT public key generation");
+    	//StopWatch.taskTimeStamp("NPOT public key generation");
     }
 
     public void execProtocol(BigInteger[][] msgPairs) throws Exception {

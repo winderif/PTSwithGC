@@ -25,6 +25,7 @@ public class GCComparisonClient {
 	public void run(){
 		while(true) {
 			try {
+				int type = EncGCTaggingSystemCommon.ois.readInt();
 				int length = EncGCTaggingSystemCommon.ois.readInt();
 				BigInteger[] y = new BigInteger[length];
 				// y = dec.([y])
@@ -36,7 +37,8 @@ public class GCComparisonClient {
 				
 				sInput = mergeInput(y);
 				
-				FindMinimumServer minimumServer = new FindMinimumServer(sInput, l, length, 1);
+				FindMinimumServer minimumServer 
+					= new FindMinimumServer(sInput, l, length, 1, type);
 				minimumServer.run();
 				
 				BigInteger y_min = minimumServer.getOutput();
@@ -47,13 +49,16 @@ public class GCComparisonClient {
 				for(int i=0; i<length; i++) {
 					BigInteger diffEnc
 						= mPaillier.Decryption(new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString()));
+					System.out.println(diffEnc);
 					if(diffEnc.equals(BigInteger.ZERO)) {
 						EncGCTaggingSystemCommon.oos.writeObject(BigInteger.ONE);
 						EncGCTaggingSystemCommon.oos.flush();		
 						break;
 					}
-					else
-						continue;
+					else {
+						EncGCTaggingSystemCommon.oos.writeObject(mPaillier.Encryption(BigInteger.ONE));
+						EncGCTaggingSystemCommon.oos.flush();
+					}
 				}				
 			} catch(Exception e) {
 				System.out.println("[C][SUCCESS]\tCompare.");

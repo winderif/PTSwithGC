@@ -25,7 +25,8 @@ public class FindMinimumClient extends ProgClient {
     protected void init() throws Exception {
     	FindMinimumCommon.bitVecLen = FindMinimumCommon.ois.readInt();
     	FindMinimumCommon.valueNum = FindMinimumCommon.ois.readInt();
-    	FindMinimumCommon.RandomValueNum = FindMinimumCommon.ois.readInt();	
+    	FindMinimumCommon.RandomValueNum = FindMinimumCommon.ois.readInt();
+    	FindMinimumCommon.circuitType = FindMinimumCommon.ois.readInt();
     	FindMinimumCommon.initCircuits();
 
     	sInputLen = FindMinimumCommon.bitVecLen * FindMinimumCommon.valueNum;
