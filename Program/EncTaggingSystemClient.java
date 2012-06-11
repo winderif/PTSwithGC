@@ -57,7 +57,7 @@ public class EncTaggingSystemClient extends ProgClient {
     protected void execResultTransfer() throws Exception {
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
-    		mMatchingTags[i] = EncTaggingSystemCommon.ois.readObject().toString();
+    		mMatchingTags[i] = (String)EncTaggingSystemCommon.ois.readObject();
     		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
     	}    	
     	System.out.println("[C][SUCCESS]\tRecv result from server.");
