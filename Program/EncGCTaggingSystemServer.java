@@ -65,8 +65,16 @@ public class EncGCTaggingSystemServer extends ProgServer {
 					EncScore(this.mEncQueryHistogram[i], mTagAverageHistogram[j]);
 				//System.out.print(mPaillier.Decryption(this.mEncHungarianMatrix[i][j]) + " ");
 			}
+			//System.out.println();
+		}
+		/** Printing results
+		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
+			for(int j=0; j<this.mEncTagAverageHistogram.length; j++) {
+				System.out.print(mPaillier.Decryption(this.mEncHungarianMatrix[i][j]) + " ");
+			}
 			System.out.println();
-		}				
+		}
+		*/
 		
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;

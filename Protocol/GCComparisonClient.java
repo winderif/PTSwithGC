@@ -11,7 +11,7 @@ public class GCComparisonClient {
 	private static final int L = 15;
 	
 	private BigInteger sInput;
-	private static final int l = 15;
+	private static final int l = 20;
 	private static final int k = 2;
 	
 	public GCComparisonClient() {
@@ -25,23 +25,36 @@ public class GCComparisonClient {
 	public void run(){
 		while(true) {
 			try {
-				// y1, y2 = dec.([y1], [y2])
-				BigInteger y_A
-					= mPaillier.Decryption(new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString()));
-				BigInteger y_B 
-					= mPaillier.Decryption(new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString()));
-				
+				int length = EncGCTaggingSystemCommon.ois.readInt();
+				BigInteger[] y = new BigInteger[length];
+				// y = dec.([y])
+				for(int i=0; i<length; i++) {
+					y[i] = mPaillier.Decryption(new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString()));
+					System.out.print(y[i] + " ");
+				}								
 				System.out.println();
-				sInput = mergeInput(new BigInteger[]{y_A, y_B});
 				
-				FindMinimumServer minimumServer = new FindMinimumServer(sInput, l, k, 1);
+				sInput = mergeInput(y);
+				
+				FindMinimumServer minimumServer = new FindMinimumServer(sInput, l, length, 1);
 				minimumServer.run();
 				
 				BigInteger y_min = minimumServer.getOutput();
 				BigInteger y_min_Enc = mPaillier.Encryption(y_min);
 				EncGCTaggingSystemCommon.oos.writeObject(y_min_Enc);
-				EncGCTaggingSystemCommon.oos.flush();
+				EncGCTaggingSystemCommon.oos.flush();							
 				
+				for(int i=0; i<length; i++) {
+					BigInteger diffEnc
+						= mPaillier.Decryption(new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString()));
+					if(diffEnc.equals(BigInteger.ZERO)) {
+						EncGCTaggingSystemCommon.oos.writeObject(BigInteger.ONE);
+						EncGCTaggingSystemCommon.oos.flush();		
+						break;
+					}
+					else
+						continue;
+				}				
 			} catch(Exception e) {
 				System.out.println("[C][SUCCESS]\tCompare.");
 				break;

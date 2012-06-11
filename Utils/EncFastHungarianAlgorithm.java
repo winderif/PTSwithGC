@@ -187,6 +187,26 @@ public class EncFastHungarianAlgorithm {
 		return tmp1DArray[0];
 	}
 	
+	public BigInteger findEncLargestGC(BigInteger[][] array) throws Exception {
+		//Finds the largest element in a positive array.
+		//works for arrays where all values are >= 0.	
+			System.out.println("\t[START]\tfindEncLargest()");
+			int length = array.length * array[0].length;
+			BigInteger[] tmp1DArray = new BigInteger[length];	
+			BigInteger tmpMax;
+			
+			for (int i=0; i<array.length; i++) {
+				for (int j=0; j<array[i].length; j++) {
+					tmp1DArray[i*array[0].length + j] = array[i][j];
+				}
+			}
+			
+			// type = 0, is Max
+			tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
+				
+			return tmpMax;
+		}
+	
 	public static BigInteger[][] transpose		//Transposes a double[][] array.
 	(BigInteger[][] array)	
 	{
@@ -227,7 +247,8 @@ public class EncFastHungarianAlgorithm {
 		
 		if (sumType.equalsIgnoreCase("max"))	//Then array is weight array. Must change to cost.
 		{
-			BigInteger maxWeight = findEncLargest(cost);
+			//BigInteger maxWeight = findEncLargest(cost);
+			BigInteger maxWeight = findEncLargestGC(cost);
 			/**
 			 * System.out.println("maxWeight: " + pc.Decryption(maxWeight)); 
 			 */					
@@ -256,7 +277,8 @@ public class EncFastHungarianAlgorithm {
 		System.out.println("Enc_ZERO: " + Enc_ZERO);		
 		*/
 		
-		BigInteger maxCost = findEncLargest(cost);		//Find largest cost matrix element (needed for step 6).
+		//BigInteger maxCost = findEncLargest(cost);		//Find largest cost matrix element (needed for step 6).
+		BigInteger maxCost = findEncLargestGC(cost);
 		/**
 		 * System.out.println("maxCost: " + pc.Decryption(maxCost)); 
 		 */		
@@ -560,7 +582,8 @@ public class EncFastHungarianAlgorithm {
 		//b. Subtract it from every element of uncovered columns. Go to step 4.
 		
 		//BigInteger minval = findEncSmallest(cost, rowCover, colCover, maxCost);
-		BigInteger minval = findEncSmallestBeta(cost, rowCover, colCover, maxCost);
+		//BigInteger minval = findEncSmallestBeta(cost, rowCover, colCover, maxCost);
+		BigInteger minval = findEncSmallestGC(cost, rowCover, colCover, maxCost);
 		
 		for (int i=0; i<rowCover.length; i++) {		
 			for (int j=0; j<colCover.length; j++) {			
@@ -630,6 +653,34 @@ public class EncFastHungarianAlgorithm {
 			System.out.println();
 		}
 		return tmpMin[0];
+	}
+	
+	public BigInteger findEncSmallestGC(BigInteger[][] cost, int[] rowCover, int[] colCover, BigInteger maxCost) throws Exception {
+		System.out.println("\t[START]\tfindEncSmallest()");
+		BigInteger minval = maxCost;
+		BigInteger tmpMin = BigInteger.ONE;
+		BigInteger[] tmp1DArray = new BigInteger[cost.length * cost[0].length];
+		int index = 0;
+
+		for(int i=0; i<cost.length; i++) {
+			for(int j=0; j<cost[0].length; j++) {
+				if((rowCover[i]==0) && (colCover[j]==0)) {
+					tmp1DArray[index++] = cost[i][j];
+				}
+			}
+		}
+		
+		BigInteger[] min_Array = new BigInteger[index];
+		for(int i=0; i<min_Array.length; i++) {
+			min_Array[i] = tmp1DArray[i];
+		}
+		
+		// type = 0, Min
+		tmpMin = gcc_s.findMinimumOfTwoEncValues(min_Array, 0);
+		if(tmpMin.compareTo(minval) == -1)
+			return tmpMin;
+		else
+			return minval;
 	}
 	public BigInteger findEncSmallest(BigInteger[][] cost, int[] rowCover, int[] colCover, BigInteger maxCost) throws Exception {
 		System.out.println("\t[START]\tfindEncSmallest()");

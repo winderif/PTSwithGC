@@ -31,7 +31,7 @@ public abstract class ProgServer extends Program {
 
     protected void init() throws Exception {
 	Program.iterCount = ProgCommon.ois.readInt();
-	System.out.println(Program.iterCount);
+	//System.out.println(Program.iterCount);
 
 	super.init();
     }
@@ -61,10 +61,10 @@ public abstract class ProgServer extends Program {
 
     protected void initializeOT() throws Exception {
     	otNumOfPairs = ProgCommon.ois.readInt();
-    	System.out.println("otNumOfPairs:\t" + otNumOfPairs);
+    	//System.out.println("otNumOfPairs:\t" + otNumOfPairs);
 
     	snder = new OTExtSender(otNumOfPairs, otMsgBitLength, ProgCommon.ois, ProgCommon.oos);
-    	StopWatch.taskTimeStamp("OT preparation");
+    	//StopWatch.taskTimeStamp("OT preparation");
     }
 
     protected void createCircuits() throws Exception {
@@ -74,6 +74,6 @@ public abstract class ProgServer extends Program {
     	    ProgCommon.ccs[i].build();
     	}
     	
-    	StopWatch.taskTimeStamp("circuit preparation");
+    	//StopWatch.taskTimeStamp("circuit preparation");
     }
 }

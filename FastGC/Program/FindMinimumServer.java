@@ -74,10 +74,10 @@ public class FindMinimumServer extends ProgServer {
     	}
     	//System.out.println();
     	FindMinimumCommon.oos.flush();
-    	StopWatch.taskTimeStamp("sending labels for selfs inputs");
+    	//StopWatch.taskTimeStamp("sending labels for selfs inputs");
 
     	snder.execProtocol(cBitslps);
-    	StopWatch.taskTimeStamp("sending labels for peers inputs");
+    	//StopWatch.taskTimeStamp("sending labels for peers inputs");
     }
 
     protected void execCircuit() throws Exception {
@@ -117,17 +117,8 @@ public class FindMinimumServer extends ProgServer {
 				    outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
 	}
 	
-    	System.out.println("output (pp): " + output);
-    	BigInteger mask = new BigInteger("2");
-    	mask = mask.pow(FindMinimumCommon.bitVecLen).subtract(BigInteger.ONE);
-    	
-    	System.out.println(Long.toBinaryString(output.longValue()));
-    	for(int i=0; i<FindMinimumCommon.valueNum; i++) {
-    		System.out.print(output.and(mask) + " ");
-    		output = output.shiftRight(FindMinimumCommon.bitVecLen);
-    	}
-    	System.out.println();    	
-    	StopWatch.taskTimeStamp("output labels received and interpreted");
+    	System.out.println("output (pp): " + output);    	    	    
+    	//StopWatch.taskTimeStamp("output labels received and interpreted");
     }
 
     protected void verify_result() throws Exception {

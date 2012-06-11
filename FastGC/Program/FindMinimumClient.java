@@ -45,12 +45,12 @@ public class FindMinimumClient extends ProgClient {
     		sBitslbs[i]   = Utils.readBigInteger(bytelength, FindMinimumCommon.ois);
     		//System.out.println(sBitslbs[i]);
     	}    	
-    	StopWatch.taskTimeStamp("receiving labels for peer's inputs");
+    	//StopWatch.taskTimeStamp("receiving labels for peer's inputs");
 
     	cBitslbs = new BigInteger[cInputLen];
     	rcver.execProtocol(cBits);
     	cBitslbs = rcver.getData();
-		StopWatch.taskTimeStamp("receiving labels for self's inputs");
+		//StopWatch.taskTimeStamp("receiving labels for self's inputs");
     }
 
     protected void execCircuit() throws Exception {

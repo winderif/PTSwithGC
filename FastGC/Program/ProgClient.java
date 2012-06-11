@@ -26,7 +26,7 @@ public abstract class ProgClient extends Program {
     }
 
     protected void init() throws Exception {
-    	System.out.println(Program.iterCount);
+    	//System.out.println(Program.iterCount);
     	ProgCommon.oos.writeInt(Program.iterCount);
     	ProgCommon.oos.flush();
 
@@ -52,7 +52,7 @@ public abstract class ProgClient extends Program {
     	    ProgCommon.ccs[i].build();
     	}
 
-    	StopWatch.taskTimeStamp("circuit preparation");
+    	//StopWatch.taskTimeStamp("circuit preparation");
     }
 
     protected void initializeOT() throws Exception {
@@ -60,6 +60,6 @@ public abstract class ProgClient extends Program {
     	ProgCommon.oos.flush();
 
     	rcver = new OTExtReceiver(otNumOfPairs, ProgCommon.ois, ProgCommon.oos);
-    	StopWatch.taskTimeStamp("OT preparation");
+    	//StopWatch.taskTimeStamp("OT preparation");
     }
 }
