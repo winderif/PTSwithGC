@@ -21,11 +21,11 @@ public class NPOTSender extends Sender {
 
     public NPOTSender(int numOfPairs, int msgBitLength, ObjectInputStream in,
 		      ObjectOutputStream out) throws Exception {
-	super(numOfPairs, msgBitLength, in, out);
+    	super(numOfPairs, msgBitLength, in, out);
 
-	StopWatch.pointTimeStamp("right before NPOT public key generation");
-	initialize();
-	StopWatch.taskTimeStamp("NPOT public key generation");
+    	StopWatch.pointTimeStamp("right before NPOT public key generation");
+    	initialize();
+    	StopWatch.taskTimeStamp("NPOT public key generation");
     }
 
     public void execProtocol(BigInteger[][] msgPairs) throws Exception {

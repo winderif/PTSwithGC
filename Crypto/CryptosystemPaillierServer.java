@@ -30,7 +30,7 @@ import Crypto.CryptosystemAbstract;
  * @version 1.0
  */
 public class CryptosystemPaillierServer extends CryptosystemAbstract {
-    
+	private BigInteger p,  q,  lambda;
     /**
      * n = p*q, where p and q are two large primes.
      */
@@ -64,10 +64,25 @@ public class CryptosystemPaillierServer extends CryptosystemAbstract {
     
     public void KeyGeneration(int bitLengthVal, int certainty, BigInteger[] publicKey) {
         bitLength = bitLengthVal;
-        /*Constructs two randomly generated positive BigIntegers that are probably prime, with the specified bitLength and certainty.*/        
+        /*Constructs two randomly generated positive BigIntegers that are probably prime, with the specified bitLength and certainty.*/
+        /**
         n = publicKey[0];
         nsquare = n.multiply(n);
-        g = publicKey[1]; 	       
+        g = publicKey[1];
+        */
+        p = publicKey[0];
+        q = publicKey[1];
+        n = p.multiply(q);
+        nsquare = n.multiply(n);
+
+        g = new BigInteger("2");
+        lambda = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)).divide(
+                p.subtract(BigInteger.ONE).gcd(q.subtract(BigInteger.ONE)));
+        /* check whether g is good.*/
+        if (g.modPow(lambda, nsquare).subtract(BigInteger.ONE).divide(n).gcd(n).intValue() != 1) {
+            System.out.println("g is not good. Choose g again.");
+            System.exit(1);
+        }
     }
 
     /**
@@ -91,7 +106,9 @@ public class CryptosystemPaillierServer extends CryptosystemAbstract {
     }
     
     public BigInteger Decryption(BigInteger p) {
-    	return p;
+    	BigInteger u = g.modPow(lambda, nsquare).subtract(BigInteger.ONE).divide(n).modInverse(n);
+        return p.modPow(lambda, nsquare).subtract(BigInteger.ONE).divide(n).multiply(u).mod(n);
+    	//return p;
     }	
     
     /**

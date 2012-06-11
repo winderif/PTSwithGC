@@ -21,9 +21,9 @@ public class OTExtSender extends Sender {
 
     public OTExtSender(int numOfPairs, int msgBitLength,
 		       ObjectInputStream in, ObjectOutputStream out) throws Exception {
-	super(numOfPairs, msgBitLength, in, out);
+    	super(numOfPairs, msgBitLength, in, out);
 	
-	initialize();
+    	initialize();
     }
 
     public void execProtocol(BigInteger[][] msgPairs) throws Exception {
@@ -56,16 +56,16 @@ public class OTExtSender extends Sender {
     }
 
     private void initialize() throws Exception {
-	oos.writeInt(SecurityParameter.k1);
-	oos.writeInt(SecurityParameter.k2);
-	oos.writeInt(msgBitLength);
-	oos.flush();
+    	oos.writeInt(SecurityParameter.k1);
+    	oos.writeInt(SecurityParameter.k2);
+    	oos.writeInt(msgBitLength);
+    	oos.flush();
 
-	rcver = new NPOTReceiver(SecurityParameter.k1, ois, oos);
+    	rcver = new NPOTReceiver(SecurityParameter.k1, ois, oos);
 
-	s = new BigInteger(SecurityParameter.k1, rnd);
+    	s = new BigInteger(SecurityParameter.k1, rnd);
 
-	rcver.execProtocol(s);
-	keys = rcver.getData();
+    	rcver.execProtocol(s);
+    	keys = rcver.getData();
     }
 }

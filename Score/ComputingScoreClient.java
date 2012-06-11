@@ -1,7 +1,7 @@
 package Score;
 
 import Crypto.CryptosystemPaillierClient;
-import Program.EncTaggingSystemCommon;
+import Program.EncGCTaggingSystemCommon;
 import Score.ComputingScore;
 import java.io.*;
 import java.math.BigInteger;
@@ -29,13 +29,13 @@ public class ComputingScoreClient extends ComputingScore {
 				
 				for(int i=0; i<BIN_HISTO; i++) {	
 					// de[x] = x					
-					x_dec = mPaillier.Decryption((new BigInteger(EncTaggingSystemCommon.ois.readObject().toString())));
+					x_dec = mPaillier.Decryption((new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString())));
 					/**
 					 * System.out.print(x_dec + " ");
 					 */
+					 
 					// S3' = S3' + x^2
-					s3_c = s3_c.add(x_dec.pow(2));
-					//s3_c = s3_c.add((new BigInteger(this.getQueue().poll().toString())));				
+					s3_c = s3_c.add(x_dec.pow(2));								
 				}			
 				/**
 				 * System.out.println();
@@ -43,17 +43,14 @@ public class ComputingScoreClient extends ComputingScore {
 				System.out.println("[C][SUCCESS]\trecv Server [x].");
 				// Send [S3'] to server
 				System.out.println("[C][STRAT]\tsend [S3'].");
-				//this.getQueue().add(s3_c);		
-				EncTaggingSystemCommon.oos.writeObject(mPaillier.Encryption(s3_c));
-				EncTaggingSystemCommon.oos.flush();					
+				
+				//System.out.println("s3_c:\t" + s3_c);
+				EncGCTaggingSystemCommon.oos.writeObject(mPaillier.Encryption(s3_c));
+				EncGCTaggingSystemCommon.oos.flush();					
 			} catch(Exception e) {
 				System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");
 				break;
 			}
 		}
-	}
-	
-	public static void main(String[] args) {
-		
 	}	
 }

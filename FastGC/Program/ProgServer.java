@@ -13,7 +13,7 @@ import FastGC.YaoGC.*;
 
 public abstract class ProgServer extends Program {
 
-    final private  int         serverPort   = 23456;             // server port number
+    final private  int         serverPort   = 23457;             // server port number
     private ServerSocket       sock         = null;              // original server socket
     private Socket             clientSocket = null;              // socket created by accept
 
@@ -36,7 +36,7 @@ public abstract class ProgServer extends Program {
 	super.init();
     }
 
-    private void create_socket_and_listen() throws Exception {
+    private void create_socket_and_listen() throws Exception {    	
 	sock = new ServerSocket(serverPort);            // create socket and bind to port
 	System.out.println("waiting for client to connect");
 	clientSocket = sock.accept();                   // wait for client to connect
@@ -60,19 +60,20 @@ public abstract class ProgServer extends Program {
     }
 
     protected void initializeOT() throws Exception {
-	otNumOfPairs = ProgCommon.ois.readInt();
+    	otNumOfPairs = ProgCommon.ois.readInt();
+    	System.out.println("otNumOfPairs:\t" + otNumOfPairs);
 
-	snder = new OTExtSender(otNumOfPairs, otMsgBitLength, ProgCommon.ois, ProgCommon.oos);
-	StopWatch.taskTimeStamp("OT preparation");
+    	snder = new OTExtSender(otNumOfPairs, otMsgBitLength, ProgCommon.ois, ProgCommon.oos);
+    	StopWatch.taskTimeStamp("OT preparation");
     }
 
     protected void createCircuits() throws Exception {
-	Circuit.isForGarbling = true;
-	Circuit.setIOStream(ProgCommon.ois, ProgCommon.oos);
-	for (int i = 0; i < ProgCommon.ccs.length; i++) {
-	    ProgCommon.ccs[i].build();
-	}
-	
-	StopWatch.taskTimeStamp("circuit preparation");
+    	Circuit.isForGarbling = true;
+    	Circuit.setIOStream(ProgCommon.ois, ProgCommon.oos);
+    	for (int i = 0; i < ProgCommon.ccs.length; i++) {
+    	    ProgCommon.ccs[i].build();
+    	}
+    	
+    	StopWatch.taskTimeStamp("circuit preparation");
     }
 }

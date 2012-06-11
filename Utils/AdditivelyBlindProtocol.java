@@ -15,9 +15,11 @@ public class AdditivelyBlindProtocol {
 	
 	public AdditivelyBlindProtocol(CryptosystemPaillierServer serverPaillier, BigInteger[] originalNumbers) {
 		this.mPaillier = serverPaillier;
+		// [x] length
 		this.vectorLength = originalNumbers.length;
 		this.mUniformRandomNumbers = new BigInteger[vectorLength];
 		this.mEncUniformRandomNumbers = new BigInteger[vectorLength];
+		// [x]
 		this.mEncOriginalNumbers = originalNumbers;
 		this.mEncBlindNumbers = new BigInteger[vectorLength];
 		numberAssignment();
@@ -44,7 +46,9 @@ public class AdditivelyBlindProtocol {
 		for(int i=0; i<this.vectorLength; i++) {
 			//tmp[i] = this.mEncOriginalNumbers[i];			
 			tmp[i] = this.mEncOriginalNumbers[i].multiply(this.mEncUniformRandomNumbers[i])
-												.mod(this.mPaillier.nsquare);			
+												.mod(this.mPaillier.nsquare);
+			//System.out.print("tmp[i]:\t" + mPaillier.Decryption(mEncOriginalNumbers[i]) + " " + mUniformRandomNumbers[i]);
+			//System.out.println(" " + mPaillier.Decryption(tmp[i]));
 		}
 		return tmp;
 	}

@@ -61,21 +61,21 @@ public class OTExtReceiver extends Receiver {
     }
 
     private void initialize() throws Exception {
-	k1 = ois.readInt();
-	k2 = ois.readInt();
-	msgBitLength = ois.readInt();
+    	k1 = ois.readInt();
+    	k2 = ois.readInt();
+    	msgBitLength = ois.readInt();
 
-	snder = new NPOTSender(k1, k2, ois, oos);
+    	snder = new NPOTSender(k1, k2, ois, oos);
 
-	T = new BitMatrix(numOfChoices, k1);
-	T.initialize(rnd);
+    	T = new BitMatrix(numOfChoices, k1);
+    	T.initialize(rnd);
 
-	keyPairs = new BigInteger[k1][2];
-	for (int i = 0; i < k1; i++) {
-	    keyPairs[i][0] = new BigInteger(k2, rnd);
-	    keyPairs[i][1] = new BigInteger(k2, rnd);
-	}
+    	keyPairs = new BigInteger[k1][2];
+    	for (int i = 0; i < k1; i++) {
+    	    keyPairs[i][0] = new BigInteger(k2, rnd);
+    	    keyPairs[i][1] = new BigInteger(k2, rnd);
+    	}
 
-	snder.execProtocol(keyPairs);
+    	snder.execProtocol(keyPairs);
     }
 }

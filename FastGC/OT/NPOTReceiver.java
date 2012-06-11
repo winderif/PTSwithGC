@@ -34,22 +34,22 @@ public class NPOTReceiver extends Receiver {
     }
 
     private void initialize() throws Exception {
-	C  = (BigInteger) ois.readObject();
-	p  = (BigInteger) ois.readObject();
-	q  = (BigInteger) ois.readObject();
-	g  = (BigInteger) ois.readObject();
-	gr = (BigInteger) ois.readObject();
-	msgBitLength = ois.readInt();
+    	C  = (BigInteger) ois.readObject();
+    	p  = (BigInteger) ois.readObject();
+    	q  = (BigInteger) ois.readObject();
+    	g  = (BigInteger) ois.readObject();
+    	gr = (BigInteger) ois.readObject();
+    	msgBitLength = ois.readInt();
 
-	gk = new BigInteger[numOfChoices];
-	C_over_gk = new BigInteger[numOfChoices];
-	keys = new BigInteger[numOfChoices];
-	for (int i = 0; i < numOfChoices; i++) {
-	    BigInteger k = (new BigInteger(q.bitLength(), rnd)).mod(q);
-	    gk[i] = g.modPow(k, p);
-	    C_over_gk[i] = C.multiply(gk[i].modInverse(p)).mod(p);
-	    keys[i] = gr.modPow(k, p);
-	}
+    	gk = new BigInteger[numOfChoices];
+    	C_over_gk = new BigInteger[numOfChoices];
+    	keys = new BigInteger[numOfChoices];
+    	for (int i = 0; i < numOfChoices; i++) {
+    	    BigInteger k = (new BigInteger(q.bitLength(), rnd)).mod(q);
+    	    gk[i] = g.modPow(k, p);
+    	    C_over_gk[i] = C.multiply(gk[i].modInverse(p)).mod(p);
+    	    keys[i] = gr.modPow(k, p);
+    	}
     }
 
     private void step1() throws Exception {

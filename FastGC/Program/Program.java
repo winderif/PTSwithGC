@@ -15,9 +15,9 @@ public abstract class Program {
     }
 
     protected void init() throws Exception {
-	createCircuits();
+    	createCircuits();
 
-	initializeOT();
+    	initializeOT();
     }
 
     abstract protected void createCircuits() throws Exception;

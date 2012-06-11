@@ -127,7 +127,7 @@ public class CryptosystemPaillierClient extends CryptosystemAbstract {
      * 12.03.13 winderif 
      */
     public BigInteger[] getPublicKey() {
-    	BigInteger[] tmp = {n, g};
+    	BigInteger[] tmp = {p, q};
     	return tmp;
     }
 }
