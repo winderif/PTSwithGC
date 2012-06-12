@@ -10,6 +10,7 @@ import org.apache.commons.io.input.CountingInputStream;
 import FastGC.Utils.*;
 import FastGC.OT.*;
 import FastGC.YaoGC.*;
+import Program.EncGCTaggingSystemCommon;
 
 public abstract class ProgServer extends Program {
 
@@ -22,41 +23,43 @@ public abstract class ProgServer extends Program {
     protected int otMsgBitLength = Wire.labelBitLength;
     
     public void run() throws Exception {
-	create_socket_and_listen();
+    	create_socket_and_listen();
 
-	super.run();
+    	super.run();
 
-	cleanup();
+    	cleanup();
     }
 
     protected void init() throws Exception {
-	Program.iterCount = ProgCommon.ois.readInt();
-	//System.out.println(Program.iterCount);
+    	Program.iterCount = ProgCommon.ois.readInt();
+    	//System.out.println(Program.iterCount);
 
-	super.init();
+    	super.init();
     }
 
     private void create_socket_and_listen() throws Exception {    	
-	sock = new ServerSocket(serverPort);            // create socket and bind to port
-	System.out.println("waiting for client to connect");
-	clientSocket = sock.accept();                   // wait for client to connect
-	System.out.println("client has connected");
+    	sock = new ServerSocket(serverPort);            // create socket and bind to port
+    	EncGCTaggingSystemCommon.oos.write(1);
+		EncGCTaggingSystemCommon.oos.flush();
+    	System.out.println("waiting for client to connect");
+    	clientSocket = sock.accept();                   // wait for client to connect
+    	System.out.println("client has connected");
 
-	CountingOutputStream cos = new CountingOutputStream(clientSocket.getOutputStream());
-	CountingInputStream  cis = new CountingInputStream(clientSocket.getInputStream());
-	
-	ProgCommon.oos = new ObjectOutputStream(cos);
-	ProgCommon.ois = new ObjectInputStream(cis);
+    	CountingOutputStream cos = new CountingOutputStream(clientSocket.getOutputStream());
+    	CountingInputStream  cis = new CountingInputStream(clientSocket.getInputStream());
+    	
+    	ProgCommon.oos = new ObjectOutputStream(cos);
+    	ProgCommon.ois = new ObjectInputStream(cis);
 
-	StopWatch.cos = cos;
-	StopWatch.cis = cis;
+    	StopWatch.cos = cos;
+    	StopWatch.cis = cis;
     }
 
     private void cleanup() throws Exception {
-	ProgCommon.oos.close();                          // close everything
-	ProgCommon.ois.close();
-	clientSocket.close();
-	sock.close();
+    	ProgCommon.oos.close();                          // close everything
+    	ProgCommon.ois.close();
+    	clientSocket.close();
+    	sock.close();
     }
 
     protected void initializeOT() throws Exception {

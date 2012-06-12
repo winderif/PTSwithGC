@@ -112,7 +112,8 @@ public class EncGCTaggingSystemServer extends ProgServer {
 			this.mMatchingTags[i] = this.allTags[assignment[i][1]];
 			//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
 		}
-		EncGCTaggingSystemCommon.oos.writeObject(null);		
+		EncGCTaggingSystemCommon.oos.writeObject(null);
+		EncGCTaggingSystemCommon.oos.flush();
     }
     
     protected void execResultTransfer() throws Exception {

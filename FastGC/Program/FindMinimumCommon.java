@@ -40,7 +40,7 @@ class FindMinimumCommon extends ProgCommon {
 
     	State out = ccs[0].startExecuting(in);
     	
-    	StopWatch.taskTimeStamp("circuit garbling");
+    	//StopWatch.taskTimeStamp("circuit garbling");
 
     	return out;
     }       

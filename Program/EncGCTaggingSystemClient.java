@@ -45,18 +45,14 @@ public class EncGCTaggingSystemClient extends ProgClient {
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
     	ComputingScoreClient computeClient = 
     		new ComputingScoreClient(mPaillier);
-    	computeClient.run();    	    
+    	computeClient.run();    	
     }    
     protected void execFindBestMatching() throws Exception {
-    	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");
-    	/*
-    	ComparisonProtocolOnClient protocolClient = 
-    		new ComparisonProtocolOnClient(mPaillier); 
-    	protocolClient.run();    	
-    	*/    	    	
+    	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");    	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);
     	protocolClient.run();
+    	EncGCTaggingSystemCommon.ois.readObject();
     }
     
     protected void execResultTransfer() throws Exception {

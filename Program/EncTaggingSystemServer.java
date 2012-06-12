@@ -70,6 +70,7 @@ public class EncTaggingSystemServer extends ProgServer {
 		double time = (endTime - startTime)/1000000000.0;
 		System.out.println("\t[S][SUCCESS]\tBuild Encrypted Bipartile Graph." + time);		
 		EncTaggingSystemCommon.oos.writeObject(null);
+		EncGCTaggingSystemCommon.oos.flush();
     }    
     
     protected void execFindBestMatching() throws Exception {	
@@ -103,13 +104,14 @@ public class EncTaggingSystemServer extends ProgServer {
 			//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
 		}
 		EncTaggingSystemCommon.oos.writeObject(null);
+		//EncGCTaggingSystemCommon.oos.flush();
     }
     
     protected void execResultTransfer() throws Exception {
     	System.out.println("\t[S][START]\tSend result to client.");
     	for(int i=0; i<mMatchingTags.length; i++) {
-    		EncTaggingSystemCommon.oos.writeObject(mMatchingTags[i]);
-    	}
+    		EncTaggingSystemCommon.oos.writeObject(mMatchingTags[i]);    		
+    	}    	
     	EncTaggingSystemCommon.oos.flush();
     }    
     

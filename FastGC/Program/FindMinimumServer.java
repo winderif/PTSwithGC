@@ -46,7 +46,7 @@ public class FindMinimumServer extends ProgServer {
     }
 
     private void generateLabelPairs() {
-    	System.out.println("generateLabelPairs()");
+    	//System.out.println("generateLabelPairs()");
     	sBitslps = new BigInteger[sInputLen][2];
     	cBitslps = new BigInteger[cInputLen][2];
     	BigInteger glb0 = null;
