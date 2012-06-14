@@ -11,6 +11,8 @@ import java.io.*;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.io.input.CountingInputStream;
 
+import com.articulate.sigma.WordNet;
+
 import Utils.VideoFrame;
 
 public abstract class ProgServer extends Program {
@@ -21,7 +23,7 @@ public abstract class ProgServer extends Program {
 
 	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
     protected static final int BIN_HISTO = 16; 
-    protected static final int FILTER_NUM = 4;
+    protected static final int FILTER_NUM = 2;
     
     public static String databaseDirName;
     protected File[] databaseTagDirFile = null;	
@@ -29,9 +31,13 @@ public abstract class ProgServer extends Program {
     protected Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
 	
 	private HashMap<String, Vector<VideoFrame>> imageClustersMap = new HashMap<String, Vector<VideoFrame>>();
+	private HashMap<String, double[]> tagsHistogramMap = new HashMap<String, double[]>();
+	private HashMap<String, Vector<String>> domainMap = new HashMap<String, Vector<String>>();
 	protected String[] allTags = null;
+	protected String[] allDomains = null;
 	
 	protected double[][] mTagAverageHistogram = null;
+	protected double[][] mDomainAverageHistogram = null;
     
     public void run() throws Exception {
     	create_socket_and_listen();
@@ -65,6 +71,9 @@ public abstract class ProgServer extends Program {
     	readData();
     	generateTagClusters();
     	getAverageColorHistogram();
+    	
+    	tagClustering();
+    	getDomainAverageColorHistogram();
     }
     
     private void readData() {
@@ -193,8 +202,76 @@ public abstract class ProgServer extends Program {
 				//System.out.print(this.mTagAverageHistogram[i][j] + " ");
 			}
 			//System.out.println();
+			/*** HashMap for <tag, tag histogram>***/
+			tagsHistogramMap.put(allTags[i], mTagAverageHistogram[i]);
 		}
 		System.out.println("\t[S][SUCCESS]\tGet Average Color Histogram");
+	}
+	
+	private void tagClustering() {
+		WordNet wn = new WordNet();
+		wn.initOnce();
+		
+		Vector<String> tmpTags = null;
+		String tmpDomain;		
+		int[] POS = new int[]{wn.NOUN, wn.VERB};
+				
+		for(String tmpTag : allTags) {			
+			for(int pos : POS) {								
+				tmpDomain = WordNet.wn.getSUMOterm(tmpTag, pos);				
+				if(tmpDomain != null) {
+					if(!domainMap.containsKey(tmpDomain)) {
+						//System.out.print(tmpDomain + "\t\t");
+						tmpTags = new Vector<String>();	    				
+	    				tmpTags.add(tmpTag);
+	    			}
+	    			else {
+	    				tmpTags = domainMap.get(tmpDomain);
+	    				tmpTags.add(tmpTag);	    				
+	    			}	
+					domainMap.put(tmpDomain, tmpTags);
+				}
+				else {
+					
+				}
+			}
+			//System.out.println();
+		}
+		allDomains = new String[domainMap.keySet().size()];
+		domainMap.keySet().toArray(allDomains);
+		for(int i=0; i < allDomains.length; i++) {
+			System.out.print(allDomains[i] + "\t: ");
+			for(String tmp : domainMap.get(allDomains[i])) {
+				//System.out.print(tmp + " ");
+			}
+			//System.out.println();
+		}
+	}
+	
+	private void getDomainAverageColorHistogram() {
+		System.out.println("\t[S][START]\tGet Domain Average Color Histogram");
+		double[] tmpHistogram = null;
+		mDomainAverageHistogram = new double[domainMap.keySet().size()][BIN_HISTO];
+		
+		allDomains = new String[this.domainMap.keySet().size()];
+		domainMap.keySet().toArray(allDomains);
+		
+		for(int i=0; i<allDomains.length; i++) {
+			//System.out.println("[DOMAIN]\t" + allDomains[i] + "\t" + domainMap.get(allDomains[i]).size());			
+			for(String mTag : domainMap.get(allDomains[i])) {
+				tmpHistogram = tagsHistogramMap.get(mTag);
+				for(int j=0; j<BIN_HISTO; j++) {
+					mDomainAverageHistogram[i][j] += tmpHistogram[j];
+				}
+			}
+			
+			for(int j=0; j<BIN_HISTO; j++) {
+				mDomainAverageHistogram[i][j] /= domainMap.get(allDomains[i]).size();
+				//System.out.print(mDomainAverageHistogram[i][j] + " ");
+			}
+			//System.out.println();			
+		}
+		System.out.println("\t[S][SUCCESS]\tGet Domain Average Color Histogram");
 	}
 
     private void cleanup() throws Exception {

@@ -53,6 +53,10 @@ public class EncTaggingSystemServer extends ProgServer {
  		System.out.println("\t[S][SUCCESS]\treceive Query datas.");
     }
     
+    protected void execFindCandidateTagClusters() throws Exception {
+    	
+    }
+    
     protected void execBuildBipartiteGraph() throws Exception {    	    	
     	System.out.println("\t[S][START]\tBuild Encrypted Bipartile Graph.");
 		double startTime = System.nanoTime();

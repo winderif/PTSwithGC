@@ -6,7 +6,8 @@ import Utils.FastHungarianAlgorithm;
 
 public class TaggingSystemServer extends ProgServer {
 
-	private double[][] mQueryHistogram = null;	
+	private double[][] mQueryHistogram = null;
+	private double[] mQueryAverageHistogram = null;
 	private double[][] mHungarianMatrix = null;
 	private String[] mMatchingTags = null;
 	
@@ -18,7 +19,8 @@ public class TaggingSystemServer extends ProgServer {
     }
     
     protected void execQueryTransfer() throws Exception {    	    	
-    	mQueryHistogram = new double[TaggingSystemCommon.ois.readInt()][BIN_HISTO]; 		
+    	mQueryHistogram = new double[TaggingSystemCommon.ois.readInt()][BIN_HISTO]; 
+    	mQueryAverageHistogram = new double[BIN_HISTO];
  		for(int i=0; i<mQueryHistogram.length; i++) {
  			for(int j=0; j<BIN_HISTO; j++) {
  				mQueryHistogram[i][j] = TaggingSystemCommon.ois.readDouble();
@@ -26,7 +28,17 @@ public class TaggingSystemServer extends ProgServer {
  			}
  			//System.out.println();
  		}
+ 		
+ 		for(int i=0; i<BIN_HISTO; i++) {
+ 			mQueryAverageHistogram[i] = TaggingSystemCommon.ois.readDouble();
+			System.out.print(mQueryAverageHistogram[i] + " ");
+		}
+ 		System.out.println();
  		System.out.println("\t[S][SUCCESS]\treceive Query datas.");
+    }
+    
+    protected void execFindCandidateTagClusters() throws Exception {
+    	
     }
     
     protected void execBuildBipartiteGraph() throws Exception {

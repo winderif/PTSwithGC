@@ -25,7 +25,17 @@ public class TaggingSystemClient extends ProgClient {
 			}
 			//System.out.println();
 		}
+		
+		for(int i=0; i<BIN_HISTO; i++) {
+			System.out.print(queryAverageHistogram[i] + " ");
+			TaggingSystemCommon.oos.writeDouble(queryAverageHistogram[i]);				
+		}
+		System.out.println();
 		TaggingSystemCommon.oos.flush();
+    }
+    
+    protected void execFindCandidateTagClusters() throws Exception {
+    	
     }
     
     protected void execBuildBipartiteGraph() throws Exception {

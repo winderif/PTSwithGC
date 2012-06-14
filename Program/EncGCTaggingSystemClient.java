@@ -41,6 +41,10 @@ public class EncGCTaggingSystemClient extends ProgClient {
 		EncGCTaggingSystemCommon.oos.flush();
     }
     
+    protected void execFindCandidateTagClusters() throws Exception {
+    	
+    }
+    
     protected void execBuildBipartiteGraph() throws Exception {    
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
     	ComputingScoreClient computeClient = 

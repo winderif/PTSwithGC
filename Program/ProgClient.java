@@ -19,6 +19,7 @@ public abstract class ProgClient extends Program {
     public static String queryDirName = null;
     protected File[] queryDataFile = null;	
     protected Vector<VideoFrame> videoFrames = new Vector<VideoFrame>();
+    protected double[] queryAverageHistogram;
 
     public void run() throws Exception {
     	create_socket_and_connect();
@@ -44,6 +45,7 @@ public abstract class ProgClient extends Program {
     
     protected void initialize() throws Exception {
     	readData();
+    	getQueryAverageHistorgram();
     }
     
     private void readData() {
@@ -64,6 +66,25 @@ public abstract class ProgClient extends Program {
 		}
     }
 
+    private void getQueryAverageHistorgram() throws Exception {
+    	System.out.println("[C][START]\tGet Query Average Color Histogram");
+    	double[] tmpHistogram = new double[BIN_HISTO];
+    	queryAverageHistogram = new double[BIN_HISTO];
+    	
+    	for(int i=0; i<videoFrames.size(); i++) {
+    		tmpHistogram = videoFrames.elementAt(i).getHistogram();
+    		for(int j=0; j<BIN_HISTO; j++) {
+    			queryAverageHistogram[j] += tmpHistogram[j];
+    		}
+    	}
+    	for(int j=0; j<BIN_HISTO; j++) {
+    		//System.out.print(queryAverageHistogram[j] + " ");
+			queryAverageHistogram[j] /= videoFrames.size();
+			//System.out.println(queryAverageHistogram[j]);
+		}
+    	System.out.println("[C][SUCCESS]\tGet Query Average Color Histogram");
+    }
+    
     private void cleanup() throws Exception {
     	ProgCommon.oos.close();                                                   // close everything
 		ProgCommon.ois.close();

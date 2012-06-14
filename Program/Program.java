@@ -17,14 +17,18 @@ public abstract class Program {
     protected void execute() throws Exception {
     	execQueryTransfer();
     	
-    	execBuildBipartiteGraph();
+    	execFindCandidateTagClusters();
     	
-    	execFindBestMatching();
+    	//execBuildBipartiteGraph();
     	
-    	execResultTransfer();
+    	//execFindBestMatching();
+    	
+    	//execResultTransfer();
     }    
     
     abstract protected void execQueryTransfer() throws Exception;
+    
+    abstract protected void execFindCandidateTagClusters() throws Exception;
     
     abstract protected void execBuildBipartiteGraph() throws Exception;
     
