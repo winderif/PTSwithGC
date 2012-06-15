@@ -31,6 +31,7 @@ class TestTaggingSystemClient {
 		}		
 		ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));	
 		ProgClient.queryDirName = (String) parser.getOptionValue(optionQueryDirName, new String("query"));
+		//ProgClient.queryDirName = (String) parser.getOptionValue(optionQueryDirName, new String("query_s"));
     }
 
     public static void main(String[] args) throws Exception {

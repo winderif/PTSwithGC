@@ -2,6 +2,9 @@
 
 package Program;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 import Utils.FastHungarianAlgorithm;
 
 public class TaggingSystemServer extends ProgServer {
@@ -10,6 +13,8 @@ public class TaggingSystemServer extends ProgServer {
 	private double[] mQueryAverageHistogram = null;
 	private double[][] mHungarianMatrix = null;
 	private String[] mMatchingTags = null;
+	
+	private double[] mDomainDistance = null;
 	
     public TaggingSystemServer() {
     }
@@ -31,14 +36,62 @@ public class TaggingSystemServer extends ProgServer {
  		
  		for(int i=0; i<BIN_HISTO; i++) {
  			mQueryAverageHistogram[i] = TaggingSystemCommon.ois.readDouble();
-			System.out.print(mQueryAverageHistogram[i] + " ");
+			//System.out.print(mQueryAverageHistogram[i] + " ");
 		}
- 		System.out.println();
+ 		//System.out.println(); 		 
+ 		
  		System.out.println("\t[S][SUCCESS]\treceive Query datas.");
     }
     
-    protected void execFindCandidateTagClusters() throws Exception {
+    protected void execFindCandidateTagClusters() throws Exception {    	
+    	mDomainDistance = new double[allDomains.length];    	
+    	for(int i=0; i<allDomains.length; i++) {
+    		mDomainDistance[i] = Score(mQueryAverageHistogram, mDomainAverageHistogram[i]);
+    		//System.out.print(mDomainDistance[i] + " ");
+    	}
+    	//System.out.println();
+    	double[] sortingDistance = mDomainDistance.clone();
+    	Arrays.sort(sortingDistance);
     	
+    	// 80% of minimum distance
+    	double threshold 
+    		= (sortingDistance[sortingDistance.length-1] - sortingDistance[0])*0.2 + sortingDistance[0];
+    	System.out.println("T : \t" + threshold);  	
+    	HashMap<String, double[]> tmpCandidateTags = new HashMap<String, double[]>();    	
+    	for(int i=0; i<mDomainDistance.length; i++) {
+    	    if(mDomainDistance[i] <= threshold) {
+    	    	System.out.print(mDomainDistance[i] + " ");
+    	    	System.out.print(allDomains[i] + "\t");
+    	    	for(String tag : domainMap.get(allDomains[i])) {
+    	    		System.out.print(tag + " ");
+    	    		if(!tmpCandidateTags.containsKey(tag)) {
+    	    			System.out.print(tag + "-");
+    	    			tmpCandidateTags.put(tag, tagsHistogramMap.get(tag));
+    	    		}    	    		
+    	    	}
+    	    	System.out.println();  	
+    	    }
+    	}
+    	/**
+    	HashMap<String, double[]> tmpCandidateTags = new HashMap<String, double[]>();    	
+    	for(int i=0; i<mQueryHistogram.length; i++) {
+    		for(String tag : domainMap.get(allDomains[i])) {
+	    		System.out.print(tag + " ");
+	    		if(!tmpCandidateTags.containsKey(tag)) {
+	    			System.out.print(tag + "-");
+	    			tmpCandidateTags.put(tag, tagsHistogramMap.get(tag));
+	    		}    	    		
+	    	}
+    	}
+    	*/
+    	allTags = new String[tmpCandidateTags.keySet().size()];
+    	tmpCandidateTags.keySet().toArray(allTags);
+    	mTagAverageHistogram = new double[allTags.length][BIN_HISTO];
+    	for(int i=0; i<allTags.length; i++) {
+    		System.out.println(allTags[i]);
+    		mTagAverageHistogram[i] = tmpCandidateTags.get(allTags[i]);
+    	}    	
+    	System.out.println();
     }
     
     protected void execBuildBipartiteGraph() throws Exception {
@@ -63,7 +116,7 @@ public class TaggingSystemServer extends ProgServer {
     protected void execFindBestMatching() throws Exception {
 		System.out.println("\t[S][START]\tFind Bset Matching for Bipartile Graph.");
 		
-		String sumType = "max";
+		String sumType = "min";
 		int[][] assignment = new int[mHungarianMatrix.length][2];
 		
 		double startTime = System.nanoTime();

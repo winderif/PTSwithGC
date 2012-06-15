@@ -25,6 +25,7 @@ class TestTaggingSystemServer {
 		}
 		
 		ProgServer.databaseDirName = (String) parser.getOptionValue(optiondatabaseDirName, new String("database"));
+		//ProgServer.databaseDirName = (String) parser.getOptionValue(optiondatabaseDirName, new String("database_s"));
     }
 
     public static void main(String[] args) throws Exception {

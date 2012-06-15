@@ -24,6 +24,7 @@ public abstract class ProgServer extends Program {
 	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
     protected static final int BIN_HISTO = 16; 
     protected static final int FILTER_NUM = 2;
+    private boolean domains_file_existed = false;
     
     public static String databaseDirName;
     protected File[] databaseTagDirFile = null;	
@@ -31,8 +32,8 @@ public abstract class ProgServer extends Program {
     protected Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
 	
 	private HashMap<String, Vector<VideoFrame>> imageClustersMap = new HashMap<String, Vector<VideoFrame>>();
-	private HashMap<String, double[]> tagsHistogramMap = new HashMap<String, double[]>();
-	private HashMap<String, Vector<String>> domainMap = new HashMap<String, Vector<String>>();
+	protected HashMap<String, double[]> tagsHistogramMap = new HashMap<String, double[]>();
+	protected HashMap<String, Vector<String>> domainMap = new HashMap<String, Vector<String>>();
 	protected String[] allTags = null;
 	protected String[] allDomains = null;
 	
@@ -92,7 +93,11 @@ public abstract class ProgServer extends Program {
 			for(int i=0; i<dirFile.listFiles().length; i++) {				
 				databaseTagDirFile[i] = dirFile.listFiles()[i];
 	
-				if(databaseTagDirFile[i].listFiles().length != 0) {					
+				if(!databaseTagDirFile[i].isDirectory()) {
+					if(databaseTagDirFile[i].getName().equals("domains.dat"))
+						domains_file_existed = true;					
+				}
+				else if(databaseTagDirFile[i].listFiles().length != 0) {					
 					int sizeOfTagDir = databaseTagDirFile[i].listFiles().length;
 					tmpFileArray = new File[sizeOfTagDir];		
 					tmpVideoFrame = new Vector<VideoFrame>();
@@ -209,43 +214,104 @@ public abstract class ProgServer extends Program {
 	}
 	
 	private void tagClustering() {
-		WordNet wn = new WordNet();
-		wn.initOnce();
-		
-		Vector<String> tmpTags = null;
-		String tmpDomain;		
-		int[] POS = new int[]{wn.NOUN, wn.VERB};
-				
-		for(String tmpTag : allTags) {			
-			for(int pos : POS) {								
-				tmpDomain = WordNet.wn.getSUMOterm(tmpTag, pos);				
-				if(tmpDomain != null) {
-					if(!domainMap.containsKey(tmpDomain)) {
-						//System.out.print(tmpDomain + "\t\t");
-						tmpTags = new Vector<String>();	    				
-	    				tmpTags.add(tmpTag);
-	    			}
-	    			else {
-	    				tmpTags = domainMap.get(tmpDomain);
-	    				tmpTags.add(tmpTag);	    				
-	    			}	
-					domainMap.put(tmpDomain, tmpTags);
-				}
-				else {
+		if(!domains_file_existed) {
+			WordNet wn = new WordNet();
+			wn.initOnce();
+			
+			Vector<String> tmpTags = null;
+			String tmpDomain;		
+			//int[] POS = new int[]{wn.NOUN, wn.VERB};
+			int[] POS = new int[]{wn.NOUN};
 					
+			for(String tmpTag : allTags) {			
+				for(int pos : POS) {								
+					//tmpDomain = WordNet.wn.getSUMOterm(tmpTag, pos);
+					tmpDomain = WordNet.wn.getBestDefaultSense(tmpTag);
+					if(tmpDomain != null) {
+						if(!domainMap.containsKey(tmpDomain)) {
+							//System.out.print(tmpDomain + "\t\t");
+							tmpTags = new Vector<String>();	    				
+		    				tmpTags.add(tmpTag);
+		    			}
+		    			else {
+		    				tmpTags = domainMap.get(tmpDomain);
+		    				tmpTags.add(tmpTag);	    				
+		    			}	
+						domainMap.put(tmpDomain, tmpTags);
+					}
+					else {
+						continue;
+					}
 				}
+				//System.out.println();
 			}
-			//System.out.println();
+			
+			allDomains = new String[domainMap.keySet().size()];
+			domainMap.keySet().toArray(allDomains);
+			
+			try {
+				FileWriter outFile = new FileWriter(databaseDirName + "\\domains.dat");
+				PrintWriter out = new PrintWriter(outFile);
+				
+				out.println(allDomains.length);
+				for(int i=0; i < allDomains.length; i++) {
+					//System.out.print(allDomains[i] + "\t: ");
+					out.print(allDomains[i] + ":\t");
+					for(String tmp : domainMap.get(allDomains[i])) {
+						out.print(tmp + " ");
+						//System.out.print(tmp + " ");
+					}
+					out.println();
+					//System.out.println();
+				}
+				
+				out.close();
+				outFile.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}	
 		}
-		allDomains = new String[domainMap.keySet().size()];
-		domainMap.keySet().toArray(allDomains);
-		for(int i=0; i < allDomains.length; i++) {
-			System.out.print(allDomains[i] + "\t: ");
-			for(String tmp : domainMap.get(allDomains[i])) {
-				//System.out.print(tmp + " ");
-			}
-			//System.out.println();
-		}
+		else {
+			try {
+				FileReader inFile = new FileReader(databaseDirName + "\\domains.dat");				
+				int in = 0;
+				String tmpFile = "";
+				Vector<String> vectorTags = null;
+								
+				while((in = inFile.read()) != -1) {
+					tmpFile = tmpFile + (char)in;
+				}
+				// split each line
+				String[] tmpLine = tmpFile.split("\r\n");
+				
+				int length = Integer.parseInt(tmpLine[0]);
+				allDomains = new String[length];
+				for(int i=1; i<tmpLine.length; i++) {
+					String[] tmpDomainTags = tmpLine[i].split(":\t");
+					String[] tmpTags = tmpDomainTags[1].split(" ");
+					vectorTags = new Vector<String>();
+					for(int j=0; j<tmpTags.length; j++) {
+						vectorTags.add(tmpTags[j]);
+					}
+					allDomains[i-1] = tmpDomainTags[0];
+					domainMap.put(tmpDomainTags[0], vectorTags);
+					//System.out.println(tmpLine[i]);
+				}
+				/** Printing
+				for(int i=0; i < allDomains.length; i++) {
+					System.out.print(allDomains[i] + "\t: ");					
+					for(String tmp : domainMap.get(allDomains[i])) {						
+						System.out.print(tmp + " ");
+					}					
+					System.out.println();
+				}
+				*/
+
+				inFile.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}	
+		}									
 	}
 	
 	private void getDomainAverageColorHistogram() {
@@ -253,7 +319,7 @@ public abstract class ProgServer extends Program {
 		double[] tmpHistogram = null;
 		mDomainAverageHistogram = new double[domainMap.keySet().size()][BIN_HISTO];
 		
-		allDomains = new String[this.domainMap.keySet().size()];
+		allDomains = new String[domainMap.keySet().size()];
 		domainMap.keySet().toArray(allDomains);
 		
 		for(int i=0; i<allDomains.length; i++) {

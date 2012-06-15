@@ -19,11 +19,11 @@ public abstract class Program {
     	
     	execFindCandidateTagClusters();
     	
-    	//execBuildBipartiteGraph();
+    	execBuildBipartiteGraph();
     	
-    	//execFindBestMatching();
+    	execFindBestMatching();
     	
-    	//execResultTransfer();
+    	execResultTransfer();
     }    
     
     abstract protected void execQueryTransfer() throws Exception;

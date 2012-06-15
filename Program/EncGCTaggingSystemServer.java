@@ -89,7 +89,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
     protected void execFindBestMatching() throws Exception {	
 		System.out.println("\t[S][START]\tFind Bset Matching for Encrypted Bipartile Graph.");		
 		
-		String sumType = "max";
+		String sumType = "min";
 		int[][] assignment = new int[this.mEncHungarianMatrix.length][2];		
 		EncFastHungarianAlgorithm EncFHA = 
 			new EncFastHungarianAlgorithm(new GCComparisonServer(mPaillier), mPaillier, null);
