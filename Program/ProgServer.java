@@ -13,7 +13,10 @@ import org.apache.commons.io.input.CountingInputStream;
 
 import com.articulate.sigma.WordNet;
 
+import Utils.ImageClusteringByTags;
+import Utils.TagClusteringByDomain;
 import Utils.VideoFrame;
+import Utils.DomainsData;
 
 public abstract class ProgServer extends Program {
 
@@ -22,8 +25,7 @@ public abstract class ProgServer extends Program {
     private Socket             clientSocket = null;              // socket created by accept
 
 	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
-    protected static final int BIN_HISTO = 16; 
-    protected static final int FILTER_NUM = 2;
+    protected static final int BIN_HISTO = 16;     
     private boolean domains_file_existed = false;
     
     public static String databaseDirName;
@@ -31,12 +33,13 @@ public abstract class ProgServer extends Program {
     protected Vector<File[]> databaseDataFile = new Vector<File[]>();
     protected Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
 	
-	private HashMap<String, Vector<VideoFrame>> imageClustersMap = new HashMap<String, Vector<VideoFrame>>();
-	protected HashMap<String, double[]> tagsHistogramMap = new HashMap<String, double[]>();
-	protected HashMap<String, Vector<String>> domainMap = new HashMap<String, Vector<String>>();
+	private HashMap<String, Vector<VideoFrame>> imageClustersMap = null;	
+	protected HashMap<String, Vector<String>> tagClustersMap = null;
+		
 	protected String[] allTags = null;
 	protected String[] allDomains = null;
 	
+	protected HashMap<String, double[]> tagsHistogramMap = null;
 	protected double[][] mTagAverageHistogram = null;
 	protected double[][] mDomainAverageHistogram = null;
     
@@ -70,11 +73,10 @@ public abstract class ProgServer extends Program {
     
     protected void initialize() throws Exception {
     	readData();
-    	generateTagClusters();
-    	getAverageColorHistogram();
     	
-    	tagClustering();
-    	getDomainAverageColorHistogram();
+    	generateImageClusters();    	
+    	
+    	generateTagClusters();    	
     }
     
     private void readData() {
@@ -94,8 +96,10 @@ public abstract class ProgServer extends Program {
 				databaseTagDirFile[i] = dirFile.listFiles()[i];
 	
 				if(!databaseTagDirFile[i].isDirectory()) {
-					if(databaseTagDirFile[i].getName().equals("domains.dat"))
+					if(TagClusteringByDomain.existedDomainFile(databaseTagDirFile[i]))
 						domains_file_existed = true;					
+					else
+						domains_file_existed = false;
 				}
 				else if(databaseTagDirFile[i].listFiles().length != 0) {					
 					int sizeOfTagDir = databaseTagDirFile[i].listFiles().length;
@@ -117,227 +121,45 @@ public abstract class ProgServer extends Program {
 		}
     }
     
-	private void generateTagClusters() {
-		System.out.println("\t[S][START]\tGenerate Photo Tag Clusters");
-		Vector<VideoFrame> tmpPhotos = null;
-		String[] tmpTags = null;
-		Vector<String> stopwordVector = null;
-				
-        try {
-    		File stopwords = new File("Stopwords.txt");
-            Scanner scanner = new Scanner(stopwords);
-        	
-        	for(int i=0; i<this.databaseData.size(); i++) {
-        		for(int j=0; j<this.databaseData.elementAt(i).size(); j++) {
-        			//System.out.print(this.databaseDatasFile.elementAt(i)[j] + " ");
-				
-        			tmpTags = this.databaseData.elementAt(i).elementAt(j).getTags();
-        			for(int k=0; k<tmpTags.length; k++) {
-        				if(imageClustersMap.get(tmpTags[k]) == null) {
-        					tmpPhotos = new Vector<VideoFrame>();
-        					tmpPhotos.add(this.databaseData.elementAt(i).elementAt(j));
-        				} else {
-        					tmpPhotos = imageClustersMap.get(tmpTags[k]);
-        					tmpPhotos.add(this.databaseData.elementAt(i).elementAt(j));
-        				}
-        				imageClustersMap.put(tmpTags[k], tmpPhotos);	
-        			}
-        		}
-        	}	        	        
-        	
-        	String remove = "";
-			stopwordVector = new Vector<String>();
-
-	        while(scanner.hasNext()){
-	        	remove = scanner.nextLine().trim();
-	        	stopwordVector.add(remove);
-	        	if(imageClustersMap.containsKey(remove)){
-	        		imageClustersMap.remove(remove);
-	        	}
-	        }
-	        	        
-			String[] allTags = new String[imageClustersMap.keySet().size()];
-			imageClustersMap.keySet().toArray(allTags);
-			//System.out.println("[INFO]\t allTags.length: " + allTags.length);
-			//System.out.println("[INFO]\t map.keySet().size(): "+imageClustersMap.keySet().size());
-			
-			/*** 移除小於4張圖的Tag cluster ***/
-			for(int i = 0; i<allTags.length; i++) {
-				if(imageClustersMap.get(allTags[i]).size() < FILTER_NUM) {
-					imageClustersMap.remove(allTags[i]);
-				}						
-			}
-			allTags = new String[imageClustersMap.keySet().size()];
-			imageClustersMap.keySet().toArray(allTags);
-			//System.out.println("[INFO]\t After remove : allTags.length: "+allTags.length);
-			//System.out.println("[INFO]\t After remove : map.keySet().size(): "+imageClustersMap.keySet().size());
-			/*for(int i=0; i<allTags.length; i++) {
-				System.out.println(allTags[i]);
-			}*/
-			/*** 移除小於4張圖的Tag cluster *** END */
-        	
-		} catch(Exception e) {
-			e.printStackTrace();
-			System.out.println(e);
-			System.exit(0);
-		}						
-	}
-
-	/**	 
-	 * Get mTagAverageHistogram[] and mEncTagAverageHistogram[]
-	 * 12.03.13 winderif
-	 */
-	private void getAverageColorHistogram() {
+	private void generateImageClusters() {
+		System.out.println("\t[S][START]\tGenerate Image Clusters");
+		
+		imageClustersMap
+			= ImageClusteringByTags.getImageClusters(databaseData);    	        
+		allTags 		 
+			= ImageClusteringByTags.getAllTags(imageClustersMap);
+		System.out.println("\t[S][SUCCESS]\tGenerate Image Clusters");
+		
 		System.out.println("\t[S][START]\tGet Average Color Histogram");
-		double[] tmpHistogram = null;
-		this.mTagAverageHistogram = new double[this.imageClustersMap.keySet().size()][BIN_HISTO];
-		this.allTags = new String[this.imageClustersMap.keySet().size()];
-		this.imageClustersMap.keySet().toArray(allTags);
-		for(int i=0; i<this.imageClustersMap.keySet().size(); i++) {
-			//System.out.println("[TAG]\t" + allTags[i] + "\t" + this.imageClustersMap.get(allTags[i]).size());			
-			for(VideoFrame mPhoto : this.imageClustersMap.get(allTags[i])) {
-				tmpHistogram = mPhoto.getHistogram();
-				for(int j=0; j<BIN_HISTO; j++) {
-					this.mTagAverageHistogram[i][j] += tmpHistogram[j];
-				}
-			}
-			
-			for(int j=0; j<BIN_HISTO; j++) {
-				this.mTagAverageHistogram[i][j] /= this.imageClustersMap.get(allTags[i]).size();
-				//System.out.print(this.mTagAverageHistogram[i][j] + " ");
-			}
-			//System.out.println();
-			/*** HashMap for <tag, tag histogram>***/
-			tagsHistogramMap.put(allTags[i], mTagAverageHistogram[i]);
-		}
+		mTagAverageHistogram 
+			= ImageClusteringByTags.getTagAverageHistogram(imageClustersMap, allTags);
 		System.out.println("\t[S][SUCCESS]\tGet Average Color Histogram");
-	}
+		
+		tagsHistogramMap
+			= ImageClusteringByTags.getTagsHistogramMap(allTags, mTagAverageHistogram);
+	}	
 	
-	private void tagClustering() {
+	private void generateTagClusters() {
 		if(!domains_file_existed) {
-			WordNet wn = new WordNet();
-			wn.initOnce();
 			
-			Vector<String> tmpTags = null;
-			String tmpDomain;		
-			//int[] POS = new int[]{wn.NOUN, wn.VERB};
-			int[] POS = new int[]{wn.NOUN};
-					
-			for(String tmpTag : allTags) {			
-				for(int pos : POS) {								
-					//tmpDomain = WordNet.wn.getSUMOterm(tmpTag, pos);
-					tmpDomain = WordNet.wn.getBestDefaultSense(tmpTag);
-					if(tmpDomain != null) {
-						if(!domainMap.containsKey(tmpDomain)) {
-							//System.out.print(tmpDomain + "\t\t");
-							tmpTags = new Vector<String>();	    				
-		    				tmpTags.add(tmpTag);
-		    			}
-		    			else {
-		    				tmpTags = domainMap.get(tmpDomain);
-		    				tmpTags.add(tmpTag);	    				
-		    			}	
-						domainMap.put(tmpDomain, tmpTags);
-					}
-					else {
-						continue;
-					}
-				}
-				//System.out.println();
-			}
+			tagClustersMap 
+				= TagClusteringByDomain.getTagClusters(allTags);
 			
-			allDomains = new String[domainMap.keySet().size()];
-			domainMap.keySet().toArray(allDomains);
-			
-			try {
-				FileWriter outFile = new FileWriter(databaseDirName + "\\domains.dat");
-				PrintWriter out = new PrintWriter(outFile);
-				
-				out.println(allDomains.length);
-				for(int i=0; i < allDomains.length; i++) {
-					//System.out.print(allDomains[i] + "\t: ");
-					out.print(allDomains[i] + ":\t");
-					for(String tmp : domainMap.get(allDomains[i])) {
-						out.print(tmp + " ");
-						//System.out.print(tmp + " ");
-					}
-					out.println();
-					//System.out.println();
-				}
-				
-				out.close();
-				outFile.close();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}	
+			allDomains 
+				= TagClusteringByDomain.getAllDomains(tagClustersMap, databaseDirName);
 		}
 		else {
-			try {
-				FileReader inFile = new FileReader(databaseDirName + "\\domains.dat");				
-				int in = 0;
-				String tmpFile = "";
-				Vector<String> vectorTags = null;
-								
-				while((in = inFile.read()) != -1) {
-					tmpFile = tmpFile + (char)in;
-				}
-				// split each line
-				String[] tmpLine = tmpFile.split("\r\n");
-				
-				int length = Integer.parseInt(tmpLine[0]);
-				allDomains = new String[length];
-				for(int i=1; i<tmpLine.length; i++) {
-					String[] tmpDomainTags = tmpLine[i].split(":\t");
-					String[] tmpTags = tmpDomainTags[1].split(" ");
-					vectorTags = new Vector<String>();
-					for(int j=0; j<tmpTags.length; j++) {
-						vectorTags.add(tmpTags[j]);
-					}
-					allDomains[i-1] = tmpDomainTags[0];
-					domainMap.put(tmpDomainTags[0], vectorTags);
-					//System.out.println(tmpLine[i]);
-				}
-				/** Printing
-				for(int i=0; i < allDomains.length; i++) {
-					System.out.print(allDomains[i] + "\t: ");					
-					for(String tmp : domainMap.get(allDomains[i])) {						
-						System.out.print(tmp + " ");
-					}					
-					System.out.println();
-				}
-				*/
-
-				inFile.close();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}	
-		}									
-	}
-	
-	private void getDomainAverageColorHistogram() {
-		System.out.println("\t[S][START]\tGet Domain Average Color Histogram");
-		double[] tmpHistogram = null;
-		mDomainAverageHistogram = new double[domainMap.keySet().size()][BIN_HISTO];
-		
-		allDomains = new String[domainMap.keySet().size()];
-		domainMap.keySet().toArray(allDomains);
-		
-		for(int i=0; i<allDomains.length; i++) {
-			//System.out.println("[DOMAIN]\t" + allDomains[i] + "\t" + domainMap.get(allDomains[i]).size());			
-			for(String mTag : domainMap.get(allDomains[i])) {
-				tmpHistogram = tagsHistogramMap.get(mTag);
-				for(int j=0; j<BIN_HISTO; j++) {
-					mDomainAverageHistogram[i][j] += tmpHistogram[j];
-				}
-			}
+			DomainsData tmpDomainsData 
+				= TagClusteringByDomain.getDomainsData(databaseDirName);
 			
-			for(int j=0; j<BIN_HISTO; j++) {
-				mDomainAverageHistogram[i][j] /= domainMap.get(allDomains[i]).size();
-				//System.out.print(mDomainAverageHistogram[i][j] + " ");
-			}
-			//System.out.println();			
-		}
-		System.out.println("\t[S][SUCCESS]\tGet Domain Average Color Histogram");
+			tagClustersMap = tmpDomainsData.tagClustersMap;
+			allDomains = tmpDomainsData.allDomains;
+		}						
+		
+		System.out.println("\t[S][START]\tGet Domain Average Color Histogram");
+		mDomainAverageHistogram
+			= TagClusteringByDomain.getDomainAverageColorHistogram(tagClustersMap, allDomains, tagsHistogramMap);
+		System.out.println("\t[S][SUCCESS]\tGet Domain Average Color Histogram");		
 	}
 
     private void cleanup() throws Exception {
@@ -345,5 +167,5 @@ public abstract class ProgServer extends Program {
     	ProgCommon.ois.close();
     	clientSocket.close();
     	sock.close();
-    }
+    }        
 }

@@ -62,7 +62,7 @@ public class TaggingSystemServer extends ProgServer {
     	    if(mDomainDistance[i] <= threshold) {
     	    	System.out.print(mDomainDistance[i] + " ");
     	    	System.out.print(allDomains[i] + "\t");
-    	    	for(String tag : domainMap.get(allDomains[i])) {
+    	    	for(String tag : tagClustersMap.get(allDomains[i])) {
     	    		System.out.print(tag + " ");
     	    		if(!tmpCandidateTags.containsKey(tag)) {
     	    			System.out.print(tag + "-");
