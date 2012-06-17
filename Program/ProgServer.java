@@ -97,9 +97,7 @@ public abstract class ProgServer extends Program {
 	
 				if(!databaseTagDirFile[i].isDirectory()) {
 					if(TagClusteringByDomain.existedDomainFile(databaseTagDirFile[i]))
-						domains_file_existed = true;					
-					else
-						domains_file_existed = false;
+						domains_file_existed = true;										
 				}
 				else if(databaseTagDirFile[i].listFiles().length != 0) {					
 					int sizeOfTagDir = databaseTagDirFile[i].listFiles().length;
@@ -139,7 +137,7 @@ public abstract class ProgServer extends Program {
 			= ImageClusteringByTags.getTagsHistogramMap(allTags, mTagAverageHistogram);
 	}	
 	
-	private void generateTagClusters() {
+	private void generateTagClusters() {		
 		if(!domains_file_existed) {
 			
 			tagClustersMap 

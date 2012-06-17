@@ -45,6 +45,7 @@ public abstract class ProgClient extends Program {
     
     protected void initialize() throws Exception {
     	readData();
+    	
     	getQueryAverageHistorgram();
     }
     
