@@ -3,9 +3,9 @@ package Score;
 import java.math.BigInteger;
 import Crypto.CryptosystemPaillierServer;
 import Utils.AdditivelyBlindProtocol;
-import Program.EncGCTaggingSystemCommon;
+import Program.EncProgCommon;
 
-public class ComputingScoreServer extends ComputingScore {
+public class ComputingScoreServer extends ComputingScore {			
 	private CryptosystemPaillierServer mPaillier = null;	
 	private BigInteger[] EncQueryHistogram = null;
 	private double[] mDatabaseHistogram = null;	
@@ -20,10 +20,12 @@ public class ComputingScoreServer extends ComputingScore {
 	BigInteger s3 = BigInteger.ZERO;
 	BigInteger s3_c = BigInteger.ZERO;	
 	
-	public ComputingScoreServer(CryptosystemPaillierServer arg0, BigInteger[] arg1, double[] arg2) {
+	public ComputingScoreServer(
+			CryptosystemPaillierServer arg0, BigInteger[] arg1, double[] arg2) {				
+		
 		this.mPaillier = arg0;
 		this.EncQueryHistogram = arg1;		
-		this.mDatabaseHistogram = arg2;			
+		this.mDatabaseHistogram = arg2;				
 	}	
 	
 	public void run() throws Exception {
@@ -31,7 +33,7 @@ public class ComputingScoreServer extends ComputingScore {
 	}
 	
 	protected void init() throws Exception {
-		mDatabaseHistogram_Big = EncGCTaggingSystemCommon.DoubleToBigInteger1DArray(mDatabaseHistogram);		
+		mDatabaseHistogram_Big = EncProgCommon.DoubleToBigInteger1DArray(mDatabaseHistogram);		
 	}
 	
 	protected void execute() throws Exception {
@@ -67,7 +69,7 @@ public class ComputingScoreServer extends ComputingScore {
 		//while(!this.mMode.isComputingScoreOnServer()) {;}
 		
 		// recv [S3']		
-		s3_c = new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString());
+		s3_c = new BigInteger(EncProgCommon.ois.readObject().toString());
 		//System.out.println("s3_c = " + mPaillier.Decryption(s3_c));
 		s3 = r.getSumOfThirdPart(s3_c);
 		//System.out.println("s3 = " + mPaillier.Decryption(s3));
@@ -81,9 +83,9 @@ public class ComputingScoreServer extends ComputingScore {
  		//EncTaggingSystemCommon.oos.reset();
  		for(int i=0; i<BIN_HISTO; i++) { 		
  			//System.out.println(x[i]); 			
- 			EncGCTaggingSystemCommon.oos.writeObject(x[i]); 			
+ 			EncProgCommon.oos.writeObject(x[i]); 			
  		}
- 		EncGCTaggingSystemCommon.oos.flush(); 		
+ 		EncProgCommon.oos.flush(); 		
  	}
 	
 	public BigInteger getScore() {

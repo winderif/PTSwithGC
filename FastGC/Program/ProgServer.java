@@ -10,7 +10,7 @@ import org.apache.commons.io.input.CountingInputStream;
 import FastGC.Utils.*;
 import FastGC.OT.*;
 import FastGC.YaoGC.*;
-import Program.EncGCTaggingSystemCommon;
+import Program.EncProgCommon;
 
 public abstract class ProgServer extends Program {
 
@@ -39,8 +39,8 @@ public abstract class ProgServer extends Program {
 
     private void create_socket_and_listen() throws Exception {    	
     	sock = new ServerSocket(serverPort);            // create socket and bind to port
-    	EncGCTaggingSystemCommon.oos.write(1);
-		EncGCTaggingSystemCommon.oos.flush();
+    	EncProgCommon.oos.write(1);
+    	EncProgCommon.oos.flush();
     	System.out.println("waiting for client to connect");
     	clientSocket = sock.accept();                   // wait for client to connect
     	System.out.println("client has connected");

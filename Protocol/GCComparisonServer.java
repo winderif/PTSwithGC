@@ -5,7 +5,7 @@ import java.util.Random;
 import FastGC.Program.*;
 
 import Crypto.*;
-import Program.EncGCTaggingSystemCommon;
+import Program.EncProgCommon;
 
 public class GCComparisonServer {
 	private CryptosystemPaillierServer mPaillier;
@@ -55,13 +55,13 @@ public class GCComparisonServer {
 		
 		try {
 			System.out.println("\t[S]\tsend input.");
-			EncGCTaggingSystemCommon.oos.writeInt(type);			
-			EncGCTaggingSystemCommon.oos.writeInt(EncArray.length);			
+			EncProgCommon.oos.writeInt(type);			
+			EncProgCommon.oos.writeInt(EncArray.length);			
 
 			for(int i=0; i < K; i++) {
-				EncGCTaggingSystemCommon.oos.writeObject(y_Array_Enc[i]);				
+				EncProgCommon.oos.writeObject(y_Array_Enc[i]);				
 			}								
-			EncGCTaggingSystemCommon.oos.flush();				
+			EncProgCommon.oos.flush();				
 		} catch(Exception e) {
 			e.printStackTrace();
 			System.out.println("\t[S]\tsend input error.");
@@ -78,7 +78,7 @@ public class GCComparisonServer {
 			minimumClient.run();
 			
 			BigInteger y_min_Enc
-				= new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString());
+				= new BigInteger(EncProgCommon.ois.readObject().toString());
 			//System.out.println("y_min_Enc:\t" + mPaillier.Decryption(y_min_Enc));
 			BigInteger x_min_Enc 
 				= y_min_Enc.multiply(r_min_Enc.modPow(BigInteger.ONE.negate(), mPaillier.nsquare))
@@ -90,11 +90,11 @@ public class GCComparisonServer {
 					= EncArray[i].multiply(x_min_Enc.modInverse(mPaillier.nsquare))
 								.mod(mPaillier.nsquare);
 				//System.out.println(mPaillier.Decryption(diffEnc));
-				EncGCTaggingSystemCommon.oos.writeObject(diffEnc);
-				EncGCTaggingSystemCommon.oos.flush();	
+				EncProgCommon.oos.writeObject(diffEnc);
+				EncProgCommon.oos.flush();	
 			
 				BigInteger lambda
-					= new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString());
+					= new BigInteger(EncProgCommon.ois.readObject().toString());
 				if(lambda.equals(BigInteger.ONE)) {
 					return EncArray[i];
 				}				

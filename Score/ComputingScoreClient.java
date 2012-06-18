@@ -1,9 +1,8 @@
 package Score;
 
 import Crypto.CryptosystemPaillierClient;
-import Program.EncGCTaggingSystemCommon;
+import Program.EncProgCommon;
 import Score.ComputingScore;
-import java.io.*;
 import java.math.BigInteger;
 
 public class ComputingScoreClient extends ComputingScore {
@@ -29,7 +28,8 @@ public class ComputingScoreClient extends ComputingScore {
 				
 				for(int i=0; i<BIN_HISTO; i++) {	
 					// de[x] = x					
-					x_dec = mPaillier.Decryption((new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString())));
+					x_dec = mPaillier.Decryption(
+							(new BigInteger(EncProgCommon.ois.readObject().toString())));
 					/**
 					 * System.out.print(x_dec + " ");
 					 */
@@ -45,10 +45,10 @@ public class ComputingScoreClient extends ComputingScore {
 				System.out.println("[C][STRAT]\tsend [S3'].");
 				
 				//System.out.println("s3_c:\t" + s3_c);
-				EncGCTaggingSystemCommon.oos.writeObject(mPaillier.Encryption(s3_c));
-				EncGCTaggingSystemCommon.oos.flush();					
+				EncProgCommon.oos.writeObject(mPaillier.Encryption(s3_c));
+				EncProgCommon.oos.flush();					
 			} catch(Exception e) {
-				System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");
+				System.out.println("[C]\tComplete Compute distance.");
 				break;
 			}
 		}

@@ -4,7 +4,6 @@ package Program;
 
 import Score.ComputingScoreClient;
 import Crypto.CryptosystemPaillierClient;
-import Protocol.ComparisonProtocolOnClient;
 import Protocol.GCComparisonClient;
 
 public class EncGCTaggingSystemClient extends ProgClient {
@@ -20,29 +19,45 @@ public class EncGCTaggingSystemClient extends ProgClient {
     	
     	// key generation and send to server
     	System.out.println("[C][STRAT]\tsend public key pair (n, g).");
-    	EncGCTaggingSystemCommon.oos.writeObject(mPaillier.getPublicKey()[0]);
-    	EncGCTaggingSystemCommon.oos.writeObject(mPaillier.getPublicKey()[1]);
-    	EncGCTaggingSystemCommon.oos.flush();
+    	EncProgCommon.oos.writeObject(mPaillier.getPublicKey()[0]);
+    	EncProgCommon.oos.writeObject(mPaillier.getPublicKey()[1]);
+    	EncProgCommon.oos.flush();
     }
     
     protected void execQueryTransfer() throws Exception {
 		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
-		EncGCTaggingSystemCommon.oos.writeInt(videoFrames.size());
+		EncProgCommon.oos.writeInt(videoFrames.size());
 		//System.out.println(videoFrames.size());
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");				
-				EncGCTaggingSystemCommon.oos.writeObject(
-						EncGCTaggingSystemCommon.encryption(mPaillier, videoFrames.elementAt(i).getHistogram()[j]));									
+				EncProgCommon.oos.writeObject(
+						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getHistogram()[j]));									
 			}
 			//System.out.println();
 		}
-		EncGCTaggingSystemCommon.oos.flush();
+		EncProgCommon.oos.flush();
+		
+		for(int i=0; i<BIN_HISTO; i++) {
+			//System.out.print(queryAverageHistogram[i] + " ");
+			EncProgCommon.oos.writeObject(
+					EncProgCommon.encryption(mPaillier, queryAverageHistogram[i]));			
+		}
+		//System.out.println();
+		EncProgCommon.oos.flush();	
     }
     
     protected void execFindCandidateTagClusters() throws Exception {
+    	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
+    	ComputingScoreClient computeClient = 
+    		new ComputingScoreClient(mPaillier);
+    	computeClient.run(); 
+    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
     	
+    	GCComparisonClient protocolClient = 
+    		new GCComparisonClient(mPaillier);
+    	protocolClient.run(); 
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    
@@ -51,18 +66,18 @@ public class EncGCTaggingSystemClient extends ProgClient {
     		new ComputingScoreClient(mPaillier);
     	computeClient.run();    	
     }    
+    
     protected void execFindBestMatching() throws Exception {
     	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");    	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);
-    	protocolClient.run();
-    	EncGCTaggingSystemCommon.ois.readObject();
+    	protocolClient.run();    	
     }
     
     protected void execResultTransfer() throws Exception {
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
-    		mMatchingTags[i] = (String)EncGCTaggingSystemCommon.ois.readObject();
+    		mMatchingTags[i] = (String)EncProgCommon.ois.readObject();
     		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
     	}    	
     	System.out.println("[C][SUCCESS]\tRecv result from server.");

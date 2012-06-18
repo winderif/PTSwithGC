@@ -19,30 +19,46 @@ public class EncTaggingSystemClient extends ProgClient {
     	
     	// key generation and send to server
     	System.out.println("[C][STRAT]\tsend public key pair (n, g).");
-    	EncTaggingSystemCommon.oos.writeObject(mPaillier.getPublicKey()[0]);
-    	EncTaggingSystemCommon.oos.writeObject(mPaillier.getPublicKey()[1]);
-    	EncTaggingSystemCommon.oos.flush();
+    	EncProgCommon.oos.writeObject(mPaillier.getPublicKey()[0]);
+    	EncProgCommon.oos.writeObject(mPaillier.getPublicKey()[1]);
+    	EncProgCommon.oos.flush();
     }
     
     protected void execQueryTransfer() throws Exception {
 		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
-		EncTaggingSystemCommon.oos.writeInt(videoFrames.size());
+		EncProgCommon.oos.writeInt(videoFrames.size());
 		//System.out.println(videoFrames.size());
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");				
-				EncTaggingSystemCommon.oos.writeObject(
-						EncTaggingSystemCommon.encryption(mPaillier, videoFrames.elementAt(i).getHistogram()[j]));
+				EncProgCommon.oos.writeObject(
+						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getHistogram()[j]));
 										
 			}
 			//System.out.println();
 		}
-		EncTaggingSystemCommon.oos.flush();
+		EncProgCommon.oos.flush();
+		
+		for(int i=0; i<BIN_HISTO; i++) {
+			//System.out.print(queryAverageHistogram[i] + " ");
+			EncProgCommon.oos.writeObject(
+					EncProgCommon.encryption(mPaillier, queryAverageHistogram[i]));			
+		}
+		//System.out.println();
+		EncProgCommon.oos.flush();	
     }
     
     protected void execFindCandidateTagClusters() throws Exception {
+    	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
+    	ComputingScoreClient computeClient = 
+    		new ComputingScoreClient(mPaillier);
+    	computeClient.run();
+    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
     	
+    	ComparisonProtocolOnClient protocolClient = 
+    		new ComparisonProtocolOnClient(mPaillier); 
+    	protocolClient.run();
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    
@@ -50,6 +66,7 @@ public class EncTaggingSystemClient extends ProgClient {
     	ComputingScoreClient computeClient = 
     		new ComputingScoreClient(mPaillier);
     	computeClient.run();    	    
+    	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");
     }    
     protected void execFindBestMatching() throws Exception {
     	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");	
@@ -61,7 +78,7 @@ public class EncTaggingSystemClient extends ProgClient {
     protected void execResultTransfer() throws Exception {
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
-    		mMatchingTags[i] = (String)EncTaggingSystemCommon.ois.readObject();
+    		mMatchingTags[i] = (String)EncProgCommon.ois.readObject();
     		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
     	}    	
     	System.out.println("[C][SUCCESS]\tRecv result from server.");

@@ -47,12 +47,12 @@ public class TaggingSystemServer extends ProgServer {
     	mDomainDistance = new double[allDomains.length];    	
     	for(int i=0; i<allDomains.length; i++) {
     		mDomainDistance[i] = Score(mQueryAverageHistogram, mDomainAverageHistogram[i]);
-    		//System.out.print(mDomainDistance[i] + " ");
+    		System.out.print(mDomainDistance[i] + " ");
     	}
-    	//System.out.println();
+    	System.out.println();
     	double[] sortingDistance = mDomainDistance.clone();
     	Arrays.sort(sortingDistance);
-    	
+    	System.out.println("MIN : \t" + sortingDistance[0]);
     	// 80% of minimum distance
     	double threshold 
     		= (sortingDistance[sortingDistance.length-1] - sortingDistance[0])*0.2 + sortingDistance[0];

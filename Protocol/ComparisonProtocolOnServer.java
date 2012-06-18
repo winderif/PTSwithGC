@@ -3,14 +3,14 @@ package Protocol;
 import java.math.BigInteger;
 import java.util.Random;
 import Crypto.CryptosystemPaillierServer;
-import Program.EncTaggingSystemCommon;
+import Program.EncProgCommon;
 
 public class ComparisonProtocolOnServer{
 	//private Mode mMode;
 	
 	private CryptosystemPaillierServer mPaillier;
 	private static int RANDOM_BIT = 100;
-	private static final int L = 15;
+	private static final int L = 25;
 	private static final BigInteger L_big = new BigInteger(Integer.toString(L));
 	private static final BigInteger NEG_ONE = BigInteger.ONE.negate();
 	private static final BigInteger THREE = new BigInteger("3");	
@@ -62,18 +62,18 @@ public class ComparisonProtocolOnServer{
 			// [d] = [z + r] = [z]*[r]
 			BigInteger d_Enc = z_Enc.multiply(mPaillier.Encryption(rr)).mod(mPaillier.nsquare);
 			// send [d] to Alice
-			EncTaggingSystemCommon.oos.writeObject(d_Enc);
-			EncTaggingSystemCommon.oos.flush();
+			EncProgCommon.oos.writeObject(d_Enc);
+			EncProgCommon.oos.flush();
 			//mQueue.add(mPaillier.Encryption(z).multiply(mPaillier.Encryption(rr)).mod(mPaillier.nsquare));
 			//mMode.setMode(Mode.CP_REDUCE_C);
 			
 			//while(!mMode.isMaskOnServer()) {;}
 			//System.out.println("\t[S][START]\tMasking");
 			//BigInteger d_head = new BigInteger(mQueue.poll().toString());		
-			BigInteger d_head_Enc = new BigInteger(EncTaggingSystemCommon.ois.readObject().toString());
+			BigInteger d_head_Enc = new BigInteger(EncProgCommon.ois.readObject().toString());
 			
 			for(int i=0; i<L+1; i++) {
-				d_bin_Array[i] = new BigInteger(EncTaggingSystemCommon.ois.readObject().toString());
+				d_bin_Array[i] = new BigInteger(EncProgCommon.ois.readObject().toString());
 				//System.out.println(mQueue.size()+1 + " " + d_bin_Array[i]);
 			}
 			
@@ -83,16 +83,16 @@ public class ComparisonProtocolOnServer{
 			EncMask(s_Enc);
 			for(int i=0; i<L+1; i++) {
 				//mQueue.add(c_Array[i]);
-				EncTaggingSystemCommon.oos.writeObject(c_Array[i].modPow(rr, mPaillier.nsquare));
+				EncProgCommon.oos.writeObject(c_Array[i].modPow(rr, mPaillier.nsquare));
 			}
-			EncTaggingSystemCommon.oos.flush();
+			EncProgCommon.oos.flush();
 			//mMode.setMode(Mode.CP_CHECK_C);
 			
 			//while(!mMode.isGetLambdaOnServer()) {;}
 			//System.out.println("\t[S][START]\tGet lambda_b value");
 			
 			//BigInteger lambda = transformLambda(new BigInteger(mQueue.poll().toString()), s);
-			BigInteger lambda_Enc = transformLambda(new BigInteger(EncTaggingSystemCommon.ois.readObject().toString()), s);
+			BigInteger lambda_Enc = transformLambda(new BigInteger(EncProgCommon.ois.readObject().toString()), s);
 			//System.out.println("lambda = " + lambda);
 					
 			BigInteger r_head = rr.mod(TwoPowL);
@@ -112,13 +112,13 @@ public class ComparisonProtocolOnServer{
 			//System.out.println("z_LBS = " + z_LBS.signum());		
 			//return z_LBS;
 			
-			EncTaggingSystemCommon.oos.writeObject(z_LBS_Enc);
-			EncTaggingSystemCommon.oos.writeObject(EncA);
-			EncTaggingSystemCommon.oos.writeObject(EncB);
+			EncProgCommon.oos.writeObject(z_LBS_Enc);
+			EncProgCommon.oos.writeObject(EncA);
+			EncProgCommon.oos.writeObject(EncB);
 			//mMode.setMode(Mode.CP_FIND_MIN_C);
 			
 			//while(!mMode.isGetMinimumValueOnServer()) {;}
-			BigInteger EncM_head = new BigInteger(EncTaggingSystemCommon.ois.readObject().toString());
+			BigInteger EncM_head = new BigInteger(EncProgCommon.ois.readObject().toString());
 			/*
 			if(EncM_head.equals(EncB)) {
 				System.out.println("\tEncB <= EncA");

@@ -4,7 +4,6 @@ package FastGC.Program;
 
 import java.math.*;
 
-import FastGC.Utils.*;
 import FastGC.YaoGC.*;
 
 class FindMinimumCommon extends ProgCommon {

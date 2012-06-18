@@ -3,7 +3,7 @@ package Protocol;
 import java.math.BigInteger;
 
 import Crypto.*;
-import Program.EncGCTaggingSystemCommon;
+import Program.EncProgCommon;
 import FastGC.Program.FindMinimumServer;
 
 public class GCComparisonClient {
@@ -24,12 +24,12 @@ public class GCComparisonClient {
 	public void run() throws Exception {
 		while(true) {
 			try {
-				int type = EncGCTaggingSystemCommon.ois.readInt();
-				K = EncGCTaggingSystemCommon.ois.readInt();				
+				int type = EncProgCommon.ois.readInt();
+				K = EncProgCommon.ois.readInt();				
 				BigInteger[] y = new BigInteger[K];
 				// y = dec.([y])				
 				for(int i=0; i < K; i++) {
-					y[i] = mPaillier.Decryption(new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString()));					
+					y[i] = mPaillier.Decryption(new BigInteger(EncProgCommon.ois.readObject().toString()));					
 					System.out.print(y[i] + " ");
 				}								
 				System.out.println();							
@@ -42,21 +42,21 @@ public class GCComparisonClient {
 				
 				BigInteger y_min = minimumServer.getOutput();
 				BigInteger y_min_Enc = mPaillier.Encryption(y_min);				
-				EncGCTaggingSystemCommon.oos.writeObject(y_min_Enc);
-				EncGCTaggingSystemCommon.oos.flush();							
+				EncProgCommon.oos.writeObject(y_min_Enc);
+				EncProgCommon.oos.flush();							
 				
 				for(int i=0; i < K; i++) {
 					BigInteger diffEnc
-						= mPaillier.Decryption(new BigInteger(EncGCTaggingSystemCommon.ois.readObject().toString()));
+						= mPaillier.Decryption(new BigInteger(EncProgCommon.ois.readObject().toString()));
 					//System.out.println(diffEnc);
 					if(diffEnc.equals(BigInteger.ZERO)) {
-						EncGCTaggingSystemCommon.oos.writeObject(BigInteger.ONE);
-						EncGCTaggingSystemCommon.oos.flush();		
+						EncProgCommon.oos.writeObject(BigInteger.ONE);
+						EncProgCommon.oos.flush();		
 						break;
 					}
 					else {
-						EncGCTaggingSystemCommon.oos.writeObject(mPaillier.Encryption(BigInteger.ONE));
-						EncGCTaggingSystemCommon.oos.flush();
+						EncProgCommon.oos.writeObject(mPaillier.Encryption(BigInteger.ONE));
+						EncProgCommon.oos.flush();
 					}
 				}				
 			} catch(Exception e) {				

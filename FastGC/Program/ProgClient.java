@@ -4,10 +4,9 @@ package FastGC.Program;
 
 import java.net.*;
 
-import FastGC.Utils.*;
 import FastGC.OT.*;
 import FastGC.YaoGC.*;
-import Program.EncGCTaggingSystemCommon;
+import Program.EncProgCommon;
 
 public abstract class ProgClient extends Program {
 
@@ -35,7 +34,7 @@ public abstract class ProgClient extends Program {
     }
 
     private void create_socket_and_connect() throws Exception {
-    	EncGCTaggingSystemCommon.ois.read();
+    	EncProgCommon.ois.read();
     	sock = new java.net.Socket(serverIPname, serverPort);          // create socket and connect    	
     	ProgCommon.oos  = new java.io.ObjectOutputStream(sock.getOutputStream());  
     	ProgCommon.ois  = new java.io.ObjectInputStream(sock.getInputStream());

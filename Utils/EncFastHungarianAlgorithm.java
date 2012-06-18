@@ -190,22 +190,22 @@ public class EncFastHungarianAlgorithm {
 	public BigInteger findEncLargestGC(BigInteger[][] array) throws Exception {
 		//Finds the largest element in a positive array.
 		//works for arrays where all values are >= 0.	
-			System.out.println("\t[START]\tfindEncLargest()");
-			int length = array.length * array[0].length;
-			BigInteger[] tmp1DArray = new BigInteger[length];	
-			BigInteger tmpMax;
-			
-			for (int i=0; i<array.length; i++) {
-				for (int j=0; j<array[i].length; j++) {
-					tmp1DArray[i*array[i].length + j] = array[i][j];
-				}
+		System.out.println("\t[START]\tfindEncLargest()");
+		int length = array.length * array[0].length;
+		BigInteger[] tmp1DArray = new BigInteger[length];	
+		BigInteger tmpMax;
+		
+		for (int i=0; i<array.length; i++) {
+			for (int j=0; j<array[i].length; j++) {
+				tmp1DArray[i*array[i].length + j] = array[i][j];
 			}
-			
-			// type = 1, is Max
-			tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
-				
-			return tmpMax;
 		}
+		
+		// type = 1, is Max
+		tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
+			
+		return tmpMax;
+	}
 	
 	public static BigInteger[][] transpose		//Transposes a double[][] array.
 	(BigInteger[][] array)	
