@@ -126,7 +126,7 @@ public abstract class ProgServer extends Program {
 			= ImageClusteringByTags.getImageClusters(databaseData);    	        
 		allTags 		 
 			= ImageClusteringByTags.getAllTags(imageClustersMap);
-		System.out.println("\t[S][SUCCESS]\tGenerate Image Clusters");
+		System.out.println("\t[S][SUCCESS]\tGenerate Image Clusters");	
 		
 		System.out.println("\t[S][START]\tGet Average Color Histogram");
 		mTagAverageHistogram 

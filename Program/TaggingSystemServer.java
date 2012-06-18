@@ -43,17 +43,29 @@ public class TaggingSystemServer extends ProgServer {
  		System.out.println("\t[S][SUCCESS]\treceive Query datas.");
     }
     
-    protected void execFindCandidateTagClusters() throws Exception {    	
-    	mDomainDistance = new double[allDomains.length];    	
+    protected void execFindCandidateTagClusters() throws Exception {
+    	System.out.println("\t[S][START]\tEvaluate Encrypted Domain Distance.");
+    	double startTime = System.nanoTime();
+    	
+    	mDomainDistance = new double[allDomains.length];    	    	
     	for(int i=0; i<allDomains.length; i++) {
     		mDomainDistance[i] = Score(mQueryAverageHistogram, mDomainAverageHistogram[i]);
     		System.out.print(mDomainDistance[i] + " ");
     	}
     	System.out.println();
+    	
+    	double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;
+    	System.out.println("\t[S][SUCCESS]\tEvaluate Encrypted Domain Distance.");
+    	System.out.println("time: " + time);
+    	
     	double[] sortingDistance = mDomainDistance.clone();
     	Arrays.sort(sortingDistance);
     	System.out.println("MIN : \t" + sortingDistance[0]);
     	// 80% of minimum distance
+    	System.out.println("\t[S][START]\tFind Candidate Tag.");
+    	startTime = System.nanoTime();
+    	
     	double threshold 
     		= (sortingDistance[sortingDistance.length-1] - sortingDistance[0])*0.2 + sortingDistance[0];
     	System.out.println("T : \t" + threshold);  	
@@ -72,18 +84,12 @@ public class TaggingSystemServer extends ProgServer {
     	    	System.out.println();  	
     	    }
     	}
-    	/**
-    	HashMap<String, double[]> tmpCandidateTags = new HashMap<String, double[]>();    	
-    	for(int i=0; i<mQueryHistogram.length; i++) {
-    		for(String tag : domainMap.get(allDomains[i])) {
-	    		System.out.print(tag + " ");
-	    		if(!tmpCandidateTags.containsKey(tag)) {
-	    			System.out.print(tag + "-");
-	    			tmpCandidateTags.put(tag, tagsHistogramMap.get(tag));
-	    		}    	    		
-	    	}
-    	}
-    	*/
+    	
+    	endTime = System.nanoTime();
+		time = (endTime - startTime)/1000000000.0;
+    	System.out.println("\t[S][SUCCESS]\tFind Candidate Tag.");
+    	System.out.println("time: " + time);
+    	
     	allTags = new String[tmpCandidateTags.keySet().size()];
     	tmpCandidateTags.keySet().toArray(allTags);
     	mTagAverageHistogram = new double[allTags.length][BIN_HISTO];

@@ -100,12 +100,12 @@ public class EncTaggingSystemServer extends ProgServer {
     	EncProgCommon.oos.writeObject(null);
 		EncProgCommon.oos.flush();
 		
-		/***/
+		/**
 		for(int i=0; i<allDomains.length; i++) {
 			System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
 		}
 		System.out.println();
-		
+		*/
     	/** Debugging
 		mEncDomainDistance = new BigInteger[16];
 		for(int i=0; i<mEncDomainDistance.length; i++) {
@@ -150,11 +150,6 @@ public class EncTaggingSystemServer extends ProgServer {
     	*/
     	
     	/***/
-		for(int i=0; i<allDomains.length; i++) {
-			System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
-		}
-		System.out.println();
-    	/***/
     	// 80% of minimum distance
     	System.out.println("\t[S][START]\tFind Candidate Tag.");
     	startTime = System.nanoTime();
@@ -164,7 +159,7 @@ public class EncTaggingSystemServer extends ProgServer {
     	
     	for(int i=0; i<mEncDomainDistance.length; i++) {
     		tmpDistance = mEncDomainDistance[i].pow(5).mod(mPaillier.nsquare);    
-    		System.out.println(mPaillier.Decryption(tmpDistance) + " " + mPaillier.Decryption(threshold));
+    		//System.out.println(mPaillier.Decryption(tmpDistance) + " " + mPaillier.Decryption(threshold));
     		
     	    if(cp_s.findMinimumOfTwoEncValues(tmpDistance, threshold).equals(tmpDistance)) {
     	    	System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
@@ -176,11 +171,6 @@ public class EncTaggingSystemServer extends ProgServer {
     	    			tmpCandidateTags.put(tag, tagsHistogramMap.get(tag));
     	    		}    	    		
     	    	}
-    	    	System.out.println();  	
-    	    }
-    	    else {
-    	    	System.err.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
-    	    	System.err.print(allDomains[i] + "\t");
     	    	System.out.println();  	
     	    }
     	}    	    
@@ -199,8 +189,7 @@ public class EncTaggingSystemServer extends ProgServer {
     	}    	
     	System.out.println();
     	
-    	EncProgCommon.oos.writeObject(null);
-		EncProgCommon.oos.flush();
+    	EncProgCommon.oos.writeObject(null);		
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    	    	

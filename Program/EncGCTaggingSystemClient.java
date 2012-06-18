@@ -52,26 +52,29 @@ public class EncGCTaggingSystemClient extends ProgClient {
     	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
     	ComputingScoreClient computeClient = 
     		new ComputingScoreClient(mPaillier);
-    	computeClient.run(); 
+    	computeClient.run();     	
     	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
+    	EncProgCommon.ois.readObject();
     	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);
     	protocolClient.run(); 
+    	EncProgCommon.ois.readObject();
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
     	ComputingScoreClient computeClient = 
     		new ComputingScoreClient(mPaillier);
-    	computeClient.run();    	
+    	computeClient.run();    	    	
     }    
     
     protected void execFindBestMatching() throws Exception {
     	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");    	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);
-    	protocolClient.run();    	
+    	protocolClient.run();
+    	EncProgCommon.ois.readObject();
     }
     
     protected void execResultTransfer() throws Exception {

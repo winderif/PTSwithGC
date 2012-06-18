@@ -55,10 +55,12 @@ public class EncTaggingSystemClient extends ProgClient {
     		new ComputingScoreClient(mPaillier);
     	computeClient.run();
     	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
+    	EncProgCommon.ois.readObject();
     	
     	ComparisonProtocolOnClient protocolClient = 
     		new ComparisonProtocolOnClient(mPaillier); 
     	protocolClient.run();
+    	EncProgCommon.ois.readObject();
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    
@@ -66,13 +68,14 @@ public class EncTaggingSystemClient extends ProgClient {
     	ComputingScoreClient computeClient = 
     		new ComputingScoreClient(mPaillier);
     	computeClient.run();    	    
-    	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");
+    	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");    	
     }    
     protected void execFindBestMatching() throws Exception {
     	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");	
     	ComparisonProtocolOnClient protocolClient = 
     		new ComparisonProtocolOnClient(mPaillier); 
     	protocolClient.run();
+    	EncProgCommon.ois.readObject();
     }
     
     protected void execResultTransfer() throws Exception {

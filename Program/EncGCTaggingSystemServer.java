@@ -94,8 +94,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	System.out.println("\t[S][SUCCESS]\tEvaluate Encrypted Domain Distance.");
     	System.out.println("time: " + time);
     	
-    	EncProgCommon.oos.writeObject(null);
-		EncProgCommon.oos.flush();
+    	EncProgCommon.oos.writeObject(null);		
     	
     	GCComparisonServer gcc_s = new GCComparisonServer(mPaillier);
     	
@@ -156,17 +155,16 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	}    	
     	System.out.println();
     	
-    	EncProgCommon.oos.writeObject(null);
-		EncProgCommon.oos.flush();
+    	EncProgCommon.oos.writeObject(null);	
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    	    	
     	System.out.println("\t[S][START]\tBuild Encrypted Bipartile Graph.");
 		double startTime = System.nanoTime();
 		
-		this.mEncHungarianMatrix = new BigInteger[this.mEncQueryHistogram.length][this.mEncTagAverageHistogram.length];
+		this.mEncHungarianMatrix = new BigInteger[this.mEncQueryHistogram.length][this.mTagAverageHistogram.length];
 		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
-			for(int j=0; j<this.mEncTagAverageHistogram.length; j++) {
+			for(int j=0; j<this.mTagAverageHistogram.length; j++) {
 				System.out.printf("\t[S][START]\tComputing D(%d, %d)\n", i, j);
 				this.mEncHungarianMatrix[i][j] = 
 					EncScore(this.mEncQueryHistogram[i], mTagAverageHistogram[j]);

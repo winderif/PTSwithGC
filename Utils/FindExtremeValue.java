@@ -12,6 +12,8 @@ public class FindExtremeValue {
 		//Finds the largest element in a positive array.
 		//works for arrays where all values are >= 0.
 		System.out.println("\t[START]\findEncMaximum()");
+		double startTime = System.nanoTime();
+		
 		int length = array.length;			
 		BigInteger[] tmp1DArray = array.clone();
 		BigInteger[] tmpMax = new BigInteger[length];				
@@ -53,6 +55,11 @@ public class FindExtremeValue {
 			System.out.println();
 		}
 		System.out.println();	
+				
+		double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;
+		System.out.println("\t[SUCCESS]\findEncMaximum()");
+		System.out.println("time: " + time);
 		return tmp1DArray[0];			
 	}
 	
@@ -63,6 +70,8 @@ public class FindExtremeValue {
 		//Finds the largest element in a positive array.
 		//works for arrays where all values are >= 0.
 		System.out.println("\t[START]\findEncMinimum()");
+		double startTime = System.nanoTime();
+		
 		int length = array.length;			
 		BigInteger[] tmp1DArray = array.clone();		
 		BigInteger[] tmpMin = new BigInteger[length];				
@@ -103,6 +112,11 @@ public class FindExtremeValue {
 			System.out.println();
 		}
 		System.out.println();	
+		
+		double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;
+		System.out.println("\t[SUCCESS]\findEncMinimum()");
+		System.out.println("time: " + time);
 		return tmp1DArray[0];	
 	}	
 	
@@ -114,7 +128,8 @@ public class FindExtremeValue {
 		
 		// type = 1, is Max
 		tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
-			
+		
+		System.out.println("\t[SUCCESS]\findEncMaximumGC()");
 		return tmpMax;
 	}
 	
@@ -127,6 +142,7 @@ public class FindExtremeValue {
 		// type = 0, is Min
 		tmpMin = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 0);
 			
+		System.out.println("\t[SUCCESS]\findEncMiniimumGC()");
 		return tmpMin;
 	}
 }
