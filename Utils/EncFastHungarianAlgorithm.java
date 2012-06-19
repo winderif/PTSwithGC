@@ -247,8 +247,8 @@ public class EncFastHungarianAlgorithm {
 		
 		if (sumType.equalsIgnoreCase("max"))	//Then array is weight array. Must change to cost.
 		{
-			//BigInteger maxWeight = findEncLargest(cost);
-			BigInteger maxWeight = findEncLargestGC(cost);
+			BigInteger maxWeight = findEncLargest(cost);
+			//BigInteger maxWeight = findEncLargestGC(cost);
 			/**
 			 * System.out.println("maxWeight: " + pc.Decryption(maxWeight)); 
 			 */					
@@ -277,8 +277,8 @@ public class EncFastHungarianAlgorithm {
 		System.out.println("Enc_ZERO: " + Enc_ZERO);		
 		*/
 		
-		//BigInteger maxCost = findEncLargest(cost);		//Find largest cost matrix element (needed for step 6).
-		BigInteger maxCost = findEncLargestGC(cost);
+		BigInteger maxCost = findEncLargest(cost);		//Find largest cost matrix element (needed for step 6).
+		//BigInteger maxCost = findEncLargestGC(cost);
 		/**
 		 * System.out.println("maxCost: " + pc.Decryption(maxCost)); 
 		 */		
@@ -352,8 +352,8 @@ public class EncFastHungarianAlgorithm {
 		for(int i=0; i<cost.length; i++) {	   								
 	   	    minval = cost[i][0];
 	   	    for(int j=0; j<cost[i].length; j++) {//1st inner loop finds min val in row.	   	    
-	   	        //if(cp_s.findMinimumOfTwoEncValues(minval, cost[i][j]).equals(cost[i][j])) {
-	   	        if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{minval, cost[i][j]}, 0).equals(cost[i][j])) {
+	   	        if(cp_s.findMinimumOfTwoEncValues(minval, cost[i][j]).equals(cost[i][j])) {
+	   	        //if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{minval, cost[i][j]}, 0).equals(cost[i][j])) {
 	   	            minval = cost[i][j];
 	   	        }
 			}
@@ -582,8 +582,8 @@ public class EncFastHungarianAlgorithm {
 		//b. Subtract it from every element of uncovered columns. Go to step 4.
 		
 		//BigInteger minval = findEncSmallest(cost, rowCover, colCover, maxCost);
-		//BigInteger minval = findEncSmallestBeta(cost, rowCover, colCover, maxCost);
-		BigInteger minval = findEncSmallestGC(cost, rowCover, colCover, maxCost);
+		BigInteger minval = findEncSmallestBeta(cost, rowCover, colCover, maxCost);
+		//BigInteger minval = findEncSmallestGC(cost, rowCover, colCover, maxCost);
 		
 		for (int i=0; i<rowCover.length; i++) {		
 			for (int j=0; j<colCover.length; j++) {			

@@ -53,8 +53,7 @@ public class EncGCTaggingSystemClient extends ProgClient {
     	ComputingScoreClient computeClient = 
     		new ComputingScoreClient(mPaillier);
     	computeClient.run();     	
-    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
-    	EncProgCommon.ois.readObject();
+    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
     	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);

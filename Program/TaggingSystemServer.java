@@ -109,7 +109,7 @@ public class TaggingSystemServer extends ProgServer {
 			for(int j=0; j<mTagAverageHistogram.length; j++) {				
 				mHungarianMatrix[i][j] = Score(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//this.mHungarianMatrix[i][j] = Score(this.mQueryHistogram[i], this.mTagAverageHistogram[j], j);
-				//System.out.print(this.mHungarianMatrix[i][j] + " ");
+				//System.out.print(this.mHungarianMatrix[i][j]*1000000 + " ");
 			}
 			//System.out.println();
 		}

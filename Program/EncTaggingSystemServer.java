@@ -208,8 +208,7 @@ public class EncTaggingSystemServer extends ProgServer {
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
 		System.out.println("\t[S][SUCCESS]\tBuild Encrypted Bipartile Graph." + time);		
-		EncProgCommon.oos.writeObject(null);
-		EncProgCommon.oos.flush();
+		EncProgCommon.oos.writeObject(null);		
     }    
     
     protected void execFindBestMatching() throws Exception {	
@@ -243,7 +242,7 @@ public class EncTaggingSystemServer extends ProgServer {
 			this.mMatchingTags[i] = this.allTags[assignment[i][1]];
 			//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
 		}
-		EncProgCommon.oos.writeObject(null);		
+		EncProgCommon.oos.writeObject(null);	
     }
     
     protected void execResultTransfer() throws Exception {
