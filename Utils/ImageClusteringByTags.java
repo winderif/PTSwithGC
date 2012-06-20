@@ -96,7 +96,7 @@ public class ImageClusteringByTags {
 		for(int i=0; i<imageClustersMap.keySet().size(); i++) {
 			//System.out.println("[TAG]\t" + allTags[i] + "\t" + this.imageClustersMap.get(allTags[i]).size());			
 			for(VideoFrame mPhoto : imageClustersMap.get(allTags[i])) {
-				tmpHistogram = mPhoto.getHistogram();
+				tmpHistogram = mPhoto.getFeatureVector();
 				for(int j=0; j<BIN_HISTO; j++) {
 					mTagAverageHistogram[i][j] += tmpHistogram[j];
 				}

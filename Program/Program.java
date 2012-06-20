@@ -19,7 +19,7 @@ public abstract class Program {
     	
     	execFindCandidateTagClusters();
     	
-    	execBuildBipartiteGraph();
+    	//execBuildBipartiteGraph();
     	
     	//execFindBestMatching();
     	

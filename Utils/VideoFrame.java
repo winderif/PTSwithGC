@@ -1,13 +1,12 @@
 package Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
+
+import Feature.*;
 
 import com.drew.imaging.jpeg.JpegMetadataReader;
 import com.drew.metadata.Directory;
@@ -16,41 +15,23 @@ import com.drew.metadata.Tag;
 import com.drew.metadata.iptc.IptcReader;
 
 public class VideoFrame {
-	private BufferedImage mBufferImage = null;
-	private int frameIndex;
-    private int[] pixels = null;   
-    //private double[][] histogram = null;
-    // 12.03.12 winderif, histogram to One-dimensional array.
-    private double[] histogram = null;
+	private Feature mFeature = null;
+	private double[] mFeatureVec = null;		   
 
-    private String mTags[];
+    private String[] mTags;
     private String Photographer = "";
    	
     public VideoFrame() {
-    	this.mBufferImage = null;
-    	this.frameIndex = 0;
-    	this.pixels = null;
-    	this.histogram = null;
+    	mFeature = null;
+    	mFeatureVec = null;
+    	mTags = null;    	
     }
     
-    public VideoFrame(File mFile, int mFrameIndex) {
-    	try {    		
-    		mBufferImage = ImageIO.read(mFile);    		
-    		this.pixels = new int [mBufferImage.getWidth(null)*mBufferImage.getHeight(null)];
-    		mBufferImage.getRGB(0, 
-    							0, 
-    							mBufferImage.getWidth(null), 
-    							mBufferImage.getHeight(null), 
-    							this.pixels, 
-    							0, 
-    							mBufferImage.getWidth(null));
-    		this.frameIndex = mFrameIndex;
-    		this.histogram = RGBToHSVHistogram.hsvHistogram(this.pixels);
-    		setTags(mFile);
-    	} catch(IOException e) {
-    		e.printStackTrace();
-         	System.out.println("Read video frame is failed.");
-    	}
+    public VideoFrame(File mFile) {
+    	mFeature = new FeatureHSVColorHistogram(mFile);
+    	mFeature.run();
+    	mFeatureVec = mFeature.getFeature();
+    	setTags(mFile);
     }
     
     private void setTags(File f) {
@@ -135,18 +116,10 @@ public class VideoFrame {
 			e.printStackTrace();
 			System.out.println(e);
 		}
-	}
-    	      
-    public int[] getPixels() {    
-      	return pixels;
-    }
-    
-    public int getFrameIndex() {    
-      	return frameIndex;
-    }      
+	}    	         
    
-    public double[] getHistogram() {    
-      	return histogram;
+    public double[] getFeatureVector() {    
+      	return mFeatureVec;
     }
     
     public String[] getTags() {

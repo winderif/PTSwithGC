@@ -61,7 +61,7 @@ public abstract class ProgClient extends Program {
 			queryDataFile = new File[dirFile.listFiles().length];
 			for(int i=0; i<dirFile.listFiles().length; i++) {
 				queryDataFile[i] = dirFile.listFiles()[i];							
-				this.videoFrames.add(new VideoFrame(this.queryDataFile[i], i));
+				this.videoFrames.add(new VideoFrame(this.queryDataFile[i]));
 				//System.out.println(this.queryDatasFile[i].getName());
 			}
 		}
@@ -73,7 +73,7 @@ public abstract class ProgClient extends Program {
     	queryAverageHistogram = new double[BIN_HISTO];
     	
     	for(int i=0; i<videoFrames.size(); i++) {
-    		tmpHistogram = videoFrames.elementAt(i).getHistogram();
+    		tmpHistogram = videoFrames.elementAt(i).getFeatureVector();
     		for(int j=0; j<BIN_HISTO; j++) {
     			queryAverageHistogram[j] += tmpHistogram[j];
     		}

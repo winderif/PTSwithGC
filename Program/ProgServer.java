@@ -107,7 +107,7 @@ public abstract class ProgServer extends Program {
 					for(int j=0; j<sizeOfTagDir; j++) {
 						if(databaseTagDirFile[i].listFiles()[j].getName().endsWith(".jpg")) {
 							tmpFileArray[j] = databaseTagDirFile[i].listFiles()[j];
-							tmpVideoFrame.add(new VideoFrame(tmpFileArray[j], j));
+							tmpVideoFrame.add(new VideoFrame(tmpFileArray[j]));
 							//System.out.println("[DIR] " + tmpFileArray[j].getName());
 						}						
 					}

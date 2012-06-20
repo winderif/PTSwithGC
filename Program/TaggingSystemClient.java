@@ -21,7 +21,7 @@ public class TaggingSystemClient extends ProgClient {
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");
-				TaggingSystemCommon.oos.writeDouble(videoFrames.elementAt(i).getHistogram()[j]);				
+				TaggingSystemCommon.oos.writeDouble(videoFrames.elementAt(i).getFeatureVector()[j]);				
 			}
 			//System.out.println();
 		}

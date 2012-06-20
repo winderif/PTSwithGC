@@ -33,7 +33,7 @@ public class EncGCTaggingSystemClient extends ProgClient {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");				
 				EncProgCommon.oos.writeObject(
-						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getHistogram()[j]));									
+						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureVector()[j]));									
 			}
 			//System.out.println();
 		}
