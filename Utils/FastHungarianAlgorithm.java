@@ -168,8 +168,9 @@ public class FastHungarianAlgorithm {
 		boolean done = false;
 		while (done == false)	//main execution loop
 		{ 
+			System.out.println();
 			switch (step)
-		    {
+		    {				
 				case 1:
 					step = hg_step1(step, cost);     
 		    	    break;
@@ -199,12 +200,14 @@ public class FastHungarianAlgorithm {
 		{
 			for (int j=0; j<mask[i].length; j++)
 			{
+				System.out.print(mask[i][j] + "\t");
 				if (mask[i][j] == 1)
-				{
+				{					
 					assignment[i][0] = i;
 					assignment[i][1] = j;
 				}
 			}
+			System.out.println();
 		}
 		
 		//If you want to return the min or max sum, in your own main method
@@ -560,16 +563,18 @@ public class FastHungarianAlgorithm {
 		//<UNCOMMENT> BELOW AND COMMENT BLOCK ABOVE TO USE A RANDOMLY GENERATED MATRIX
 		int numOfRows = readInput("How many rows for the matrix? ");
 		int numOfCols = readInput("How many columns for the matrix? ");
-		double[][] array = new double[numOfRows][numOfCols];
-		generateRandomArray(array, "random");	//All elements within [0,1].
+		//double[][] array = new double[numOfRows][numOfCols];
+		//generateRandomArray(array, "random");	//All elements within [0,1].
 		//</UNCOMMENT>
-		
+		double[][] array = {
+				{60, 80, 100, 50, 70},
+				{50, 70, 105, 20, 70},
+				{90, 80, 50, 120, 110}};
 		if (array.length > array[0].length)
 		{
 			System.out.println("Array transposed (because rows>columns).\n");	//Cols must be >= Rows.
 			array = transpose(array);
-		}
-				
+		}		
 		//<COMMENT> TO AVOID PRINTING THE MATRIX FOR WHICH THE ASSIGNMENT IS CALCULATED
 		System.out.println("\n(Printing out only 2 decimals)\n");
 		System.out.println("The matrix is:");

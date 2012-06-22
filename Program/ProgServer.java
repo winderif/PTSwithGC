@@ -138,7 +138,7 @@ public abstract class ProgServer extends Program {
 	}	
 	
 	private void generateTagClusters() {		
-		if(!domains_file_existed) {
+		if(domains_file_existed == false) {
 			
 			tagClustersMap 
 				= TagClusteringByDomain.getTagClusters(allTags);

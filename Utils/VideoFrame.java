@@ -30,7 +30,7 @@ public class VideoFrame {
     public VideoFrame(File mFile) {
     	mFeature = new FeatureHSVColorHistogram(mFile);
     	mFeature.run();
-    	mFeatureVec = mFeature.getFeature();
+    	mFeatureVec = ((FeatureHSVColorHistogram)mFeature).getFeature();
     	setTags(mFile);
     }
     

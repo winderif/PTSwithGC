@@ -17,7 +17,5 @@ public abstract class Feature {
 		extractFeature();
 	}
 	
-	abstract protected void extractFeature();
-	
-	abstract public double[] getFeature();
+	abstract protected void extractFeature();		
 }
