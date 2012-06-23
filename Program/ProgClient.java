@@ -2,7 +2,7 @@
 
 package Program;
 
-import java.io.File;
+import java.io.*;
 import java.net.*;
 import java.util.Vector;
 
@@ -14,7 +14,8 @@ public abstract class ProgClient extends Program {
     private final int    serverPort   = 23456;                   // server port number
     private Socket       sock         = null;                    // Socket object for communicating
     
-    protected static final int BIN_HISTO = 16; 
+    //protected static final int BIN_HISTO = 16;
+    protected static final int BIN_HISTO = 10000;
     
     public static String queryDirName = null;
     protected File[] queryDataFile = null;	
@@ -57,13 +58,28 @@ public abstract class ProgClient extends Program {
 		}
 		else {
 			System.out.println("[C][START]\tRead query datas.");
+						
+			//queryDataFile = new File[dirFile.listFiles().length];
+			queryDataFile = dirFile.listFiles(
+					new FilenameFilter() {  
+						public boolean accept(File file, String name) {  
+							boolean ret = name.endsWith(".jpg");   
+							return ret;  
+						}
+					});
 			
-			queryDataFile = new File[dirFile.listFiles().length];
-			for(int i=0; i<dirFile.listFiles().length; i++) {
-				queryDataFile[i] = dirFile.listFiles()[i];							
-				this.videoFrames.add(new VideoFrame(this.queryDataFile[i]));
-				//System.out.println(this.queryDatasFile[i].getName());
+			for(File queryFile : queryDataFile) {
+				//queryDataFile[i] = dirFile.listFiles()[i];
+				this.videoFrames.add(new VideoFrame(queryFile));
 			}
+			/**
+			for(int i=0; i<dirFile.listFiles().length; i++) {
+				if(dirFile.listFiles()[i].getName().endsWith(".jpg")) {
+					queryDataFile[i] = dirFile.listFiles()[i];							
+					this.videoFrames.add(new VideoFrame(this.queryDataFile[i]));
+					//System.out.println(this.queryDatasFile[i].getName());
+				}
+			}*/
 		}
     }
 

@@ -13,7 +13,8 @@ import Utils.DomainsData;
 
 public class TagClusteringByDomain {		
 	private static final String domainFileName = "domains_SUMO.dat";
-	private static final int BIN_HISTO = 16;     
+	//private static final int BIN_HISTO = 16;     
+	private static final int BIN_HISTO = 10000;     
 	
 	public static boolean existedDomainFile(File databaseTagDirFile) {
 		return databaseTagDirFile.getName().equals(domainFileName);
@@ -146,7 +147,7 @@ public class TagClusteringByDomain {
 		for(int i=0; i<allDomains.length; i++) {
 			//System.out.println("[DOMAIN]\t" + allDomains[i] + "\t" + domainMap.get(allDomains[i]).size());			
 			for(String mTag : tagClustersMap.get(allDomains[i])) {
-				tmpHistogram = tagsHistogramMap.get(mTag);
+				tmpHistogram = tagsHistogramMap.get(mTag);				
 				for(int j=0; j<BIN_HISTO; j++) {
 					mDomainAverageHistogram[i][j] += tmpHistogram[j];
 				}

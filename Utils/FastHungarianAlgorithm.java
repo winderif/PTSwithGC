@@ -167,8 +167,7 @@ public class FastHungarianAlgorithm {
 		int step = 1;											
 		boolean done = false;
 		while (done == false)	//main execution loop
-		{ 
-			System.out.println();
+		{ 			
 			switch (step)
 		    {				
 				case 1:
@@ -199,15 +198,13 @@ public class FastHungarianAlgorithm {
 		for (int i=0; i<mask.length; i++)
 		{
 			for (int j=0; j<mask[i].length; j++)
-			{
-				System.out.print(mask[i][j] + "\t");
+			{				
 				if (mask[i][j] == 1)
 				{					
 					assignment[i][0] = i;
 					assignment[i][1] = j;
 				}
-			}
-			System.out.println();
+			}			
 		}
 		
 		//If you want to return the min or max sum, in your own main method

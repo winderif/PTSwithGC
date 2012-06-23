@@ -9,7 +9,8 @@ import Utils.VideoFrame;
 
 public class ImageClusteringByTags {
 	private static final int FILTER_NUM = 2;
-	private static final int BIN_HISTO = 16;     
+	//private static final int BIN_HISTO = 16;
+	private static final int BIN_HISTO = 10000;   
 	
 	public static HashMap<String, Vector<VideoFrame>> 
 		getImageClusters(Vector<Vector<VideoFrame>> databaseData) {

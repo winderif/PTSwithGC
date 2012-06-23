@@ -25,7 +25,8 @@ public abstract class ProgServer extends Program {
     private Socket             clientSocket = null;              // socket created by accept
 
 	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
-    protected static final int BIN_HISTO = 16;     
+    //protected static final int BIN_HISTO = 16;
+    protected static final int BIN_HISTO = 10000;     
     private boolean domains_file_existed = false;
     
     public static String databaseDirName;
@@ -90,8 +91,8 @@ public abstract class ProgServer extends Program {
 			
 			File[] tmpFileArray = null; 
 			Vector<VideoFrame> tmpVideoFrame = null;
+							
 			databaseTagDirFile = new File[dirFile.listFiles().length];
-			
 			for(int i=0; i<dirFile.listFiles().length; i++) {				
 				databaseTagDirFile[i] = dirFile.listFiles()[i];
 	
@@ -99,14 +100,22 @@ public abstract class ProgServer extends Program {
 					if(TagClusteringByDomain.existedDomainFile(databaseTagDirFile[i]))
 						domains_file_existed = true;										
 				}
-				else if(databaseTagDirFile[i].listFiles().length != 0) {					
-					int sizeOfTagDir = databaseTagDirFile[i].listFiles().length;
+				else if(databaseTagDirFile[i].listFiles().length != 0) {
+					File[] imagesFile = databaseTagDirFile[i].listFiles(
+							new FilenameFilter() {  
+								public boolean accept(File file, String name) {  
+									boolean ret = name.endsWith(".jpg");   
+									return ret;  
+								}
+							});		
+					int sizeOfTagDir = imagesFile.length;
+					//int sizeOfTagDir = databaseTagDirFile[i].listFiles().length;
 					tmpFileArray = new File[sizeOfTagDir];		
 					tmpVideoFrame = new Vector<VideoFrame>();
 					
 					for(int j=0; j<sizeOfTagDir; j++) {
-						if(databaseTagDirFile[i].listFiles()[j].getName().endsWith(".jpg")) {
-							tmpFileArray[j] = databaseTagDirFile[i].listFiles()[j];
+						if(imagesFile[j].getName().endsWith(".jpg")) {
+							tmpFileArray[j] = imagesFile[j];
 							tmpVideoFrame.add(new VideoFrame(tmpFileArray[j]));
 							//System.out.println("[DIR] " + tmpFileArray[j].getName());
 						}						

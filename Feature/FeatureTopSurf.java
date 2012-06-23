@@ -16,7 +16,8 @@ public class FeatureTopSurf extends Feature {
 	private String featureDir = "";
 	private boolean featureFileExisted = false; 
 	
-	private double[][] histogram = null;	
+	private static final int TOPSURF_BIN = 10000;
+	private double[] histogram = null;	
 	
 	public FeatureTopSurf(File arg0) {
 		imgFile = arg0;
@@ -38,7 +39,7 @@ public class FeatureTopSurf extends Feature {
 			topsurfDict + " 256 100 " + "\"" + 
 			imgFile.getAbsolutePath() + "\" \"" +
 			tmp[0] + ".top" + "\"";
-		System.out.println(extractCommand);
+		//System.out.println(extractCommand);
 	}	
 	
 	protected void extractFeature() {
@@ -59,8 +60,8 @@ public class FeatureTopSurf extends Feature {
 		
 		File setDirFile = new File(setDir);
 		File sameDirFile = new File(sameDir);
-		System.out.println(setDirFile.isFile());
-		System.out.println(sameDirFile.isFile());
+		//System.out.println(setDirFile.isFile());
+		//System.out.println(sameDirFile.isFile());
 		if(setDirFile.isFile() | sameDirFile.isFile()) {
 			if(setDirFile.isFile())
 				topsurfFile = setDirFile;
@@ -76,56 +77,68 @@ public class FeatureTopSurf extends Feature {
 		try {
 			Runtime rt = Runtime.getRuntime(); 
 			Process proc = rt.exec(extractCommand);
-			InputStreamReader isr = new InputStreamReader(proc.getErrorStream());			
+			InputStreamReader isr = new InputStreamReader(proc.getErrorStream());
+			while(isr.read() != -1) ;
+			/**
+			BufferedReader br = new BufferedReader(isr); 
+			String line = null;			 					
+			while((line = br.readLine()) != null) ;
+			br.close();
+			*/
 		    isr.close();			
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+		
+		String[] tmp = imgFile.getAbsolutePath().split(".jpg");
+		String sameDir = tmp[0] + ".top"; 
+		//System.out.println(sameDir);
+		topsurfFile = new File(sameDir);
+		//System.out.println(topsurfFile.isFile());
 	}
 	
 	private void loadTopSurf() {
-		if(topsurfFile != null) {					
+		//System.out.println(topsurfFile.isFile() + " " + topsurfFile);
+		if(topsurfFile.isFile() != false && topsurfFile != null) {		
 			try {
 				FileReader inFile = new FileReader(topsurfFile);				
 				int in = 0;
-				String tmpFile = "";	
+				String tmpFile = "";
 				
 				while((in = inFile.read()) != -1) {
 					tmpFile = tmpFile + (char)in;
 				}
 				// split each line
-				String[] tmpLine = tmpFile.split("\r\n");
-				
-				histogram = new double[4][tmpLine.length];				
+				String[] tmpLine = tmpFile.split("\r\n");											
 								
-				for(int i=1; i<tmpLine.length; i++) {
-					System.out.println(tmpLine[i]);
-					String[] tmpValue = tmpLine[i].split("\t");
-										
-					histogram[0][i] = Integer.parseInt(tmpValue[0]);					
-					histogram[1][i] = Integer.parseInt(tmpValue[1]);
-					histogram[2][i] = Double.parseDouble(tmpValue[2]);
-					histogram[3][i] = Double.parseDouble(tmpValue[3]);
-				}
+				histogram = new double[TOPSURF_BIN];
 				
-				for(int i=1; i<histogram[0].length; i++) {
-					System.out.println(
-							histogram[0][i] + "\t" +
-							histogram[1][i] + "\t" + 
-							histogram[2][i] + "\t" +
-							histogram[3][i] + "\t");
+				int index = 0;
+				for(int i=1; i<tmpLine.length; i++) {
+					//System.out.println(tmpLine[i]);
+					String[] tmpValue = tmpLine[i].split("\t");
+							
+					index = Integer.parseInt(tmpValue[0]);
+					histogram[index] = Integer.parseInt(tmpValue[1]);					
 				}
+				/** debugging
+				for(int i=1; i<histogram.length; i++) {
+					System.out.println(i + "\t" + histogram[i]);							
+				}
+				*/
 				
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
 		}
-		else
+		else {
 			System.out.println("Cannot laod topsurf file.");
+			System.exit(0);
+		}
 	}
 	
 	public double[] getFeature() {
-		return this.histogram[1];
+		return this.histogram;
 	}
 	
 	public void setFaetureDir(String dir) {
