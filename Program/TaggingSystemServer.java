@@ -4,8 +4,10 @@ package Program;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import Utils.FastHungarianAlgorithm;
+import Utils.ValueComparator;
 
 public class TaggingSystemServer extends ProgServer {
 
@@ -47,10 +49,22 @@ public class TaggingSystemServer extends ProgServer {
     	System.out.println("\t[S][START]\tEvaluate Encrypted Domain Distance.");
     	double startTime = System.nanoTime();
     	
-    	mDomainDistance = new double[allDomains.length];    	    	
+    	/**
+    	HashMap<String, Double> domainMap = new HashMap<String, Double>();
+    	ValueComparator bvc = new ValueComparator(domainMap);
+    	TreeMap<String, Double> sortingMap = new TreeMap<String, Double>(bvc);    	    
+    	double maxDistance = 0.0;
+    	*/
+    	mDomainDistance = new double[allDomains.length];
     	for(int i=0; i<allDomains.length; i++) {
     		mDomainDistance[i] = Score(mQueryAverageHistogram, mDomainAverageHistogram[i]);
+    		/**
     		System.out.print(mDomainDistance[i] + " ");
+    		System.out.println(allDomains[i]);
+    		domainMap.put(allDomains[i], mDomainDistance[i]);
+    		if(mDomainDistance[i] > maxDistance)
+    			maxDistance = mDomainDistance[i];
+    		*/
     	}
     	System.out.println();
     	
@@ -58,10 +72,64 @@ public class TaggingSystemServer extends ProgServer {
 		double time = (endTime - startTime)/1000000000.0;
     	System.out.println("\t[S][SUCCESS]\tEvaluate Encrypted Domain Distance.");
     	System.out.println("time: " + time);
+    	/**
+    	for(int i=0; i<allDomains.length; i++) {
+    		mDomainDistance[i] = maxDistance - mDomainDistance[i];
+    		domainMap.put(allDomains[i], mDomainDistance[i]);
+    	}
+    	
+    	sortingMap.putAll(domainMap);
+    	
+    	for(String domain : sortingMap.keySet()) {
+    		System.out.println(domain + "\t" + sortingMap.get(domain));    		
+    	}
+    	String[] sortingDomain = new String[sortingMap.keySet().size()];
+    	sortingMap.keySet().toArray(sortingDomain);
+    	
+    	for(int i=0; i<sortingDomain.length; i++) {    		
+    		System.out.println(sortingDomain[i] + "\t" + sortingMap.get(sortingDomain[i]));
+    		if(sortingMap.get(sortingDomain[i]) == null)
+    			sortingMap.put(sortingDomain[i], sortingMap.get(sortingDomain[i-1]));
+    	}
+    	
+    	HashMap<String, double[]> tmpCandidateTags = new HashMap<String, double[]>();
+    	System.out.print(sortingMap.get(sortingDomain[0]) + " ");
+    	System.out.print(sortingDomain[0] + "\t");
+    	for(String tag : tagClustersMap.get(sortingDomain[0])) {
+    		System.out.print(tag + " ");
+    		if(!tmpCandidateTags.containsKey(tag)) {
+    			System.out.print(tag + "-");
+    			tmpCandidateTags.put(tag, tagsHistogramMap.get(tag));
+    		}
+    	}
+    	double maximum = sortingMap.get(sortingDomain[sortingDomain.length - 1]);
+    	double threshold = 0.0;
+    	for(int i=1; i<mQueryHistogram.length; i++) {
+    	//for(int i=1; i<sortingDomain.length; i++) {
+    		//threshold = (maximum - sortingMap.get(sortingDomain[i-1]))*0.2 + sortingMap.get(sortingDomain[i-1]);
+    		threshold = sortingMap.get(sortingDomain[i-1]) * 0.8;
+    		if(sortingMap.get(sortingDomain[i]) >= threshold) {
+    	    	System.out.print(sortingMap.get(sortingDomain[i]) + " ");
+    	    	System.out.print(sortingDomain[i] + "\t");
+    	    	for(String tag : tagClustersMap.get(sortingDomain[i])) {
+    	    		System.out.print(tag + " ");
+    	    		if(!tmpCandidateTags.containsKey(tag)) {
+    	    			System.out.print(tag + "-");
+    	    			tmpCandidateTags.put(tag, tagsHistogramMap.get(tag));
+    	    		}    	    		
+    	    	}
+    	    	System.out.println();  	
+    	    }
+    		else
+    			break;
+    	}
+    	*/
+    	
     	
     	double[] sortingDistance = mDomainDistance.clone();
     	Arrays.sort(sortingDistance);
     	System.out.println("MIN : \t" + sortingDistance[0]);
+    	
     	// 80% of minimum distance
     	System.out.println("\t[S][START]\tFind Candidate Tag.");
     	startTime = System.nanoTime();

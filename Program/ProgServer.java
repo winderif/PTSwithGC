@@ -73,14 +73,14 @@ public abstract class ProgServer extends Program {
     }
     
     protected void initialize() throws Exception {
-    	readData();
+    	loadQuery();
     	
     	generateImageClusters();    	
     	
     	generateTagClusters();    	
     }
     
-    private void readData() {
+    private void loadQuery() {
 		File dirFile = new File(databaseDirName);
 		if(!dirFile.isDirectory()) {
 			System.out.println("\t[S][ERROR]\tNot a dictionary.");

@@ -13,13 +13,15 @@ public class ExtractTopSurf {
 			= "C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
 		String dstDirName
 			= "C:/Zone/javaworkspace/PTSwithGC/feature_topsurf/";
-		
+				
 		String extractCommand
-			= "topsurf\\topsurf.exe extract topsurf\\dict 256 100 ";					
+			= "topsurf\\topsurf.exe extract topsurf\\dict 256 100 ";			
+		
+		String batchFileName = "extractTopsurf.bat";		
 		
 		File databaseDirFile = new File(databaseDirName);
 		try {			
-			FileWriter outFile = new FileWriter("extractTopsurf.bat");
+			FileWriter outFile = new FileWriter(batchFileName);
 			PrintWriter out = new PrintWriter(outFile);
 			
 			for(File categoryDirFile : databaseDirFile.listFiles()) {
@@ -38,12 +40,14 @@ public class ExtractTopSurf {
 							
 							for(File img : tag.listFiles()) {
 								if(img.getName().endsWith(".jpg")) {
-									String[] tmp = img.getName().split(".jpg");
+									String[] tmp = img.getName().split(".jpg");									
 									//System.out.print(tmp[0] + " ");
+									
 									String cmd = 
 										extractCommand + "\"" +
 										img.getAbsolutePath() + "\"" + " " + "\"" +  
-										dir3.getCanonicalPath() + "\\" + tmp[0] + ".top" + "\""; 
+										dir3.getCanonicalPath() + "\\" + tmp[0] + ".top" + "\"";
+																		
 									System.out.println(cmd);
 									out.println(cmd);
 								}

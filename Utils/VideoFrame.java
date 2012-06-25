@@ -28,7 +28,7 @@ public class VideoFrame {
     }
     
     public VideoFrame(File mFile) {
-    	/** HSVColorHistogram
+    	/** HSVColorHistogram 
     	mFeature = new FeatureHSVColorHistogram(mFile);
     	mFeature.run();
     	mFeatureVec = ((FeatureHSVColorHistogram)mFeature).getFeature();
@@ -36,7 +36,7 @@ public class VideoFrame {
     	/** Topsurf */
     	mFeature = new FeatureTopSurf(mFile);
     	mFeature.run();
-    	mFeatureVec = ((FeatureTopSurf)mFeature).getFeature();
+    	mFeatureVec = ((FeatureTopSurf)mFeature).getFeature();    	
     	
     	setTags(mFile);
     }

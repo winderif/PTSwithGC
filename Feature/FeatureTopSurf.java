@@ -119,7 +119,7 @@ public class FeatureTopSurf extends Feature {
 					String[] tmpValue = tmpLine[i].split("\t");
 							
 					index = Integer.parseInt(tmpValue[0]);
-					histogram[index] = Integer.parseInt(tmpValue[1]);					
+					histogram[index] = Double.parseDouble(tmpValue[1]);					
 				}
 				/** debugging
 				for(int i=1; i<histogram.length; i++) {

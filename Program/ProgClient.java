@@ -37,6 +37,12 @@ public abstract class ProgClient extends Program {
 
     	super.init();
     }
+    
+    protected void execute() throws Exception {
+    	for(int i=0; i<3; i++) {
+    		super.execute();
+    	}
+    }
 
     private void create_socket_and_connect() throws Exception {
     	sock = new java.net.Socket(serverIPname, serverPort);          // create socket and connect
@@ -45,12 +51,12 @@ public abstract class ProgClient extends Program {
     }
     
     protected void initialize() throws Exception {
-    	readData();
+    	loadQuery();
     	
     	getQueryAverageHistorgram();
     }
     
-    private void readData() {
+    private void loadQuery() {
 		File dirFile = new File(queryDirName);
 		if(!dirFile.isDirectory()) {
 			System.out.println("[ERROR]\tNot a dictionary.");
