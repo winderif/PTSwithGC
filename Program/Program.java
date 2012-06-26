@@ -1,11 +1,16 @@
 package Program;
 
 public abstract class Program {
+	protected static int iterCount;
+	protected int iter;
 
 	public void run() throws Exception {
 		init();
 		
-		execute();
+		for(int i=0; i<iterCount; i++) {
+			iter = i;
+			execute();
+		}
 	}
 	
     protected void init() throws Exception {
@@ -17,7 +22,7 @@ public abstract class Program {
     protected void execute() throws Exception {
     	execQueryTransfer();
     	
-    	execFindCandidateTagClusters();
+    	//execFindCandidateTagClusters();
     	
     	execBuildBipartiteGraph();
     	

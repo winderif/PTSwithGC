@@ -17,7 +17,8 @@ public class FeatureTopSurf extends Feature {
 	private boolean featureFileExisted = false; 
 	
 	private static final int TOPSURF_BIN = 10000;
-	private double[] histogram = null;	
+	private double[] histogram = null;
+	private double[] weight = null;
 	
 	public FeatureTopSurf(File arg0) {
 		imgFile = arg0;
@@ -112,6 +113,7 @@ public class FeatureTopSurf extends Feature {
 				String[] tmpLine = tmpFile.split("\r\n");											
 								
 				histogram = new double[TOPSURF_BIN];
+				weight = new double[TOPSURF_BIN];
 				
 				int index = 0;
 				for(int i=1; i<tmpLine.length; i++) {
@@ -119,7 +121,11 @@ public class FeatureTopSurf extends Feature {
 					String[] tmpValue = tmpLine[i].split("\t");
 							
 					index = Integer.parseInt(tmpValue[0]);
-					histogram[index] = Double.parseDouble(tmpValue[1]);					
+					// count of histogram
+					histogram[index] = Double.parseDouble(tmpValue[1]);
+					// tf-idf weight of histogram
+					weight[index] = 
+						Double.parseDouble(tmpValue[2]) * Double.parseDouble(tmpValue[3]);
 				}
 				/** debugging
 				for(int i=1; i<histogram.length; i++) {
@@ -139,6 +145,10 @@ public class FeatureTopSurf extends Feature {
 	
 	public double[] getFeature() {
 		return this.histogram;
+	}
+	
+	public double[] getTFIDFWeight() {
+		return this.weight;
 	}
 	
 	public void setFaetureDir(String dir) {

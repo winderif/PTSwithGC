@@ -53,10 +53,10 @@ public abstract class ProgServer extends Program {
     }
 
     protected void init() throws Exception {
-	//Program.iterCount = ProgCommon.ois.readInt();
-	//System.out.println(Program.iterCount);
-
     	super.init();
+    	
+    	Program.iterCount = ProgCommon.ois.readInt();
+    	System.out.println(Program.iterCount);	
     }
 
     private void create_socket_and_listen() throws Exception {
@@ -122,9 +122,11 @@ public abstract class ProgServer extends Program {
 					}
 					databaseDataFile.add(tmpFileArray.clone());
 					databaseData.add(tmpVideoFrame);
-				}											
+					System.out.print(".");
+				}															
 				//System.out.println(this.databaseTagDirFile[i].getName());
 			}
+			System.out.println("x");
 		}
     }
     

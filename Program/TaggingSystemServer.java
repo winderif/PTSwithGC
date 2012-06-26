@@ -58,15 +58,15 @@ public class TaggingSystemServer extends ProgServer {
     	mDomainDistance = new double[allDomains.length];
     	for(int i=0; i<allDomains.length; i++) {
     		mDomainDistance[i] = Score(mQueryAverageHistogram, mDomainAverageHistogram[i]);
-    		/**
-    		System.out.print(mDomainDistance[i] + " ");
+    		//System.out.print(mDomainDistance[i] + " ");
+    		/**    		
     		System.out.println(allDomains[i]);
     		domainMap.put(allDomains[i], mDomainDistance[i]);
     		if(mDomainDistance[i] > maxDistance)
     			maxDistance = mDomainDistance[i];
     		*/
     	}
-    	System.out.println();
+    	//System.out.println();
     	
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
@@ -124,8 +124,7 @@ public class TaggingSystemServer extends ProgServer {
     			break;
     	}
     	*/
-    	
-    	
+    	    	
     	double[] sortingDistance = mDomainDistance.clone();
     	Arrays.sort(sortingDistance);
     	System.out.println("MIN : \t" + sortingDistance[0]);

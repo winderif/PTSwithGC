@@ -20,6 +20,7 @@ public abstract class ProgClient extends Program {
     public static String queryDirName = null;
     protected File[] queryDataFile = null;	
     protected Vector<VideoFrame> videoFrames = new Vector<VideoFrame>();
+    protected Vector<Vector<VideoFrame>> videoShots = new Vector<Vector<VideoFrame>>();
     protected double[] queryAverageHistogram;
 
     public void run() throws Exception {
@@ -31,18 +32,13 @@ public abstract class ProgClient extends Program {
     }
 
     protected void init() throws Exception {
-	//System.out.println(Program.iterCount);
-	//ProgCommon.oos.writeInt(Program.iterCount);
-	//ProgCommon.oos.flush();
-
     	super.init();
-    }
-    
-    protected void execute() throws Exception {
-    	for(int i=0; i<3; i++) {
-    		super.execute();
-    	}
-    }
+    	
+    	//Program.iterCount = 1;
+    	System.out.println(Program.iterCount);
+    	ProgCommon.oos.writeInt(Program.iterCount);
+    	ProgCommon.oos.flush();    
+    }        
 
     private void create_socket_and_connect() throws Exception {
     	sock = new java.net.Socket(serverIPname, serverPort);          // create socket and connect
@@ -51,9 +47,17 @@ public abstract class ProgClient extends Program {
     }
     
     protected void initialize() throws Exception {
-    	loadQuery();
+    	//loadQuery();
+    	loadQueryVideos();
     	
+    	//getQueryAverageHistorgram();
+    }
+    
+    protected void execute() throws Exception {
+    	//System.out.println(iter);
+    	videoFrames = videoShots.elementAt(iter);    	
     	getQueryAverageHistorgram();
+    	super.execute();
     }
     
     private void loadQuery() {
@@ -64,8 +68,7 @@ public abstract class ProgClient extends Program {
 		}
 		else {
 			System.out.println("[C][START]\tRead query datas.");
-						
-			//queryDataFile = new File[dirFile.listFiles().length];
+									
 			queryDataFile = dirFile.listFiles(
 					new FilenameFilter() {  
 						public boolean accept(File file, String name) {  
@@ -74,20 +77,62 @@ public abstract class ProgClient extends Program {
 						}
 					});
 			
-			for(File queryFile : queryDataFile) {
-				//queryDataFile[i] = dirFile.listFiles()[i];
+			for(File queryFile : queryDataFile) {				
 				this.videoFrames.add(new VideoFrame(queryFile));
-			}
-			/**
-			for(int i=0; i<dirFile.listFiles().length; i++) {
-				if(dirFile.listFiles()[i].getName().endsWith(".jpg")) {
-					queryDataFile[i] = dirFile.listFiles()[i];							
-					this.videoFrames.add(new VideoFrame(this.queryDataFile[i]));
-					//System.out.println(this.queryDatasFile[i].getName());
-				}
-			}*/
-		}
+			}			
+		}			
     }
+    
+    private void loadQueryVideos() {
+		File dirFile = new File(queryDirName);
+		if(!dirFile.isDirectory()) {
+			System.out.println("[ERROR]\tNot a dictionary.");
+			System.exit(0);
+		}
+		else {
+			System.out.println("[C][START]\tRead query datas.");
+									
+			queryDataFile = dirFile.listFiles(
+					new FilenameFilter() {  
+						public boolean accept(File file, String name) {  
+							boolean ret = name.endsWith(".jpg");   
+							return ret;  
+						}
+					});
+			
+			Vector<VideoFrame> tmpFrames = new Vector<VideoFrame>();
+			int shotCount = 1;
+			int shotSize = 0;
+			
+			for(File queryFile : queryDataFile) {
+				//System.out.println(queryFile.getName());				
+				String[] tmpFileName = queryFile.getName().split(" ");
+				
+				if(Integer.valueOf(tmpFileName[1]) > shotSize)
+					shotSize = Integer.valueOf(tmpFileName[1]);
+				
+				// when shot change add VectorFrame to VectorShot
+				if(Integer.valueOf(tmpFileName[1]) != shotCount) {
+					shotCount = Integer.valueOf(tmpFileName[1]);
+					videoShots.add(tmpFrames);
+					tmpFrames = new Vector<VideoFrame>();	
+				}
+				
+				tmpFrames.add(new VideoFrame(queryFile));
+				System.out.print(".");
+			}
+			System.out.println("x");
+			videoShots.add(tmpFrames);
+			tmpFrames = null;
+			/** debugging
+			for(int i=0; i<videoShots.size(); i++) {
+				System.out.print(i+1 + "\t");
+				System.out.println(videoShots.elementAt(i).size());
+			}
+			*/
+			Program.iterCount = shotSize;
+		}			
+    }    
 
     private void getQueryAverageHistorgram() throws Exception {
     	System.out.println("[C][START]\tGet Query Average Color Histogram");

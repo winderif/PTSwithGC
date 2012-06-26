@@ -35,6 +35,16 @@ public class VideoFrame {
     	*/
     	/** Topsurf */
     	mFeature = new FeatureTopSurf(mFile);
+    	
+    	String fDir = "C:/Zone/javaworkspace/PTSwithGC/feature_topsurf";
+    	String[] tmpDir = mFile.getAbsolutePath().split("YouTube-Tag");
+    	if(tmpDir.length != 1) {
+    		fDir = fDir + tmpDir[1];
+    		tmpDir = fDir.split(mFile.getName());
+        	//System.out.println(mFile.getAbsolutePath());
+        	((FeatureTopSurf)mFeature).setFaetureDir(tmpDir[0]);        	
+    	}
+    	    	    	     
     	mFeature.run();
     	mFeatureVec = ((FeatureTopSurf)mFeature).getFeature();    	
     	
