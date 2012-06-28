@@ -165,13 +165,13 @@ public class FastHungarianAlgorithm {
 		int[] colCover = new int[cost[0].length];				//The column covering vector.
 		int[] zero_RC = new int[2];								//Position of last zero from Step 4.
 		int step = 1;											
-		boolean done = false;
+		boolean done = false;				
 		while (done == false)	//main execution loop
-		{ 			
+		{ 							
 			switch (step)
 		    {				
 				case 1:
-					step = hg_step1(step, cost);     
+					step = hg_step1(step, cost);					
 		    	    break;
 		    	case 2:
 		    	    step = hg_step2(step, cost, mask, rowCover, colCover);

@@ -11,6 +11,7 @@ import Utils.ValueComparator;
 
 public class TaggingSystemServer extends ProgServer {
 
+	private int mQueryNum = 0;
 	private double[][] mQueryHistogram = null;	
 	private double[] mQueryAverageHistogram = null;
 	private double[][] mHungarianMatrix = null;
@@ -25,8 +26,9 @@ public class TaggingSystemServer extends ProgServer {
     	super.init();
     }
     
-    protected void execQueryTransfer() throws Exception {    	    	
-    	mQueryHistogram = new double[TaggingSystemCommon.ois.readInt()][BIN_HISTO];    	    
+    protected void execQueryTransfer() throws Exception {    	
+    	mQueryNum = TaggingSystemCommon.ois.readInt();
+    	mQueryHistogram = new double[mQueryNum][BIN_HISTO];    	    
     	mQueryAverageHistogram = new double[BIN_HISTO];
  		for(int i=0; i<mQueryHistogram.length; i++) {
  			for(int j=0; j<BIN_HISTO; j++) {
@@ -128,7 +130,7 @@ public class TaggingSystemServer extends ProgServer {
     	    	
     	double[] sortingDistance = mDomainDistance.clone();
     	Arrays.sort(sortingDistance);
-    	System.out.println("MIN : \t" + sortingDistance[0]);
+    	//System.out.println("MIN : \t" + sortingDistance[0]);
     	
     	// 80% of minimum distance
     	System.out.println("\t[S][START]\tFind Candidate Tag.");
@@ -136,20 +138,22 @@ public class TaggingSystemServer extends ProgServer {
     	
     	double threshold 
     		= (sortingDistance[sortingDistance.length-1] - sortingDistance[0])*0.2 + sortingDistance[0];
-    	System.out.println("T : \t" + threshold);  	
+    	//System.out.println("T : \t" + threshold);  	
     	HashMap<String, double[]> tmpCandidateTags = new HashMap<String, double[]>();    	
     	for(int i=0; i<mDomainDistance.length; i++) {
     	    if(mDomainDistance[i] <= threshold) {
+    	    	/**
     	    	System.out.print(mDomainDistance[i] + " ");
     	    	System.out.print(allDomains[i] + "\t");
+    	    	*/
     	    	for(String tag : tagClustersMap.get(allDomains[i])) {
-    	    		System.out.print(tag + " ");
+    	    		//System.out.print(tag + " ");
     	    		if(!tmpCandidateTags.containsKey(tag)) {
-    	    			System.out.print(tag + "-");
+    	    			//System.out.print(tag + "-");
     	    			tmpCandidateTags.put(tag, tagsHistogramMap.get(tag));
     	    		}    	    		
     	    	}
-    	    	System.out.println();  	
+    	    	//System.out.println();  	
     	    }
     	}
     	
@@ -162,10 +166,16 @@ public class TaggingSystemServer extends ProgServer {
     	tmpCandidateTags.keySet().toArray(allTags);
     	mTagAverageHistogram = new double[allTags.length][BIN_HISTO];
     	for(int i=0; i<allTags.length; i++) {
-    		System.out.println(allTags[i]);
+    		//System.out.println(allTags[i]);
     		mTagAverageHistogram[i] = tmpCandidateTags.get(allTags[i]);
     	}    	
-    	System.out.println();
+    	//System.out.println();
+    	
+    	/** If # tag < # query */ 
+    	if(allTags.length < mQueryHistogram.length) {
+    		mQueryHistogram = new double[1][BIN_HISTO];
+    		mQueryHistogram[0] = mQueryAverageHistogram.clone();
+    	}
     }
     
     protected void execBuildBipartiteGraph() throws Exception {
@@ -175,8 +185,8 @@ public class TaggingSystemServer extends ProgServer {
 		
 		for(int i=0; i<mQueryHistogram.length; i++) {
 			for(int j=0; j<mTagAverageHistogram.length; j++) {			
-				//mHungarianMatrix[i][j] = distanceL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
-				mHungarianMatrix[i][j] = distanceWeightedL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
+				mHungarianMatrix[i][j] = distanceL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
+				//mHungarianMatrix[i][j] = distanceWeightedL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//mHungarianMatrix[i][j] = distanceL1(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//mHungarianMatrix[i][j] = distanceWeightedL1(mQueryHistogram[i], mTagAverageHistogram[j]);				
 				//System.out.print(this.mHungarianMatrix[i][j] + " ");
@@ -212,11 +222,20 @@ public class TaggingSystemServer extends ProgServer {
 		
 		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);
 		
-		mMatchingTags = new String[mQueryHistogram.length];		
-		for(int i=0; i<mQueryHistogram.length; i++) {
-			mMatchingTags[i] = allTags[assignment[i][1]];
-			//System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
-		}
+		if(mQueryHistogram.length == 1) {
+			mMatchingTags = new String[mQueryNum];
+			mMatchingTags[0] = allTags[assignment[0][1]];
+			for(int i=1; i<mQueryNum; i++) {
+				mMatchingTags[i] = "";					
+			}
+		}		
+		else {
+			mMatchingTags = new String[mQueryHistogram.length];		
+			for(int i=0; i<mQueryHistogram.length; i++) {
+				mMatchingTags[i] = allTags[assignment[i][1]];
+				//System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
+			}	
+		}	
     }
     
     protected void execResultTransfer() throws Exception {

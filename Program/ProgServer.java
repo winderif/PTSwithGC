@@ -82,7 +82,7 @@ public abstract class ProgServer extends Program {
     	generateTagClusters();    	   
     	
     	// 12.06.28 winderif
-    	loadTopSurfIDF();
+    	//loadTopSurfIDF();
     }       
     
     private void loadQuery() {
