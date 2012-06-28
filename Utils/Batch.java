@@ -83,6 +83,50 @@ public class Batch {
 			e.printStackTrace();
 		}		
 	}
+	
+	private static void initialTags() {
+		String databaseDirName =			
+			"C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
+		
+		File databaseDirFile = new File(databaseDirName);
+		
+		FilenameFilter mFilenameFilter = new FilenameFilter() {  
+			public boolean accept(File file, String name) {  
+				boolean ret = name.endsWith(".txt");   
+				return ret;  
+			}
+		};
+		
+		try {			
+			FileWriter outFile = new FileWriter("initialTags_YouTube.txt");
+			PrintWriter out = new PrintWriter(outFile);
+			
+			out.println(databaseDirFile.listFiles().length);
+			out.println(databaseDirFile.listFiles()[0].listFiles().length);
+			for(File categoryDirFile : databaseDirFile.listFiles()) {
+				//System.out.println(categoryDirFile.getName());				
+				for(File tmpTopFile : categoryDirFile.listFiles()) {
+					//System.out.println(tmpTopFile.getAbsolutePath());					
+					System.out.println(tmpTopFile.getParentFile().getName() + "\\" + tmpTopFile.getName());
+					out.println(tmpTopFile.getParentFile().getName() + "\\" + tmpTopFile.getName());
+					for(File tmpExp : tmpTopFile.listFiles()) {
+						if(tmpExp.isDirectory() && tmpExp.list().length != 0) {
+							System.out.print(tmpExp.getName() + ", ");
+							out.print(tmpExp.getName() + ", ");
+						}
+					}
+					System.out.println();
+					out.println();
+				}				
+			}
+			
+			out.close();
+			outFile.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}	
+		
+	}
 	/**
 	 * @param args
 	 */
@@ -91,5 +135,6 @@ public class Batch {
 		//generateDomain();
 		tagSuggestionServer();
 		tagSuggestionClient();
+		//initialTags();		
 	}
 }

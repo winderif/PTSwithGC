@@ -4,6 +4,7 @@ package Program;
 
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
 import java.util.Vector;
 
 import Utils.VideoFrame;
@@ -21,7 +22,7 @@ public abstract class ProgClient extends Program {
     protected File[] queryDataFile = null;	
     protected Vector<VideoFrame> videoFrames = new Vector<VideoFrame>();
     protected Vector<Vector<VideoFrame>> videoShots = new Vector<Vector<VideoFrame>>();
-    protected double[] queryAverageHistogram;
+    protected double[] queryAverageHistogram;    
 
     public void run() throws Exception {
     	create_socket_and_connect();
@@ -54,11 +55,11 @@ public abstract class ProgClient extends Program {
     }
     
     protected void execute() throws Exception {
-    	//System.out.println(iter);
-    	videoFrames = videoShots.elementAt(iter);    	
+    	//System.out.println("iter: " + iter);
+    	videoFrames = videoShots.elementAt(iter);    	    	
     	getQueryAverageHistorgram();
     	super.execute();
-    }
+    }        
     
     private void loadQuery() {
 		File dirFile = new File(queryDirName);

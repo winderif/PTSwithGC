@@ -2,8 +2,7 @@
 
 package Program;
 
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import Utils.WriteOutput;
 
 public class TaggingSystemClient extends ProgClient {
 	private String[] mMatchingTags = null;
@@ -51,23 +50,14 @@ public class TaggingSystemClient extends ProgClient {
     	
     }
     
-    protected void execResultTransfer() throws Exception {
-    	String output = "_orig" + "_NoEnc" + "_TopSurf" + ".txt";
-    	output = Integer.valueOf(iter+1).toString() + output;
-    	output = ProgClient.queryDirName + "/" + output;
-    	FileWriter outFile = new FileWriter(output);
-		PrintWriter out = new PrintWriter(outFile);
-    	
-		out.println(videoFrames.size());
+    protected void execResultTransfer() throws Exception {    	
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
     		mMatchingTags[i] = TaggingSystemCommon.ois.readObject().toString();
-    		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
-    		out.println(mMatchingTags[i]);
+    		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);    		
     	}    	
-    	System.out.println("[C][SUCCESS]\tRecv result from server.");
     	
-    	out.close();
-    	outFile.close();
+    	WriteOutput.writeTagResult(mMatchingTags, iter, videoFrames.size(), ProgClient.queryDirName);
+    	System.out.println("[C][SUCCESS]\tRecv result from server.");    	
     }
 }

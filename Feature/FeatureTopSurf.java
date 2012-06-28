@@ -17,8 +17,7 @@ public class FeatureTopSurf extends Feature {
 	private boolean featureFileExisted = false; 
 	
 	private static final int TOPSURF_BIN = 10000;
-	private double[] histogram = null;
-	private double[] weight = null;
+	private double[] histogram = null;	
 	
 	public FeatureTopSurf(File arg0) {
 		imgFile = arg0;
@@ -111,28 +110,31 @@ public class FeatureTopSurf extends Feature {
 				}
 				// split each line
 				String[] tmpLine = tmpFile.split("\r\n");											
+				if(tmpLine[0] != "") {
+					histogram = new double[TOPSURF_BIN];				
+					
+					int index = 0;				
+					for(int i=0; i<tmpLine.length; i++) {
+						//System.out.println(tmpLine[i]);
+						String[] tmpValue = tmpLine[i].split("\t");
 								
-				histogram = new double[TOPSURF_BIN];
-				weight = new double[TOPSURF_BIN];
-				
-				int index = 0;
-				for(int i=1; i<tmpLine.length; i++) {
-					//System.out.println(tmpLine[i]);
-					String[] tmpValue = tmpLine[i].split("\t");
-							
-					index = Integer.parseInt(tmpValue[0]);
-					// count of histogram
-					histogram[index] = Double.parseDouble(tmpValue[1]);
-					// tf-idf weight of histogram
-					weight[index] = 
-						Double.parseDouble(tmpValue[2]) * Double.parseDouble(tmpValue[3]);
+						//System.out.println(tmpValue[0]);
+						index = Integer.parseInt(tmpValue[0]);					
+						// count of histogram
+						histogram[index] = 
+							Double.parseDouble(tmpValue[2]);					
+					}
+					/** debugging 								
+					for(int i=0; i<histogram.length; i++) {
+						System.out.println(i + "\t" + histogram[i]);						
+					}				
+					*/	
 				}
-				/** debugging
-				for(int i=1; i<histogram.length; i++) {
-					System.out.println(i + "\t" + histogram[i]);							
-				}
-				*/
-				
+				else {
+					System.out.println("\nNo TopSurf feature." + imgFile.getAbsolutePath());
+					// All bin value is 0.
+					histogram = new double[TOPSURF_BIN];
+				}							
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
@@ -145,11 +147,7 @@ public class FeatureTopSurf extends Feature {
 	
 	public double[] getFeature() {
 		return this.histogram;
-	}
-	
-	public double[] getTFIDFWeight() {
-		return this.weight;
-	}
+	}		
 	
 	public void setFaetureDir(String dir) {
 		this.featureDir = dir;

@@ -16,7 +16,7 @@ import com.drew.metadata.iptc.IptcReader;
 
 public class VideoFrame {
 	private Feature mFeature = null;
-	private double[] mFeatureVec = null;		   
+	private double[] mFeatureVec = null;	
 
     private String[] mTags;
     private String Photographer = "";
@@ -43,10 +43,9 @@ public class VideoFrame {
     		tmpDir = fDir.split(mFile.getName());
         	//System.out.println(mFile.getAbsolutePath());
         	((FeatureTopSurf)mFeature).setFaetureDir(tmpDir[0]);        	
-    	}
-    	    	    	     
+    	}    	
     	mFeature.run();
-    	mFeatureVec = ((FeatureTopSurf)mFeature).getFeature();    	
+    	mFeatureVec = ((FeatureTopSurf)mFeature).getFeature();    	    	
     	
     	setTags(mFile);
     }
@@ -137,7 +136,7 @@ public class VideoFrame {
    
     public double[] getFeatureVector() {    
       	return mFeatureVec;
-    }
+    }       
     
     public String[] getTags() {
     	return this.mTags;
