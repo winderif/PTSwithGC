@@ -25,8 +25,8 @@ class TestTaggingSystemServer {
 		}
 		
 		//ProgServer.databaseDirName = (String) parser.getOptionValue(optiondatabaseDirName, new String("database"));
-		//ProgServer.databaseDirName = (String) parser.getOptionValue(optiondatabaseDirName, new String("database_s"));
-		ProgServer.databaseDirName = "C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag/Travel_Events/3";
+		ProgServer.databaseDirName = (String) parser.getOptionValue(optiondatabaseDirName, new String("database_s"));
+		//ProgServer.databaseDirName = "C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag/Travel_Events/3";
     }
 
     public static void main(String[] args) throws Exception {

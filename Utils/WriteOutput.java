@@ -8,8 +8,8 @@ public class WriteOutput {
 		String method = "_impr";
 		String Enc = "_NoEnc";
 		String feature = "_TopSurf";
-		String distance = "L2s";
-		//String distance = "_WL2s";
+		//String distance = "_L2s";
+		String distance = "_WL2s";
 		//String distance = "_L1";
 		//String distance = "_WL1";
 		

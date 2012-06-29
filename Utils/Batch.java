@@ -86,13 +86,13 @@ public class Batch {
 	
 	private static void initialTags() {
 		String databaseDirName =			
-			"C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
+			"C:/Zone/javaworkspace/Ballan/result/YouTube";
 		
 		File databaseDirFile = new File(databaseDirName);
 		
 		FilenameFilter mFilenameFilter = new FilenameFilter() {  
 			public boolean accept(File file, String name) {  
-				boolean ret = name.endsWith(".txt");   
+				boolean ret = !(name.endsWith(".xlsx") || name.endsWith(".txt"));   
 				return ret;  
 			}
 		};
@@ -101,23 +101,35 @@ public class Batch {
 			FileWriter outFile = new FileWriter("initialTags_YouTube.txt");
 			PrintWriter out = new PrintWriter(outFile);
 			
-			out.println(databaseDirFile.listFiles().length);
+			out.println(databaseDirFile.listFiles(mFilenameFilter).length);
 			out.println(databaseDirFile.listFiles()[0].listFiles().length);
 			for(File categoryDirFile : databaseDirFile.listFiles()) {
-				//System.out.println(categoryDirFile.getName());				
-				for(File tmpTopFile : categoryDirFile.listFiles()) {
-					//System.out.println(tmpTopFile.getAbsolutePath());					
-					System.out.println(tmpTopFile.getParentFile().getName() + "\\" + tmpTopFile.getName());
-					out.println(tmpTopFile.getParentFile().getName() + "\\" + tmpTopFile.getName());
-					for(File tmpExp : tmpTopFile.listFiles()) {
-						if(tmpExp.isDirectory() && tmpExp.list().length != 0) {
-							System.out.print(tmpExp.getName() + ", ");
-							out.print(tmpExp.getName() + ", ");
+				//System.out.println(categoryDirFile.getName());
+				if(categoryDirFile.isDirectory()) {
+					for(File tmpTopFile : categoryDirFile.listFiles()) {
+						//System.out.println(tmpTopFile.getAbsolutePath());					
+						System.out.println(tmpTopFile.getParentFile().getName() + "\\" + tmpTopFile.getName());
+						out.println(tmpTopFile.getParentFile().getName() + "\\" + tmpTopFile.getName());
+						
+						File filteredTagsFile = new File(tmpTopFile.getAbsolutePath() + "\\FilteredTags.txt");
+						
+						FileReader inFile = new FileReader(filteredTagsFile);
+						String tmpText = "";
+						int in = 0;
+						while((in = inFile.read()) != -1)
+							tmpText = tmpText + (char)in;
+						
+						//System.out.println(tmpText);						
+						String[] tmpLine = tmpText.split("\r\n");
+						
+						for(int i=0; i<tmpLine.length-1; i++) {
+							System.out.print(tmpLine[i] + ", ");
+							out.print(tmpLine[i] + ", ");
 						}
-					}
-					System.out.println();
-					out.println();
-				}				
+						System.out.println();
+						out.println();
+					}	
+				}							
 			}
 			
 			out.close();
@@ -133,8 +145,8 @@ public class Batch {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//generateDomain();
-		tagSuggestionServer();
-		tagSuggestionClient();
+		//tagSuggestionServer();
+		//tagSuggestionClient();
 		//initialTags();		
 	}
 }

@@ -10,12 +10,46 @@ public class Accuracy {
 	private Vector<String[]> initialTagsTable = new Vector<String[]>();
 	private Vector<Vector<String[]>> suggestedTagsTable = new Vector<Vector<String[]>>();
 	
+	private FilenameFilter mFilenameFilter = new FilenameFilter() {  
+		public boolean accept(File file, String name) {  
+			//boolean ret = name.endsWith("_orig_NoEnc_TopSurf.txt");   
+			boolean ret = name.endsWith("_orig_NoEnc_TopSurf_WL2s.txt");
+			//boolean ret = name.endsWith("_impr_NoEnc_TopSurfL2s.txt");
+			//boolean ret = name.endsWith("_impr_NoEnc_TopSurf_WL2s.txt");				
+			return ret;  
+		}
+	};
 	private int categoryNum = 0;
 	private int topNum = 0;
 	
 	public WritableWorkbook workbook = null;
 	public WritableSheet excelSheet = null;
 	private WritableCellFormat wcf = null;
+	
+	private void combineCutTags(Vector<String> tmpMoreTags, String[] cutTag) {
+		int iter = cutTag.length;
+		for(int i=2; i <= iter; i++) {
+			String combineTag = new String("");
+			if(i == 2) {
+				for(int j=0; j<iter-1; j++) {
+					combineTag = cutTag[j] + cutTag[j+1];
+					tmpMoreTags.add(combineTag.toLowerCase());
+				}	
+			}
+			else if(i == 3) {
+				for(int j=0; j<iter-2; j++) {
+					combineTag = cutTag[j] + cutTag[j+1] + cutTag[j+2]; 
+					tmpMoreTags.add(combineTag.toLowerCase());		
+				}
+			}
+			else {
+				for(String cTag : cutTag) {
+					combineTag += cTag;
+				}
+				tmpMoreTags.add(combineTag.toLowerCase());
+			}			
+		}
+	}
 	
 	public void loadInitialTags() {
 		File initialTagsFile = new File("initialTags_YouTube.txt");
@@ -44,17 +78,37 @@ public class Accuracy {
 					//System.out.println(tmpLine[index]);					
 					//System.out.println(tmpLine[index + 1]);
 					String[] tmpTag = tmpLine[index + 1].split(", ");
-					String[] tmpLowerTag = new String[tmpTag.length];									
+					String[] tmpLowerTag = new String[tmpTag.length];
+					Vector<String> tmpMoreTags = new Vector<String>();
+					for(int j=0; j<tmpTag.length; j++) {
+						String[] cutTag = tmpTag[j].split(" ");
+						if(cutTag.length > 1) {
+							for(String cTag : cutTag) {
+								tmpMoreTags.add(cTag.toLowerCase());	
+							}
+							/** All combination of cutting tags */ 
+							combineCutTags(tmpMoreTags, cutTag);
+						}
+						else {
+							tmpMoreTags.add(tmpTag[j].toLowerCase());
+						}
+					}
+					tmpLowerTag = new String[tmpMoreTags.size()];
+					tmpMoreTags.toArray(tmpLowerTag);
+					initialTagsTable.add(tmpLowerTag);
+					/** Original
 					for(int j=0; j<tmpLowerTag.length; j++) {
 						tmpLowerTag[j] = tmpTag[j].toLowerCase();
-					}
-					
+					}					
 					initialTagsTable.add(tmpLowerTag);
-					/** debugging 
+					*/
+					
+					/** debugging
 					for(String tag : initialTagsTable.elementAt(i)) {						
-						System.out.println(tag);
-					}				
-					*/				
+						System.out.print(tag + ", ");
+					}	
+					System.out.println();
+					*/
 				}
 				//tmpTags = null;
 				
@@ -70,15 +124,7 @@ public class Accuracy {
 			"C:/Zone/javaworkspace/PTSwithGC/YouTube";
 	
 		File databaseDirFile = new File(databaseDirName);
-			
-		FilenameFilter mFilenameFilter = new FilenameFilter() {  
-			public boolean accept(File file, String name) {  
-				//boolean ret = name.endsWith("_TopSurf.txt");   
-				boolean ret = name.endsWith("_WL2s.txt");
-				return ret;  
-			}
-		};
-				
+								
 		int sheetIndex = 1;
 		excelSheet = workbook.getSheet(0);
 		for(File categoryDirFile : databaseDirFile.listFiles()) {
@@ -92,13 +138,12 @@ public class Accuracy {
 			for(File tmpTopFile : categoryDirFile.listFiles()) {
 				//System.out.println(tmpTopFile.getAbsolutePath());
 				
-				Vector<String[]> tmpVec = new Vector<String[]>();
+				Vector<String[]> tmpVec = new Vector<String[]>();								
 				for(File sTag : tmpTopFile.listFiles(mFilenameFilter)) {
-					//System.out.println(sTag.getAbsolutePath());	
+					//System.out.println(sTag.getAbsolutePath());					
 					tmpVec.add(loadFile(sTag));
-				}
-				suggestedTagsTable.add(tmpVec);
-				tmpVec = new Vector<String[]>();
+				}				
+				suggestedTagsTable.add(tmpVec);				
 			}
 		}
 	}
@@ -122,8 +167,9 @@ public class Accuracy {
 				String[] sTags = new String[Integer.parseInt(tmpLine[0])];
 				for(int i=0; i<sTags.length; i++) {
 					sTags[i] = tmpLine[i+1].toLowerCase();
-					//System.out.println(sTags[i]);
-				}				
+					//System.out.print(sTags[i] + ", ");
+				}	
+				//System.out.println();
 				
 				inFile.close();
 				return sTags;
@@ -155,8 +201,10 @@ public class Accuracy {
 						}
 					}
 				}
+				//System.out.print(match / sTags.length + "(" +sTags.length + "), ");
 				tmpAccuracy[index++] = (match / sTags.length); 
 			}
+			//System.out.println();
 			accuracy.add(tmpAccuracy);			
 		}
 				
@@ -170,7 +218,7 @@ public class Accuracy {
 				double averageAcc = 0.0;
 				double[] num = accuracy.elementAt(i*topNum + j);
 				for(int k=0; k<num.length; k++) {
-					Number cellNum = new Number(j, k+1, num[k], wcf);					
+					Number cellNum = new Number(j, k+2, num[k], wcf);					
 					excelSheet.addCell(cellNum);					
 					averageAcc += num[k];
 				}
@@ -208,8 +256,10 @@ public class Accuracy {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//File expFile = new File("Exp_YouTube_orig_NoEnc_TopSurf_10000.xls");
+		//File expFile = new File("Exp_YouTube_orig_NoEnc_TopSurf_10000_L2s.xls");
 		File expFile = new File("Exp_YouTube_orig_NoEnc_TopSurf_10000_WL2s.xls");
+		//File expFile = new File("Exp_YouTube_impr_NoEnc_TopSurf_10000_L2s.xls");
+		//File expFile = new File("Exp_YouTube_impr_NoEnc_TopSurf_10000_WL2s.xls");
 		
 		Accuracy mAccuracy = new Accuracy();
 		try {						
