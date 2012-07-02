@@ -105,10 +105,9 @@ public class CryptosystemPaillierClient extends CryptosystemAbstract {
      * @param m plaintext as a BigInteger
      * @return ciphertext as a BigInteger
      */
-    public BigInteger Encryption(BigInteger m) {
+    public BigInteger Encryption(BigInteger m) {    	
         BigInteger r = new BigInteger(bitLength, new Random());
-        return g.modPow(m, nsquare).multiply(r.modPow(n, nsquare)).mod(nsquare);
-
+        return (m.equals(BigInteger.ZERO))?(BigInteger.ONE):(g.modPow(m, nsquare).multiply(r.modPow(n, nsquare)).mod(nsquare));
     }
 
     /**

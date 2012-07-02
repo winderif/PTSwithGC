@@ -59,8 +59,8 @@ public class TaggingSystemServer extends ProgServer {
     	*/
     	mDomainDistance = new double[allDomains.length];
     	for(int i=0; i<allDomains.length; i++) {
-    		//mDomainDistance[i] = distanceL2squr(mQueryAverageHistogram, mDomainAverageHistogram[i]);
-    		mDomainDistance[i] = distanceWeightedL2squr(mQueryAverageHistogram, mDomainAverageHistogram[i]);
+    		mDomainDistance[i] = distanceL2squr(mQueryAverageHistogram, mDomainAverageHistogram[i]);
+    		//mDomainDistance[i] = distanceWeightedL2squr(mQueryAverageHistogram, mDomainAverageHistogram[i]);
     		//System.out.print(mDomainDistance[i] + " ");
     		/**    		
     		System.out.println(allDomains[i]);
@@ -185,8 +185,8 @@ public class TaggingSystemServer extends ProgServer {
 		
 		for(int i=0; i<mQueryHistogram.length; i++) {
 			for(int j=0; j<mTagAverageHistogram.length; j++) {			
-				//mHungarianMatrix[i][j] = distanceL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
-				mHungarianMatrix[i][j] = distanceWeightedL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
+				mHungarianMatrix[i][j] = distanceL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
+				//mHungarianMatrix[i][j] = distanceWeightedL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//mHungarianMatrix[i][j] = distanceL1(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//mHungarianMatrix[i][j] = distanceWeightedL1(mQueryHistogram[i], mTagAverageHistogram[j]);				
 				//System.out.print(this.mHungarianMatrix[i][j] + " ");

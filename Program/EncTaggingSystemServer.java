@@ -60,7 +60,7 @@ public class EncTaggingSystemServer extends ProgServer {
     
     protected void execQueryTransfer() throws Exception {    	    	
     	mEncQueryHistogram = new BigInteger[EncProgCommon.ois.readInt()][BIN_HISTO];
-    	mEncQueryAverageHistogram = new BigInteger[BIN_HISTO];
+    	mEncQueryAverageHistogram = new BigInteger[BIN_HISTO];    	
  		for(int i=0; i<mEncQueryHistogram.length; i++) {
  			for(int j=0; j<BIN_HISTO; j++) {
  				mEncQueryHistogram[i][j] 
@@ -75,7 +75,7 @@ public class EncTaggingSystemServer extends ProgServer {
  			    = new BigInteger(EncProgCommon.ois.readObject().toString());
 			//System.out.print(mQueryAverageHistogram[i] + " ");
 		}
- 		//System.out.println(); 		 
+ 		//System.out.println();
  		
  		System.out.println("\t[S][SUCCESS]\treceive Query datas.");
     }

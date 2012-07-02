@@ -1,9 +1,6 @@
 package Feature;
 
 import java.io.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import Utils.RGBToHSVHistogram;
 
 public class FeatureTopSurf extends Feature {
 	private File imgFile = null;
@@ -101,15 +98,16 @@ public class FeatureTopSurf extends Feature {
 		//System.out.println(topsurfFile.isFile() + " " + topsurfFile);
 		if(topsurfFile.isFile() != false && topsurfFile != null) {		
 			try {
-				FileReader inFile = new FileReader(topsurfFile);				
-				int in = 0;
-				String tmpFile = "";
-				
-				while((in = inFile.read()) != -1) {
-					tmpFile = tmpFile + (char)in;
+				FileReader inFile = new FileReader(topsurfFile);					
+				int in = 0;				
+				StringBuilder tmpFile = new StringBuilder();				
+								
+				while((in = inFile.read()) != -1) {					
+					tmpFile.append((char)in);
 				}
+			
 				// split each line
-				String[] tmpLine = tmpFile.split("\r\n");											
+				String[] tmpLine = tmpFile.toString().split("\r\n");				
 				if(tmpLine[0] != "") {
 					histogram = new double[TOPSURF_BIN];				
 					
@@ -135,6 +133,8 @@ public class FeatureTopSurf extends Feature {
 					// All bin value is 0.
 					histogram = new double[TOPSURF_BIN];
 				}							
+								
+				inFile.close();
 			} catch(IOException e) {
 				e.printStackTrace();
 			}

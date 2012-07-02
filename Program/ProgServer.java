@@ -79,10 +79,10 @@ public abstract class ProgServer extends Program {
     	
     	generateImageClusters();    	
     	
-    	generateTagClusters();    	   
+    	generateTagClusters();
     	
     	// 12.06.28 winderif
-    	loadTopSurfIDF();
+    	//loadTopSurfIDF();
     }       
     
     private void loadQuery() {
@@ -188,14 +188,15 @@ public abstract class ProgServer extends Program {
 		else {
 			try {
 				FileReader inFile = new FileReader(idfFile);
-				String tmpText = "";
+				StringBuilder tmpText = new StringBuilder();
 				int in = 0;
-				while((in = inFile.read()) != -1)
-					tmpText = tmpText + (char)in;
+				while((in = inFile.read()) != -1) {
+					tmpText.append((char)in);
+				}
 				
 				//System.out.println(tmpText);
 				
-				String[] tmpNum = tmpText.split(" ");
+				String[] tmpNum = tmpText.toString().split(" ");
 				
 				for(int i=0; i<BIN_HISTO; i++) {
 					idf[i] = Double.parseDouble(tmpNum[i]);

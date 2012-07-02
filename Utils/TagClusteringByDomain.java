@@ -94,14 +94,14 @@ public class TagClusteringByDomain {
 		try {
 			FileReader inFile = new FileReader(databaseDirName + "\\" + domainFileName);				
 			int in = 0;
-			String tmpFile = "";
+			StringBuilder tmpFile = new StringBuilder();
 			Vector<String> vectorTags = null;
 							
 			while((in = inFile.read()) != -1) {
-				tmpFile = tmpFile + (char)in;
+				tmpFile.append((char)in);
 			}
 			// split each line
-			String[] tmpLine = tmpFile.split("\r\n");
+			String[] tmpLine = tmpFile.toString().split("\r\n");
 			
 			int length = Integer.parseInt(tmpLine[0]);
 			tmpDomainsData.allDomains = new String[length];

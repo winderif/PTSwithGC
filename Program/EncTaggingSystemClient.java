@@ -28,17 +28,16 @@ public class EncTaggingSystemClient extends ProgClient {
 		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
 		EncProgCommon.oos.writeInt(videoFrames.size());
-		//System.out.println(videoFrames.size());
+		//System.out.println(videoFrames.size());		
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
-				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");				
+				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");					
 				EncProgCommon.oos.writeObject(
-						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureVector()[j]));
-										
+						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureVector()[j]));																
 			}
 			//System.out.println();
 		}
-		EncProgCommon.oos.flush();
+		EncProgCommon.oos.flush();		
 		
 		for(int i=0; i<BIN_HISTO; i++) {
 			//System.out.print(queryAverageHistogram[i] + " ");

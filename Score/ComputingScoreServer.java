@@ -48,11 +48,14 @@ public class ComputingScoreServer extends ComputingScore {
 		
 		/*** S2 ***/
 		for(int i=0; i<BIN_HISTO; i++) {
+			if(mDatabaseHistogram_Big[i].equals(BigInteger.ZERO) || 
+					EncQueryHistogram[i].equals(BigInteger.ONE))
+				continue;
 			// (-2)*w
 			tmpPow = mDatabaseHistogram_Big[i].multiply(new BigInteger("2"));						
 			//System.out.println("tmpPow:\t" + tmpPow + " ");
 			// [w_bar]^((-2)*w) and w1*w2
-			BigInteger tmpMul = EncQueryHistogram[i].modPow(tmpPow, mPaillier.nsquare);			
+			BigInteger tmpMul = EncQueryHistogram[i].modPow(tmpPow, mPaillier.nsquare);						
 			//System.out.println("tmpMul:\t" + mPaillier.Decryption(tmpMul));			
 			tmpS2 = tmpS2.multiply(tmpMul);
 			//System.out.println("tmpS2:\t" + mPaillier.Decryption(tmpS2));

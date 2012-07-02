@@ -1,7 +1,8 @@
 package Score;
 
 public abstract class ComputingScore {
-	protected static final int BIN_HISTO = 16;
+	//protected static final int BIN_HISTO = 16;
+	protected static final int BIN_HISTO = 10000;
 		
 	public void run() throws Exception {
 		init();
