@@ -3,9 +3,12 @@ package Score;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
+
+import Crypto.CryptosystemPaillierServer;
 
 public class DistanceWeightedL2square extends Distance {
 	private double[] idf = null;
@@ -123,5 +126,12 @@ public class DistanceWeightedL2square extends Distance {
 				e.printStackTrace();
 			}
 		}			
+	}
+	
+	public BigInteger evaluate(
+			CryptosystemPaillierServer mPaillier,
+			LinkedHashMap<Integer, BigInteger> q_Enc, 
+			LinkedHashMap<Integer, Double> d) throws Exception {
+		return null;
 	}
 }

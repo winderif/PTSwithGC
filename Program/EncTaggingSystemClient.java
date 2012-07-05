@@ -28,7 +28,14 @@ public class EncTaggingSystemClient extends ProgClient {
 		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
 		EncProgCommon.oos.writeInt(videoFrames.size());
-		//System.out.println(videoFrames.size());		
+		//System.out.println(videoFrames.size());
+		
+		double startTime = System.nanoTime();
+		for(int i=0; i<videoFrames.size(); i++) {
+			EncProgCommon.oos.writeObject(
+					EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureDescriptor()));
+		}
+		/**
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");					
@@ -38,14 +45,19 @@ public class EncTaggingSystemClient extends ProgClient {
 			//System.out.println();
 		}
 		EncProgCommon.oos.flush();		
-		
+		*/
+		/**
 		for(int i=0; i<BIN_HISTO; i++) {
 			//System.out.print(queryAverageHistogram[i] + " ");
 			EncProgCommon.oos.writeObject(
 					EncProgCommon.encryption(mPaillier, queryAverageHistogram[i]));			
 		}
 		//System.out.println();
-		EncProgCommon.oos.flush();	
+		EncProgCommon.oos.flush();
+		*/	
+		double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;    	
+    	System.out.println("time: " + time);
     }
     
     protected void execFindCandidateTagClusters() throws Exception {

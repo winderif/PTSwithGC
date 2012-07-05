@@ -45,8 +45,7 @@ public abstract class ProgServer extends Program {
 	protected HashMap<String, double[]> tagsHistogramMap = null;
 	protected double[][] mTagAverageHistogram = null;
 	protected Vector<LinkedHashMap<Integer, Double>> mTagAverageDescriptor = null;
-	protected double[][] mDomainAverageHistogram = null;
-	protected double[] idf = null;
+	protected double[][] mDomainAverageHistogram = null;	
     
     public void run() throws Exception {
     	create_socket_and_listen();

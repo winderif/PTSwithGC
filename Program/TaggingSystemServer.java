@@ -34,6 +34,9 @@ public class TaggingSystemServer extends ProgServer {
     	super.init();
     	
     	this.mDistance = new DistanceL2square();
+    	//this.mDistance = new DistanceWeightedL2square();
+    	//this.mDistance = new DistanceL1();
+    	//this.mDistance = new DistanceWeightedL1();
     }
     
     protected void execQueryTransfer() throws Exception {    	
@@ -84,7 +87,7 @@ public class TaggingSystemServer extends ProgServer {
     	*/
     	mDomainDistance = new double[allDomains.length];
     	for(int i=0; i<allDomains.length; i++) {
-    		mDomainDistance[i] = distanceL2squr(mQueryAverageHistogram, mDomainAverageHistogram[i]);
+    		//mDomainDistance[i] = distanceL2squr(mQueryAverageHistogram, mDomainAverageHistogram[i]);
     		//mDomainDistance[i] = distanceWeightedL2squr(mQueryAverageHistogram, mDomainAverageHistogram[i]);
     		//System.out.print(mDomainDistance[i] + " ");
     		/**    		
@@ -277,47 +280,5 @@ public class TaggingSystemServer extends ProgServer {
     		TaggingSystemCommon.oos.writeObject(mMatchingTags[i]);
     	}
     	TaggingSystemCommon.oos.flush();
-    }
-    
-	// Calculating score with square Euclidian distance
-	private double distanceL2squr(double[] keyframeHistogram, double[] tagPhotosHistogram) {
-		double tmpScore = 0.0;
-		double diff = 0.0;
-		for(int i=0; i<BIN_HISTO; i++) {
-			diff = keyframeHistogram[i] - tagPhotosHistogram[i];
-			tmpScore += diff*diff;
-		}
-		return tmpScore;
-	}
-	
-	// Calculating score with L1-distance
-	private double distanceL1(double[] keyframeHistogram, double[] tagPhotosHistogram) {
-		double tmpScore = 0.0;
-		double diff = 0.0;
-		for(int i=0; i<BIN_HISTO; i++) {
-			diff = Math.abs(keyframeHistogram[i] - tagPhotosHistogram[i]);
-			tmpScore += diff;
-		}
-		return tmpScore;
-	}
-	
-	private double distanceWeightedL2squr(double[] keyframeHistogram, double[] tagPhotosHistogram) {
-		double tmpScore = 0.0;
-		double diff = 0.0;
-		for(int i=0; i<BIN_HISTO; i++) {
-			diff = keyframeHistogram[i] - tagPhotosHistogram[i];
-			tmpScore += (diff*diff) * idf[i];		
-		}
-		return tmpScore;
-	}
-	
-	private double distanceWeightedL1(double[] keyframeHistogram, double[] tagPhotosHistogram) {
-		double tmpScore = 0.0;
-		double diff = 0.0;
-		for(int i=0; i<BIN_HISTO; i++) {
-			diff = Math.abs(keyframeHistogram[i] - tagPhotosHistogram[i]);
-			tmpScore += diff * idf[i];
-		}
-		return tmpScore;
-	}
+    }    
 }

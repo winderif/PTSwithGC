@@ -5,20 +5,27 @@ package Program;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Random;
+import java.util.Vector;
+import java.util.Map;
+import java.util.Iterator;
 
 import Protocol.ComparisonProtocolOnServer;
 import Utils.EncFastHungarianAlgorithm;
 import Utils.FindExtremeValue;
 import Crypto.CryptosystemPaillierServer;
-import Score.ComputingScoreServer;
+import Score.*;
 
 public class EncTaggingSystemServer extends ProgServer {
 
 	private CryptosystemPaillierServer mPaillier = null;
-		
+	private Distance mDistance = null;
+
+	private int mQueryNum = 0;
 	private BigInteger[][] mEncQueryHistogram = null;
 	private BigInteger[] mEncQueryAverageHistogram = null;
+	private Vector<LinkedHashMap<Integer, BigInteger>> mEncQueryDescriptor = null;
 	private BigInteger[][] mEncTagAverageHistogram = null;
 	private BigInteger[][] mEncDomainAverageHistogram = null;
 	private BigInteger[][] mEncHungarianMatrix = null;
@@ -40,6 +47,9 @@ public class EncTaggingSystemServer extends ProgServer {
     	this.mPaillier = new CryptosystemPaillierServer(pkey);
     	System.out.println("\t[S][SUCCESS]\treceive public key pair (n, g).");
     	
+    	this.mDistance = new DistanceL2square();
+    	//this.mDistance = new DistanceWeightedL2square();    	
+    	
     	/**
     	System.out.println("\t[S][START]\tEncrypt Database.");
     	EncrptTagAverageHistogram();
@@ -58,8 +68,24 @@ public class EncTaggingSystemServer extends ProgServer {
 			EncProgCommon.encryption(mPaillier, mDomainAverageHistogram);					
 	}
     
-    protected void execQueryTransfer() throws Exception {    	    	
-    	mEncQueryHistogram = new BigInteger[EncProgCommon.ois.readInt()][BIN_HISTO];
+    protected void execQueryTransfer() throws Exception {
+    	mQueryNum = TaggingSystemCommon.ois.readInt();
+    	mEncQueryHistogram = new BigInteger[mQueryNum][BIN_HISTO];
+    	mEncQueryDescriptor = new Vector<LinkedHashMap<Integer, BigInteger>>();
+    	
+    	for(int i=0; i<mQueryNum; i++) {
+    		mEncQueryDescriptor.add(
+    				(LinkedHashMap<Integer, BigInteger>)TaggingSystemCommon.ois.readObject());
+    		/** Printing 
+    		Iterator iter = mEncQueryDescriptor.elementAt(i).entrySet().iterator();
+    		while(iter.hasNext()) {
+    			Map.Entry<Integer, BigInteger> p = 
+    				(Map.Entry<Integer, BigInteger>)iter.next();
+    			System.out.println(p.getKey() + "\t" + mPaillier.Decryption(p.getValue()));
+    		}    		
+    		*/
+    	}    
+    	/**
     	mEncQueryAverageHistogram = new BigInteger[BIN_HISTO];    	
  		for(int i=0; i<mEncQueryHistogram.length; i++) {
  			for(int j=0; j<BIN_HISTO; j++) {
@@ -69,14 +95,15 @@ public class EncTaggingSystemServer extends ProgServer {
  			}
  			//System.out.println();
  		}
- 		
+ 		*/
+    	/**
  		for(int i=0; i<BIN_HISTO; i++) {
  			mEncQueryAverageHistogram[i] 
  			    = new BigInteger(EncProgCommon.ois.readObject().toString());
 			//System.out.print(mQueryAverageHistogram[i] + " ");
 		}
  		//System.out.println();
- 		
+ 		*/
  		System.out.println("\t[S][SUCCESS]\treceive Query datas.");
     }
     
@@ -200,9 +227,21 @@ public class EncTaggingSystemServer extends ProgServer {
 		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
 			for(int j=0; j<this.mTagAverageHistogram.length; j++) {
 				System.out.printf("\t[S][START]\tComputing D(%d, %d)\n", i, j);
+				double start = System.nanoTime();
+				
+				this.mEncHungarianMatrix[i][j] = mDistance.evaluate(
+							mPaillier, 
+							mEncQueryDescriptor.elementAt(i), 
+							mTagAverageDescriptor.elementAt(j));
+				/**
 				this.mEncHungarianMatrix[i][j] = 
 					EncScore(this.mEncQueryHistogram[i], mTagAverageHistogram[j]);
+				*/
+				double end = System.nanoTime();
+				double time = (end - start)/1000000000.0;
+				System.out.print(mPaillier.Decryption(mEncHungarianMatrix[i][j]) + " " + time);
 			}
+			System.out.println();
 		}				
 		
 		double endTime = System.nanoTime();

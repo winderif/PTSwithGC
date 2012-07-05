@@ -26,7 +26,8 @@ public class ComputingScoreClient extends ComputingScore {
 				BigInteger x_dec = BigInteger.ZERO;
 				BigInteger s3_c = BigInteger.ZERO;
 				
-				for(int i=0; i<BIN_HISTO; i++) {	
+				int descriptor_num = EncProgCommon.ois.readInt();
+				for(int i=0; i<descriptor_num; i++) {	
 					// de[x] = x					
 					x_dec = mPaillier.Decryption(
 							(new BigInteger(EncProgCommon.ois.readObject().toString())));
