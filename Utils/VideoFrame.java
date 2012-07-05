@@ -2,6 +2,7 @@ package Utils;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +17,8 @@ import com.drew.metadata.iptc.IptcReader;
 
 public class VideoFrame {
 	private Feature mFeature = null;
-	private double[] mFeatureVec = null;	
+	private double[] mFeatureVec = null;
+	private LinkedHashMap<Integer, Double> mFeatureDescriptor = null;
 
     private String[] mTags;
     private String Photographer = "";
@@ -45,7 +47,8 @@ public class VideoFrame {
         	((FeatureTopSurf)mFeature).setFaetureDir(tmpDir[0]);        	
     	}    	
     	mFeature.run();
-    	mFeatureVec = ((FeatureTopSurf)mFeature).getFeature();    	    	
+    	mFeatureVec = ((FeatureTopSurf)mFeature).getFeature();    	 
+    	mFeatureDescriptor = ((FeatureTopSurf)mFeature).getDescriptor();
     	
     	setTags(mFile);
     }
@@ -135,8 +138,12 @@ public class VideoFrame {
 	}    	         
    
     public double[] getFeatureVector() {    
-      	return mFeatureVec;
-    }       
+      	return this.mFeatureVec;
+    }
+    
+    public LinkedHashMap getFeatureDescriptor() {    
+      	return this.mFeatureDescriptor;
+    }
     
     public String[] getTags() {
     	return this.mTags;

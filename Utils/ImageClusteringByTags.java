@@ -2,6 +2,7 @@ package Utils;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -105,7 +106,8 @@ public class ImageClusteringByTags {
 			
 			for(int j=0; j<BIN_HISTO; j++) {
 				mTagAverageHistogram[i][j] /= imageClustersMap.get(allTags[i]).size();
-				//System.out.print(this.mTagAverageHistogram[i][j] + " ");
+				//if(mTagAverageHistogram[i][j] > 0.0)
+					//System.out.print(mTagAverageHistogram[i][j] + " ");
 			}
 			//System.out.println();			
 		}
@@ -125,5 +127,24 @@ public class ImageClusteringByTags {
 		
 		return tagsHistogramMap;
 	}
-			
+		
+	public static Vector<LinkedHashMap<Integer, Double>> getTagsDescriptor(
+			double[][] mTagAverageHistogram) {
+		
+		Vector<LinkedHashMap<Integer, Double>> tmpVec = 
+			new Vector<LinkedHashMap<Integer, Double>>();
+		
+		for(int i=0; i<mTagAverageHistogram.length; i++) {			
+			LinkedHashMap<Integer, Double> des = new LinkedHashMap<Integer, Double>();
+			for(int j=0; j<BIN_HISTO; j++) {
+				if(mTagAverageHistogram[i][j] > 0.0) {
+					//System.out.print(mTagAverageHistogram[i][j] + " ");
+					des.put(j, mTagAverageHistogram[i][j]);
+				}
+			}
+			//System.out.println();
+			tmpVec.add(des);
+		}
+		return tmpVec;
+	}
 }

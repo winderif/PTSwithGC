@@ -1,6 +1,7 @@
 package Feature;
 
 import java.io.*;
+import java.util.LinkedHashMap;
 
 public class FeatureTopSurf extends Feature {
 	private File imgFile = null;
@@ -14,7 +15,8 @@ public class FeatureTopSurf extends Feature {
 	private boolean featureFileExisted = false; 
 	
 	private static final int TOPSURF_BIN = 10000;
-	private double[] histogram = null;	
+	private double[] histogram = null;
+	private LinkedHashMap<Integer, Double> descriptor = null; 
 	
 	public FeatureTopSurf(File arg0) {
 		imgFile = arg0;
@@ -50,22 +52,26 @@ public class FeatureTopSurf extends Feature {
 	}		
 	
 	private void checkTopSurf() {		
-		String[] tmp = imgFile.getName().split(".jpg");
-		String setDir = featureDir + tmp[0] + ".top";
-		tmp = imgFile.getAbsolutePath().split(".jpg");
-		String sameDir = tmp[0] + ".top"; 
+		String[] fileToken = imgFile.getName().split(".jpg");
+		String setDir = featureDir + fileToken[0] + ".top";
+		
+		String[] abFileToken = imgFile.getAbsolutePath().split(".jpg");
+		String sameDir = abFileToken[0] + ".top"; 
 		
 		File setDirFile = new File(setDir);
 		File sameDirFile = new File(sameDir);
 		//System.out.println(setDirFile.isFile());
 		//System.out.println(sameDirFile.isFile());
 		if(setDirFile.isFile() | sameDirFile.isFile()) {
-			if(setDirFile.isFile())
+			if(setDirFile.isFile()) {
 				topsurfFile = setDirFile;
-			else if(sameDirFile.isFile())
+			}
+			else if(sameDirFile.isFile()) {							
 				topsurfFile = sameDirFile;
-			else
+			}
+			else {
 				topsurfFile = null;
+			}
 			featureFileExisted = true;
 		}			
 	}
@@ -75,7 +81,7 @@ public class FeatureTopSurf extends Feature {
 			Runtime rt = Runtime.getRuntime(); 
 			Process proc = rt.exec(extractCommand);
 			InputStreamReader isr = new InputStreamReader(proc.getErrorStream());
-			while(isr.read() != -1) ;
+			while(isr.read() != -1) {;}
 			/**
 			BufferedReader br = new BufferedReader(isr); 
 			String line = null;			 					
@@ -109,7 +115,8 @@ public class FeatureTopSurf extends Feature {
 				// split each line
 				String[] tmpLine = tmpFile.toString().split("\r\n");				
 				if(tmpLine[0] != "") {
-					histogram = new double[TOPSURF_BIN];				
+					histogram = new double[TOPSURF_BIN];
+					descriptor = new LinkedHashMap<Integer, Double>();					
 					
 					int index = 0;				
 					for(int i=0; i<tmpLine.length; i++) {
@@ -117,10 +124,11 @@ public class FeatureTopSurf extends Feature {
 						String[] tmpValue = tmpLine[i].split("\t");
 								
 						//System.out.println(tmpValue[0]);
-						index = Integer.parseInt(tmpValue[0]);					
+						index = Integer.parseInt(tmpValue[0]);						
 						// count of histogram
 						histogram[index] = 
-							Double.parseDouble(tmpValue[2]);					
+							Double.parseDouble(tmpValue[2]);
+						descriptor.put(index, Double.parseDouble(tmpValue[2]));
 					}
 					/** debugging 								
 					for(int i=0; i<histogram.length; i++) {
@@ -147,7 +155,11 @@ public class FeatureTopSurf extends Feature {
 	
 	public double[] getFeature() {
 		return this.histogram;
-	}		
+	}
+	
+	public LinkedHashMap<Integer, Double> getDescriptor() {
+		return this.descriptor;
+	}
 	
 	public void setFaetureDir(String dir) {
 		this.featureDir = dir;

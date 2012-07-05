@@ -5,6 +5,7 @@ package Program;
 import java.net.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.util.Vector;
 import java.io.*;
@@ -42,7 +43,8 @@ public abstract class ProgServer extends Program {
 	protected String[] allDomains = null;
 	
 	protected HashMap<String, double[]> tagsHistogramMap = null;
-	protected double[][] mTagAverageHistogram = null;	
+	protected double[][] mTagAverageHistogram = null;
+	protected Vector<LinkedHashMap<Integer, Double>> mTagAverageDescriptor = null;
 	protected double[][] mDomainAverageHistogram = null;
 	protected double[] idf = null;
     
@@ -79,10 +81,7 @@ public abstract class ProgServer extends Program {
     	
     	generateImageClusters();    	
     	
-    	generateTagClusters();
-    	
-    	// 12.06.28 winderif
-    	//loadTopSurfIDF();
+    	generateTagClusters();    	    	
     }       
     
     private void loadQuery() {
@@ -138,19 +137,22 @@ public abstract class ProgServer extends Program {
 	private void generateImageClusters() {
 		System.out.println("\t[S][START]\tGenerate Image Clusters");
 		
-		imageClustersMap
-			= ImageClusteringByTags.getImageClusters(databaseData);    	        
-		allTags 		 
-			= ImageClusteringByTags.getAllTags(imageClustersMap);
+		imageClustersMap =
+			ImageClusteringByTags.getImageClusters(databaseData);    	        
+		allTags =  		 
+			ImageClusteringByTags.getAllTags(imageClustersMap);
 		System.out.println("\t[S][SUCCESS]\tGenerate Image Clusters");	
 		
 		System.out.println("\t[S][START]\tGet Average Color Histogram");
-		mTagAverageHistogram 
-			= ImageClusteringByTags.getTagAverageHistogram(imageClustersMap, allTags);
+		mTagAverageHistogram = 
+			ImageClusteringByTags.getTagAverageHistogram(imageClustersMap, allTags);
 		System.out.println("\t[S][SUCCESS]\tGet Average Color Histogram");
 		
-		tagsHistogramMap
-			= ImageClusteringByTags.getTagsHistogramMap(allTags, mTagAverageHistogram);
+		tagsHistogramMap =
+			ImageClusteringByTags.getTagsHistogramMap(allTags, mTagAverageHistogram);
+		
+		mTagAverageDescriptor =
+			ImageClusteringByTags.getTagsDescriptor(mTagAverageHistogram);
 	}
 	
 	private void generateTagClusters() {		
@@ -174,42 +176,7 @@ public abstract class ProgServer extends Program {
 		mDomainAverageHistogram
 			= TagClusteringByDomain.getDomainAverageColorHistogram(tagClustersMap, allDomains, tagsHistogramMap);
 		System.out.println("\t[S][SUCCESS]\tGet Domain Average Color Histogram");		
-	}
-
-	protected void loadTopSurfIDF() {
-		System.out.println("\t[S][START]\tLoad Topsurf idf weight.");
-		
-		File idfFile = new File("topsurf/idf/idf_10000.txt");
-		idf = new double[BIN_HISTO];
-		
-		if(idfFile.isFile() == false || idfFile == null) {
-			System.out.println("\t[S][START]\tCannot load Topsurf idf weight.");
-		}
-		else {
-			try {
-				FileReader inFile = new FileReader(idfFile);
-				StringBuilder tmpText = new StringBuilder();
-				int in = 0;
-				while((in = inFile.read()) != -1) {
-					tmpText.append((char)in);
-				}
-				
-				//System.out.println(tmpText);
-				
-				String[] tmpNum = tmpText.toString().split(" ");
-				
-				for(int i=0; i<BIN_HISTO; i++) {
-					idf[i] = Double.parseDouble(tmpNum[i]);
-					//System.out.println(idf[i]);
-				}
-				System.out.println("\t[S][SUCCESS]\tLoad Topsurf idf weight.");
-				
-				inFile.close();
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
-		}			
-	}
+	}	
 	
     private void cleanup() throws Exception {
     	ProgCommon.oos.close();                          // close everything

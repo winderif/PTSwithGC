@@ -3,33 +3,58 @@
 package Program;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Vector;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
+import java.util.Iterator;
 
 import Utils.FastHungarianAlgorithm;
 import Utils.ValueComparator;
+import Score.*;
 
 public class TaggingSystemServer extends ProgServer {
 
 	private int mQueryNum = 0;
 	private double[][] mQueryHistogram = null;	
 	private double[] mQueryAverageHistogram = null;
+	private Vector<LinkedHashMap<Integer, Double>> mQueryDescriptor = null; 
 	private double[][] mHungarianMatrix = null;
 	private String[] mMatchingTags = null;
 	
 	private double[] mDomainDistance = null;
 	
+	private Distance mDistance = null;
+	
     public TaggingSystemServer() {
     }
 
-    protected void init() throws Exception {
+    protected void init() throws Exception {    	
     	super.init();
+    	
+    	this.mDistance = new DistanceL2square();
     }
     
     protected void execQueryTransfer() throws Exception {    	
     	mQueryNum = TaggingSystemCommon.ois.readInt();
     	mQueryHistogram = new double[mQueryNum][BIN_HISTO];    	    
     	mQueryAverageHistogram = new double[BIN_HISTO];
+    	/** Improved */
+    	mQueryDescriptor = new Vector<LinkedHashMap<Integer, Double>>();
+    	for(int i=0; i<mQueryNum; i++) {    		    	
+    		mQueryDescriptor.add(
+    				(LinkedHashMap<Integer, Double>)TaggingSystemCommon.ois.readObject());
+    		/** Printing
+    		Iterator iter = mQueryDescriptor.elementAt(i).entrySet().iterator();
+    		while(iter.hasNext()) {
+    			Map.Entry p = (Map.Entry)iter.next();
+    			System.out.println(p.getKey() + "\t" + p.getValue());
+    		}
+    		*/
+    	}
+    	
+    	/** Oringinal */
  		for(int i=0; i<mQueryHistogram.length; i++) {
  			for(int j=0; j<BIN_HISTO; j++) {
  				mQueryHistogram[i][j] = TaggingSystemCommon.ois.readDouble();
@@ -181,11 +206,19 @@ public class TaggingSystemServer extends ProgServer {
     protected void execBuildBipartiteGraph() throws Exception {
 		System.out.println("\t[S][START]\tBuild Bipartile Graph.");
 		double startTime = System.nanoTime();
-		mHungarianMatrix = new double[mQueryHistogram.length][mTagAverageHistogram.length];
-		
+		/** Improved */
+		mHungarianMatrix = new double[mQueryDescriptor.size()][mTagAverageDescriptor.size()];
+		for(int i=0; i<mQueryDescriptor.size(); i++) {
+			for(int j=0; j<mTagAverageDescriptor.size(); j++) {
+				mHungarianMatrix[i][j] = mDistance.evaluate(
+						mQueryDescriptor.elementAt(i), 
+						mTagAverageDescriptor.elementAt(j));		
+		/** Oringinal
+		mHungarianMatrix = new double[mQueryHistogram.length][mTagAverageHistogram.length]; 
 		for(int i=0; i<mQueryHistogram.length; i++) {
-			for(int j=0; j<mTagAverageHistogram.length; j++) {			
-				mHungarianMatrix[i][j] = distanceL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
+			for(int j=0; j<mTagAverageHistogram.length; j++) {	
+		*/		
+				//mHungarianMatrix[i][j] = distanceL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//mHungarianMatrix[i][j] = distanceWeightedL2squr(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//mHungarianMatrix[i][j] = distanceL1(mQueryHistogram[i], mTagAverageHistogram[j]);
 				//mHungarianMatrix[i][j] = distanceWeightedL1(mQueryHistogram[i], mTagAverageHistogram[j]);				

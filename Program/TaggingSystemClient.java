@@ -2,6 +2,9 @@
 
 package Program;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import Utils.WriteOutput;
 
 public class TaggingSystemClient extends ProgClient {
@@ -20,6 +23,13 @@ public class TaggingSystemClient extends ProgClient {
 		// Number of Query		
 		TaggingSystemCommon.oos.writeInt(videoFrames.size());
 		//System.out.println(videoFrames.size());
+		/** Improved */
+		for(int i=0; i<videoFrames.size(); i++) {
+			TaggingSystemCommon.oos.writeObject(videoFrames.elementAt(i).getFeatureDescriptor());			
+		}
+		TaggingSystemCommon.oos.flush();
+		
+		/** Oringinal */
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getFeatureVector()[j] + " ");
@@ -28,7 +38,7 @@ public class TaggingSystemClient extends ProgClient {
 			//System.out.println();
 		}
 		TaggingSystemCommon.oos.flush();
-		
+	
 		
 		for(int i=0; i<BIN_HISTO; i++) {
 			//System.out.print(queryAverageHistogram[i] + " ");
