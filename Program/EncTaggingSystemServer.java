@@ -3,10 +3,8 @@
 package Program;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Random;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Iterator;
@@ -25,7 +23,7 @@ public class EncTaggingSystemServer extends ProgServer {
 	private int mQueryNum = 0;
 	private BigInteger[][] mEncQueryHistogram = null;
 	private BigInteger[] mEncQueryAverageHistogram = null;
-	private Vector<LinkedHashMap<Integer, BigInteger>> mEncQueryDescriptor = null;
+	private Vector<Map<Integer, BigInteger>> mEncQueryDescriptor = null;
 	private BigInteger[][] mEncTagAverageHistogram = null;
 	private BigInteger[][] mEncDomainAverageHistogram = null;
 	private BigInteger[][] mEncHungarianMatrix = null;
@@ -47,8 +45,8 @@ public class EncTaggingSystemServer extends ProgServer {
     	this.mPaillier = new CryptosystemPaillierServer(pkey);
     	System.out.println("\t[S][SUCCESS]\treceive public key pair (n, g).");
     	
-    	this.mDistance = new DistanceL2square();
-    	//this.mDistance = new DistanceWeightedL2square();    	
+    	//this.mDistance = new DistanceL2square();
+    	this.mDistance = new DistanceWeightedL2square();    	
     	
     	/**
     	System.out.println("\t[S][START]\tEncrypt Database.");
@@ -71,11 +69,11 @@ public class EncTaggingSystemServer extends ProgServer {
     protected void execQueryTransfer() throws Exception {
     	mQueryNum = TaggingSystemCommon.ois.readInt();
     	mEncQueryHistogram = new BigInteger[mQueryNum][BIN_HISTO];
-    	mEncQueryDescriptor = new Vector<LinkedHashMap<Integer, BigInteger>>();
+    	mEncQueryDescriptor = new Vector<Map<Integer, BigInteger>>();
     	
     	for(int i=0; i<mQueryNum; i++) {
     		mEncQueryDescriptor.add(
-    				(LinkedHashMap<Integer, BigInteger>)TaggingSystemCommon.ois.readObject());
+    				(Map<Integer, BigInteger>)TaggingSystemCommon.ois.readObject());
     		/** Printing 
     		Iterator iter = mEncQueryDescriptor.elementAt(i).entrySet().iterator();
     		while(iter.hasNext()) {

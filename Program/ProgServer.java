@@ -3,17 +3,13 @@
 package Program;
 
 import java.net.*;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Scanner;
+import java.util.Map;
 import java.util.Vector;
 import java.io.*;
 
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.io.input.CountingInputStream;
-
-import com.articulate.sigma.WordNet;
 
 import Utils.ImageClusteringByTags;
 import Utils.TagClusteringByDomain;
@@ -44,7 +40,7 @@ public abstract class ProgServer extends Program {
 	
 	protected HashMap<String, double[]> tagsHistogramMap = null;
 	protected double[][] mTagAverageHistogram = null;
-	protected Vector<LinkedHashMap<Integer, Double>> mTagAverageDescriptor = null;
+	protected Vector<Map<Integer, Double>> mTagAverageDescriptor = null;
 	protected double[][] mDomainAverageHistogram = null;	
     
     public void run() throws Exception {

@@ -19,7 +19,7 @@ public class TaggingSystemServer extends ProgServer {
 	private int mQueryNum = 0;
 	private double[][] mQueryHistogram = null;	
 	private double[] mQueryAverageHistogram = null;
-	private Vector<LinkedHashMap<Integer, Double>> mQueryDescriptor = null; 
+	private Vector<Map<Integer, Double>> mQueryDescriptor = null; 
 	private double[][] mHungarianMatrix = null;
 	private String[] mMatchingTags = null;
 	
@@ -44,7 +44,7 @@ public class TaggingSystemServer extends ProgServer {
     	mQueryHistogram = new double[mQueryNum][BIN_HISTO];    	    
     	mQueryAverageHistogram = new double[BIN_HISTO];
     	/** Improved */
-    	mQueryDescriptor = new Vector<LinkedHashMap<Integer, Double>>();
+    	mQueryDescriptor = new Vector<Map<Integer, Double>>();
     	for(int i=0; i<mQueryNum; i++) {    		    	
     		mQueryDescriptor.add(
     				(LinkedHashMap<Integer, Double>)TaggingSystemCommon.ois.readObject());

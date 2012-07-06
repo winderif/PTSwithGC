@@ -1,7 +1,9 @@
 package Feature;
 
 import java.io.*;
-import java.util.LinkedHashMap;
+import java.util.Map;
+
+import Utils.Create;
 
 public class FeatureTopSurf extends Feature {
 	private File imgFile = null;
@@ -16,7 +18,7 @@ public class FeatureTopSurf extends Feature {
 	
 	private static final int TOPSURF_BIN = 10000;
 	private double[] histogram = null;
-	private LinkedHashMap<Integer, Double> descriptor = null; 
+	private Map<Integer, Double> descriptor = null; 
 	
 	public FeatureTopSurf(File arg0) {
 		imgFile = arg0;
@@ -116,7 +118,7 @@ public class FeatureTopSurf extends Feature {
 				String[] tmpLine = tmpFile.toString().split("\r\n");				
 				if(tmpLine[0] != "") {
 					histogram = new double[TOPSURF_BIN];
-					descriptor = new LinkedHashMap<Integer, Double>();					
+					descriptor = Create.linkedHashMap();					
 					
 					int index = 0;				
 					for(int i=0; i<tmpLine.length; i++) {
@@ -157,7 +159,7 @@ public class FeatureTopSurf extends Feature {
 		return this.histogram;
 	}
 	
-	public LinkedHashMap<Integer, Double> getDescriptor() {
+	public Map<Integer, Double> getDescriptor() {
 		return this.descriptor;
 	}
 	

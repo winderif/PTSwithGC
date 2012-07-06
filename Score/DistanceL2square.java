@@ -21,10 +21,7 @@ public class DistanceL2square extends Distance {
 		return tmpScore;
 	}
 	
-	public double evaluate(
-			LinkedHashMap<Integer, Double> q, 
-			LinkedHashMap<Integer, Double> d) {
-		
+	public double evaluate(Map<Integer, Double> q, Map<Integer, Double> d) {		
 		double tmpScore = 0.0;
 		double diff = 0.0;
 		Iterator qIter = q.entrySet().iterator();
@@ -80,10 +77,10 @@ public class DistanceL2square extends Distance {
 	
 	public BigInteger evaluate(
 			CryptosystemPaillierServer mPaillier,
-			LinkedHashMap<Integer, BigInteger> q_Enc, 
-			LinkedHashMap<Integer, Double> d) throws Exception {
+			Map<Integer, BigInteger> q_Enc, 
+			Map<Integer, Double> d) throws Exception {
 		
-		LinkedHashMap<Integer, BigInteger> d_big = EncProgCommon.DoubleMapToBigIntegerMap(d);		
+		Map<Integer, BigInteger> d_big = EncProgCommon.DoubleMapToBigIntegerMap(d);		
 		BigInteger s1 = evaluateFirstTerm(mPaillier, d_big);		
 		BigInteger s2 = evaluateSecondTerm(mPaillier, q_Enc, d_big);		 	
 		BigInteger s3 = evaluateThirdTerm(mPaillier, q_Enc);		
@@ -93,20 +90,20 @@ public class DistanceL2square extends Distance {
 	
 	private BigInteger evaluateFirstTerm(
 			CryptosystemPaillierServer mPaillier, 
-			LinkedHashMap<Integer, BigInteger> d_big) {
+			Map<Integer, BigInteger> d_big) {
 		
 		BigInteger tmpS1 = BigInteger.ZERO;
 		for(BigInteger w_i : d_big.values()) {
 			tmpS1 = tmpS1.add(w_i.multiply(w_i));
-		}
+		}		
 		BigInteger s1 = mPaillier.Encryption(tmpS1);
 		return s1;
 	}
 	
 	private BigInteger evaluateSecondTerm(
 			CryptosystemPaillierServer mPaillier,
-			LinkedHashMap<Integer, BigInteger> q_Enc, 
-			LinkedHashMap<Integer, BigInteger> d_big) {
+			Map<Integer, BigInteger> q_Enc, 
+			Map<Integer, BigInteger> d_big) {
 		
 		BigInteger tmpS2 = BigInteger.ONE;								
 		
@@ -157,7 +154,7 @@ public class DistanceL2square extends Distance {
 	
 	private BigInteger evaluateThirdTerm(
 			CryptosystemPaillierServer mPaillier,
-			LinkedHashMap<Integer, BigInteger> q_Enc) throws Exception {
+			Map<Integer, BigInteger> q_Enc) throws Exception {
 				
 		BigInteger[] q_Enc_Array = new BigInteger[q_Enc.values().size()]; 
 		q_Enc.values().toArray(q_Enc_Array);

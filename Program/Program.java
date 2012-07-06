@@ -26,7 +26,7 @@ public abstract class Program {
     	
     	execBuildBipartiteGraph();
     	
-    	//execFindBestMatching();
+    	execFindBestMatching();
     	
     	//execResultTransfer();
     }    

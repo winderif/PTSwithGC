@@ -1,3 +1,7 @@
+/**
+ * [JWorld@TW][Effective Java Reloaded] Static Factory的新用法 by ingramchen 
+ * http://www.javaworld.com.tw/jute/post/view?bid=44&id=163570&sty=1&tpg=1&age=0
+ */
 package Utils;
 import java.util.*;
 

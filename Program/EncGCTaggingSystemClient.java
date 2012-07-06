@@ -29,6 +29,13 @@ public class EncGCTaggingSystemClient extends ProgClient {
 		// Number of Query		
 		EncProgCommon.oos.writeInt(videoFrames.size());
 		//System.out.println(videoFrames.size());
+		
+		double startTime = System.nanoTime();
+		for(int i=0; i<videoFrames.size(); i++) {
+			EncProgCommon.oos.writeObject(
+					EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureDescriptor()));
+		}
+		/**
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");				
@@ -45,7 +52,11 @@ public class EncGCTaggingSystemClient extends ProgClient {
 					EncProgCommon.encryption(mPaillier, queryAverageHistogram[i]));			
 		}
 		//System.out.println();
-		EncProgCommon.oos.flush();	
+		EncProgCommon.oos.flush();
+		*/
+		double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;    	
+    	System.out.println("time: " + time);
     }
     
     protected void execFindCandidateTagClusters() throws Exception {

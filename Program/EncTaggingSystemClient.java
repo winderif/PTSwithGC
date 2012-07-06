@@ -2,7 +2,7 @@
 
 package Program;
 
-import Score.ComputingScoreClient;
+import Score.*;
 import Crypto.CryptosystemPaillierClient;
 import Protocol.ComparisonProtocolOnClient;
 
@@ -62,7 +62,7 @@ public class EncTaggingSystemClient extends ProgClient {
     
     protected void execFindCandidateTagClusters() throws Exception {
     	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
-    	ComputingScoreClient computeClient = 
+    	ComputingScore computeClient = 
     		new ComputingScoreClient(mPaillier);
     	computeClient.run();
     	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
@@ -75,8 +75,9 @@ public class EncTaggingSystemClient extends ProgClient {
     
     protected void execBuildBipartiteGraph() throws Exception {    
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
-    	ComputingScoreClient computeClient = 
-    		new ComputingScoreClient(mPaillier);
+    	ComputingScore computeClient = 
+    		//new ComputingScoreClient(mPaillier);
+    		new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();    	    
     	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");    	
     }    

@@ -29,10 +29,7 @@ public class DistanceWeightedL1 extends Distance {
 		return tmpScore;
 	}
 	
-	public double evaluate(
-			LinkedHashMap<Integer, Double> q, 
-			LinkedHashMap<Integer, Double> d) {
-		
+	public double evaluate(Map<Integer, Double> q, Map<Integer, Double> d) {		
 		double tmpScore = 0.0;
 		double diff = 0.0;
 		double weight = 0.0;
@@ -130,8 +127,8 @@ public class DistanceWeightedL1 extends Distance {
 	
 	public BigInteger evaluate(
 			CryptosystemPaillierServer mPaillier,
-			LinkedHashMap<Integer, BigInteger> q_Enc, 
-			LinkedHashMap<Integer, Double> d) throws Exception {
+			Map<Integer, BigInteger> q_Enc, 
+			Map<Integer, Double> d) throws Exception {
 		return null;
 	}
 }

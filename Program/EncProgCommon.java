@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import Utils.Create;
+
 import Crypto.CryptosystemAbstract;
 
 public class EncProgCommon extends ProgCommon {	
@@ -20,10 +22,10 @@ public class EncProgCommon extends ProgCommon {
 		return cryptosystem.Encryption(plaintext);
 	}
 	
-	public static LinkedHashMap<Integer, BigInteger> encryption(
-			CryptosystemAbstract cryptosystem, LinkedHashMap<Integer, Double> plaintexts) {
+	public static Map<Integer, BigInteger> encryption(
+			CryptosystemAbstract cryptosystem, Map<Integer, Double> plaintexts) {
 		
-		LinkedHashMap<Integer, BigInteger> tmpMap = new LinkedHashMap<Integer, BigInteger>();
+		Map<Integer, BigInteger> tmpMap = Create.linkedHashMap(); 
 		Iterator iter = plaintexts.entrySet().iterator();
 		while(iter.hasNext()) {
 			Map.Entry<Integer, Double> pair = (Map.Entry<Integer, Double>) iter.next();
@@ -85,9 +87,9 @@ public class EncProgCommon extends ProgCommon {
     	return tmpBigInteger;
     }   
     
-    public static LinkedHashMap<Integer, BigInteger> DoubleMapToBigIntegerMap(
-			LinkedHashMap<Integer, Double> plaintexts) {
-    	LinkedHashMap<Integer, BigInteger> ciphertexts = new LinkedHashMap<Integer, BigInteger>();
+    public static Map<Integer, BigInteger> DoubleMapToBigIntegerMap(
+			Map<Integer, Double> plaintexts) {
+    	Map<Integer, BigInteger> ciphertexts = Create.linkedHashMap();
 		Iterator iter = plaintexts.entrySet().iterator();
 		while(iter.hasNext()) {
 			Map.Entry<Integer, Double> pair = (Map.Entry<Integer, Double>) iter.next();

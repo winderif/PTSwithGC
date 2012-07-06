@@ -83,6 +83,25 @@ public class AdditivelyBlindProtocol {
 		return s3_c.multiply(tmpRight).mod(mPaillier.nsquare);
 	}
 	
+	public BigInteger[] getOringinalNumbers(BigInteger[] y) {
+		BigInteger[] x = new BigInteger[y.length];
+		BigInteger r_neg_square = BigInteger.ZERO;
+		BigInteger neg_TWO_r = BigInteger.ZERO;
+		BigInteger w_r_neg_TWO = BigInteger.ONE;
+		for(int i=0; i<y.length; i++) {
+			// -(r^2) = (-1)*(r^2)
+			r_neg_square = BigInteger.ONE.negate().multiply(mUniformRandomNumbers[i].pow(2));
+			// (-2)*r
+			neg_TWO_r = mUniformRandomNumbers[i].multiply(new BigInteger("-2"));
+			// [w]^(-2r) mod N
+			w_r_neg_TWO = mEncOriginalNumbers[i].modPow(neg_TWO_r, mPaillier.nsquare);
+			// [w]^(-2r) * [-(r^2)]						
+			x[i] = y[i].multiply(w_r_neg_TWO.multiply(mPaillier.Encryption(r_neg_square)).mod(mPaillier.nsquare))
+						.mod(mPaillier.nsquare);
+		}
+		return x;
+	}
+	
 	public BigInteger[] getUniformRandomNumbers() {
 		return this.mUniformRandomNumbers;
 	}
