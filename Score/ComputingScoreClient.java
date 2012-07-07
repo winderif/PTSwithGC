@@ -36,7 +36,7 @@ public class ComputingScoreClient extends ComputingScore {
 					 */
 					 
 					// S3' = S3' + x^2
-					s3_c = s3_c.add(x_dec.pow(2));								
+					s3_c = s3_c.add(x_dec.multiply(x_dec));								
 				}			
 				/**
 				 * System.out.println();

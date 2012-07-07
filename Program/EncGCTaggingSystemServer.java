@@ -12,9 +12,7 @@ import Protocol.GCComparisonServer;
 import Utils.EncFastHungarianAlgorithm;
 import Utils.FindExtremeValue;
 import Crypto.CryptosystemPaillierServer;
-import Score.ComputingScoreServer;
-import Score.Distance;
-import Score.DistanceL2square;
+import Score.*;
 
 public class EncGCTaggingSystemServer extends ProgServer {
 
@@ -45,8 +43,8 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	this.mPaillier = new CryptosystemPaillierServer(pkey);
     	System.out.println("\t[S][SUCCESS]\treceive public key pair (n, g).");
     	
-    	this.mDistance = new DistanceL2square();
-    	//this.mDistance = new DistanceWeightedL2square();    	
+    	//this.mDistance = new DistanceL2square();
+    	this.mDistance = new DistanceWeightedL2square();    	
     	/**
     	System.out.println("\t[S][START]\tEncrypt Database.");
     	EncrptTagAverageHistogram();
@@ -72,7 +70,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	
     	for(int i=0; i<mQueryNum; i++) {
     		mEncQueryDescriptor.add(
-    				(LinkedHashMap<Integer, BigInteger>)TaggingSystemCommon.ois.readObject());
+    				(Map<Integer, BigInteger>)TaggingSystemCommon.ois.readObject());
     		/** Printing 
     		Iterator iter = mEncQueryDescriptor.elementAt(i).entrySet().iterator();
     		while(iter.hasNext()) {

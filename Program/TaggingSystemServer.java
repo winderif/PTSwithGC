@@ -227,7 +227,7 @@ public class TaggingSystemServer extends ProgServer {
 				//mHungarianMatrix[i][j] = distanceWeightedL1(mQueryHistogram[i], mTagAverageHistogram[j]);				
 				//System.out.print(this.mHungarianMatrix[i][j] + " ");
 			}
-			//System.out.println();
+			System.out.println();
 		}
 		//System.out.println();
 		double endTime = System.nanoTime();

@@ -21,7 +21,9 @@ public class DistanceL2square extends Distance {
 		return tmpScore;
 	}
 	
-	public double evaluate(Map<Integer, Double> q, Map<Integer, Double> d) {		
+	public double evaluate(Map<Integer, Double> q, Map<Integer, Double> d) {
+		BigInteger sum = BigInteger.ZERO;
+		BigInteger dif = BigInteger.ZERO;
 		double tmpScore = 0.0;
 		double diff = 0.0;
 		Iterator qIter = q.entrySet().iterator();
@@ -41,37 +43,51 @@ public class DistanceL2square extends Distance {
 				}
 				
 				if(qPair.getKey() < dPair.getKey()) {
-					diff = qPair.getValue();					
+					diff = qPair.getValue();
+					dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
 					isQueryNext = false;		
 					isDatabaseNext = true;
 				}
 				else if(qPair.getKey() > dPair.getKey()) {
-					diff = dPair.getValue();										
+					diff = dPair.getValue();				
+					dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
 					isQueryNext = true;		
 					isDatabaseNext = false;
 				}
 				else {
 					diff = qPair.getValue() - dPair.getValue();					
+					BigInteger qbig = new BigInteger(Long.toString(Math.round(qPair.getValue() * 10000.0)));
+					BigInteger dbig = new BigInteger(Long.toString(Math.round(dPair.getValue() * 10000.0)));
+					sum = sum.add(dbig.pow(2)).add(qbig.pow(2))
+							.subtract(dbig.multiply(qbig)).subtract(dbig.multiply(qbig));
+					dif = BigInteger.ZERO;
 					isQueryNext = false;
 					isDatabaseNext = false;
 				}				
 			}
 			else {
 				diff = qPair.getValue();				
+				dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
 				isQueryNext = false;
 			}		
 			tmpScore += diff*diff;
+			sum = sum.add(dif.multiply(dif));
 		}
 		
 		if(isDatabaseNext == true) { 		
 			diff = dPair.getValue();
 			tmpScore += diff*diff;
+			dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
+			sum = sum.add(dif.multiply(dif));
 		}
 		while(dIter.hasNext()) {
 			dPair = (Map.Entry<Integer, Double>)dIter.next();
 			diff = dPair.getValue();
-			tmpScore += diff*diff;			
+			tmpScore += diff*diff;
+			dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
+			sum = sum.add(dif.multiply(dif));
 		}
+		System.out.print(sum + " ");
 		return tmpScore;
 	}
 	
@@ -95,7 +111,7 @@ public class DistanceL2square extends Distance {
 		BigInteger tmpS1 = BigInteger.ZERO;
 		for(BigInteger w_i : d_big.values()) {
 			tmpS1 = tmpS1.add(w_i.multiply(w_i));
-		}		
+		}
 		BigInteger s1 = mPaillier.Encryption(tmpS1);
 		return s1;
 	}
@@ -148,7 +164,7 @@ public class DistanceL2square extends Distance {
 				isQueryNext = false;
 			}					
 		}		
-		BigInteger s2 = tmpS2.modPow(BigInteger.ONE.negate(), mPaillier.nsquare); 
+		BigInteger s2 = tmpS2.modInverse(mPaillier.nsquare);		
 		return s2;
 	}
 	
@@ -169,7 +185,7 @@ public class DistanceL2square extends Distance {
 	
 	private void sendDistanceAdditivelyBlind(BigInteger[] x) throws Exception {
  		System.out.println("\t[S][STRAT]\tsend AB datas of distance.");
- 		//EncTaggingSystemCommon.oos.reset();
+ 		
  		EncProgCommon.oos.writeInt(x.length);
  		for(int i=0; i<x.length; i++) { 		
  			//System.out.println(x[i]); 			

@@ -12,7 +12,7 @@ import Utils.Create;
 import Crypto.CryptosystemAbstract;
 
 public class EncProgCommon extends ProgCommon {	
-	private static final double SCALAR = 10000.0;
+	private static final double SCALAR = 1000.0;
 	
 	public static BigInteger encryption(CryptosystemAbstract cryptosystem, double plaintext) {
 		return encryption(cryptosystem, DoubleToBigInteger(plaintext));

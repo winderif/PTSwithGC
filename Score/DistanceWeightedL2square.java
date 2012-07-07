@@ -149,8 +149,7 @@ public class DistanceWeightedL2square extends Distance {
 		Iterator iter = d_big.keySet().iterator();
 		for(BigInteger w_i : d_big.values()) {
 			int index = (Integer)iter.next();			
-			long w = Math.round(idf[index] * 100.0);
-			BigInteger weight = new BigInteger(Long.toString(w));			
+			BigInteger weight = EncProgCommon.DoubleToBigInteger(idf[index]);			
 			tmpS1 = tmpS1.add(w_i.multiply(w_i).multiply(weight));
 			//System.out.println(tmpS1);			
 		}		
@@ -197,9 +196,8 @@ public class DistanceWeightedL2square extends Distance {
 					// [w_bar]^((-2)*w) and w1*w2
 					BigInteger tmpMul = qPair.getValue().modPow(tmpPow, mPaillier.nsquare);
 					//System.out.println("tmpMul:\t" + mPaillier.Decryption(tmpMul));
-					int index = qPair.getKey();
-					long w = Math.round(idf[index] * 100.0);
-					BigInteger weight = new BigInteger(Long.toString(w));
+					int index = qPair.getKey();			
+					BigInteger weight = EncProgCommon.DoubleToBigInteger(idf[index]); 
 										
 					tmpS2 = tmpS2.multiply(tmpMul.modPow(weight, mPaillier.nsquare));
 					//System.out.println("tmpS2:\t" + mPaillier.Decryption(tmpS2));					
@@ -232,9 +230,8 @@ public class DistanceWeightedL2square extends Distance {
 		Iterator iter = q_Enc.keySet().iterator();
 		BigInteger s3 = BigInteger.ONE;
 		for(int i=0; i<x_Enc_square_Array.length; i++) {
-			int index = (Integer)iter.next();
-			long w = Math.round(idf[index] * 100.0);
-			BigInteger weight = new BigInteger(Long.toString(w)); 
+			int index = (Integer)iter.next();			
+			BigInteger weight = EncProgCommon.DoubleToBigInteger(idf[index]); 				
 			s3 = s3.multiply(x_Enc_square_Array[i].modPow(weight, mPaillier.nsquare));
 		}			
 		return s3;

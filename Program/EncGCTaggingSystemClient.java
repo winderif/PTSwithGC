@@ -2,7 +2,7 @@
 
 package Program;
 
-import Score.ComputingScoreClient;
+import Score.*;
 import Crypto.CryptosystemPaillierClient;
 import Protocol.GCComparisonClient;
 
@@ -74,8 +74,9 @@ public class EncGCTaggingSystemClient extends ProgClient {
     
     protected void execBuildBipartiteGraph() throws Exception {    
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
-    	ComputingScoreClient computeClient = 
-    		new ComputingScoreClient(mPaillier);
+    	ComputingScore computeClient = 
+    		new DistanceWeightedL2squareClient(mPaillier);
+    		//new ComputingScoreClient(mPaillier);
     	computeClient.run();    	    	
     }    
     
