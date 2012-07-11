@@ -118,7 +118,7 @@ public class ImageClusteringByTags {
 	public static HashMap<String, double[]> getTagsHistogramMap(
 			String[] allTags, double[][] mTagAverageHistogram) {
 		
-		HashMap<String, double[]> tagsHistogramMap = new HashMap<String, double[]>();
+		HashMap<String, double[]> tagsHistogramMap = Create.hashMap();
 		
 		for(int i=0; i<allTags.length; i++) {
 			/*** HashMap for <tag, tag histogram>***/
@@ -126,6 +126,19 @@ public class ImageClusteringByTags {
 		}
 		
 		return tagsHistogramMap;
+	}
+	
+	public static HashMap<String, Map<Integer, Double>> getTagsDescriptorMap(
+			String[] allTags, Vector<Map<Integer, Double>> mTagAverageDescriptor) {
+		
+		HashMap<String, Map<Integer, Double>> tagsDescriptorMap = Create.hashMap();
+		
+		for(int i=0; i<allTags.length; i++) {
+			/*** HashMap for <tag, tag descriptor map>***/
+			tagsDescriptorMap.put(allTags[i], mTagAverageDescriptor.elementAt(i));
+		}
+		
+		return tagsDescriptorMap;
 	}
 		
 	public static Vector<Map<Integer, Double>> getTagsDescriptor(

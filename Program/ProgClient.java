@@ -5,8 +5,11 @@ package Program;
 import java.io.*;
 import java.net.*;
 import java.util.Vector;
+import java.util.Map;
 
+import Utils.Create;
 import Utils.VideoFrame;
+
 
 public abstract class ProgClient extends Program {
 
@@ -21,7 +24,9 @@ public abstract class ProgClient extends Program {
     protected File[] queryDataFile = null;	
     protected Vector<VideoFrame> videoFrames = new Vector<VideoFrame>();
     protected Vector<Vector<VideoFrame>> videoShots = new Vector<Vector<VideoFrame>>();
-    protected double[] queryAverageHistogram;    
+    
+    protected double[] queryAverageHistogram = null;  
+    protected Map<Integer, Double> queryAverageDescriptor = null;
 
     public void run() throws Exception {
     	create_socket_and_connect();
@@ -37,7 +42,7 @@ public abstract class ProgClient extends Program {
     	//Program.iterCount = 1;
     	System.out.println(Program.iterCount);
     	ProgCommon.oos.writeInt(Program.iterCount);
-    	ProgCommon.oos.flush();    
+    	ProgCommon.oos.flush();
     }        
 
     private void create_socket_and_connect() throws Exception {
@@ -50,13 +55,15 @@ public abstract class ProgClient extends Program {
     	//loadQuery();
     	loadQueryVideos();
     	
-    	//getQueryAverageHistorgram();
+    	//getQueryAverageHistorgram();    	
+    	//getQueryAverageDescriptor();
     }
     
     protected void execute() throws Exception {
     	//System.out.println("iter: " + iter);
     	videoFrames = videoShots.elementAt(iter);    	    	
     	getQueryAverageHistorgram();
+    	getQueryAverageDescriptor();
     	super.execute();
     }        
     
@@ -151,6 +158,19 @@ public abstract class ProgClient extends Program {
 			//System.out.println(queryAverageHistogram[j]);
 		}
     	System.out.println("[C][SUCCESS]\tGet Query Average Color Histogram");
+    }
+    
+    private void getQueryAverageDescriptor() {
+    	System.out.println("[C][START]\tGet Query Average Descriptor Map");
+    	    	
+    	queryAverageDescriptor = Create.linkedHashMap();
+    	for(int i=0; i<BIN_HISTO; i++) {
+    		if(queryAverageHistogram[i] > 0.0) {
+    			queryAverageDescriptor.put(i, queryAverageHistogram[i]);
+    		}
+    	}
+    	
+    	System.out.println("[C][SUCCESS]\tGet Query Average Descriptor Map");    	
     }
     
     private void cleanup() throws Exception {

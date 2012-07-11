@@ -28,24 +28,28 @@ public class EncGCTaggingSystemClient extends ProgClient {
 		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
 		EncProgCommon.oos.writeInt(videoFrames.size());
-		//System.out.println(videoFrames.size());
-		
+		//System.out.println(videoFrames.size());		
 		double startTime = System.nanoTime();
-		for(int i=0; i<videoFrames.size(); i++) {
-			EncProgCommon.oos.writeObject(
-					EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureDescriptor()));
-		}
-		/**
+		
+		//transferHistogram();
+		transferDescriptor();
+		
+		double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;    	    	
+    	System.out.println("[C][SUCCESS]\tsend Query datas." + time);
+    }
+    
+    private void transferHistogram() throws Exception {    	
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
-				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");				
+				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");					
 				EncProgCommon.oos.writeObject(
-						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureVector()[j]));									
+						EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureVector()[j]));																
 			}
 			//System.out.println();
 		}
-		EncProgCommon.oos.flush();
-		
+		EncProgCommon.oos.flush();		
+				
 		for(int i=0; i<BIN_HISTO; i++) {
 			//System.out.print(queryAverageHistogram[i] + " ");
 			EncProgCommon.oos.writeObject(
@@ -53,18 +57,28 @@ public class EncGCTaggingSystemClient extends ProgClient {
 		}
 		//System.out.println();
 		EncProgCommon.oos.flush();
-		*/
-		double endTime = System.nanoTime();
-		double time = (endTime - startTime)/1000000000.0;    	
-    	System.out.println("time: " + time);
+		
+    }
+    
+    private void transferDescriptor() throws Exception {    	
+		for(int i=0; i<videoFrames.size(); i++) {
+			EncProgCommon.oos.writeObject(
+					EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureDescriptor()));
+		}
+		EncProgCommon.oos.flush();
+		
+		EncProgCommon.oos.writeObject(
+				EncProgCommon.encryption(mPaillier, this.queryAverageDescriptor));
+		EncProgCommon.oos.flush();
     }
     
     protected void execFindCandidateTagClusters() throws Exception {
     	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
     	ComputingScoreClient computeClient = 
     		new ComputingScoreClient(mPaillier);
-    	computeClient.run();     	
-    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
+    	computeClient.run();    	
+    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
+    	EncProgCommon.ois.readObject();
     	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);

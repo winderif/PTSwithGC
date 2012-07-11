@@ -1,22 +1,24 @@
 package Utils;
 
 import java.math.BigInteger;
+
+import Program.EncProgCommon;
 import Protocol.*;
 import Crypto.*;
 
 public class FindExtremeValue {
 	public static BigInteger findEncMaximum(
-			BigInteger[] array,
+			BigInteger[] array,			
 			ComparisonProtocolOnServer cp_s,
 			CryptosystemPaillierServer ps) throws Exception {
 		//Finds the largest element in a positive array.
-		//works for arrays where all values are >= 0.
+		//works for arrays where all values are >= 0.				
 		System.out.println("\t[START]\tfindEncMaximum()");
 		double startTime = System.nanoTime();
 		
 		int length = array.length;			
 		BigInteger[] tmp1DArray = array.clone();
-		BigInteger[] tmpMax = new BigInteger[length];				
+		BigInteger[] tmpMax = new BigInteger[length];		
 		
 		int iter = 1;
 		/*** Iteration stopping condition ***/
@@ -25,6 +27,7 @@ public class FindExtremeValue {
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
+				EncProgCommon.oos.writeInt(0);
 				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {
 				//if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2])) {
 					tmpMax[j] = tmp1DArray[j*2+1];
@@ -64,7 +67,7 @@ public class FindExtremeValue {
 	}
 	
 	public static BigInteger findEncMinimum(
-			BigInteger[] array,
+			BigInteger[] array,			
 			ComparisonProtocolOnServer cp_s,
 			CryptosystemPaillierServer ps) throws Exception {
 		//Finds the largest element in a positive array.
@@ -83,6 +86,7 @@ public class FindExtremeValue {
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
+				EncProgCommon.oos.writeInt(0);
 				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {
 				//if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2])) {
 					tmpMin[j] = tmp1DArray[j*2+1];

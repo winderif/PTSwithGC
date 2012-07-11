@@ -44,20 +44,20 @@ public class DistanceL2square extends Distance {
 				
 				if(qPair.getKey() < dPair.getKey()) {
 					diff = qPair.getValue();
-					dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
+					dif = new BigInteger(Long.toString(Math.round(diff * 1000.0)));
 					isQueryNext = false;		
 					isDatabaseNext = true;
 				}
 				else if(qPair.getKey() > dPair.getKey()) {
 					diff = dPair.getValue();				
-					dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
+					dif = new BigInteger(Long.toString(Math.round(diff * 1000.0)));
 					isQueryNext = true;		
 					isDatabaseNext = false;
 				}
 				else {
 					diff = qPair.getValue() - dPair.getValue();					
-					BigInteger qbig = new BigInteger(Long.toString(Math.round(qPair.getValue() * 10000.0)));
-					BigInteger dbig = new BigInteger(Long.toString(Math.round(dPair.getValue() * 10000.0)));
+					BigInteger qbig = new BigInteger(Long.toString(Math.round(qPair.getValue() * 1000.0)));
+					BigInteger dbig = new BigInteger(Long.toString(Math.round(dPair.getValue() * 1000.0)));
 					sum = sum.add(dbig.pow(2)).add(qbig.pow(2))
 							.subtract(dbig.multiply(qbig)).subtract(dbig.multiply(qbig));
 					dif = BigInteger.ZERO;
@@ -67,7 +67,7 @@ public class DistanceL2square extends Distance {
 			}
 			else {
 				diff = qPair.getValue();				
-				dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
+				dif = new BigInteger(Long.toString(Math.round(diff * 1000.0)));
 				isQueryNext = false;
 			}		
 			tmpScore += diff*diff;
@@ -77,14 +77,14 @@ public class DistanceL2square extends Distance {
 		if(isDatabaseNext == true) { 		
 			diff = dPair.getValue();
 			tmpScore += diff*diff;
-			dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
+			dif = new BigInteger(Long.toString(Math.round(diff * 1000.0)));
 			sum = sum.add(dif.multiply(dif));
 		}
 		while(dIter.hasNext()) {
 			dPair = (Map.Entry<Integer, Double>)dIter.next();
 			diff = dPair.getValue();
 			tmpScore += diff*diff;
-			dif = new BigInteger(Long.toString(Math.round(diff * 10000.0)));
+			dif = new BigInteger(Long.toString(Math.round(diff * 1000.0)));
 			sum = sum.add(dif.multiply(dif));
 		}
 		System.out.print(sum + " ");

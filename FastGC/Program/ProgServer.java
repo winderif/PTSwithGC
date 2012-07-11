@@ -39,7 +39,7 @@ public abstract class ProgServer extends Program {
 
     private void create_socket_and_listen() throws Exception {    	
     	sock = new ServerSocket(serverPort);            // create socket and bind to port
-    	EncProgCommon.oos.write(1);
+    	EncProgCommon.oos.writeInt(1);    	
     	EncProgCommon.oos.flush();
     	System.out.println("waiting for client to connect");
     	clientSocket = sock.accept();                   // wait for client to connect

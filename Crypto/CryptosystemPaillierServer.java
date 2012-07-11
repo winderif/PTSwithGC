@@ -75,7 +75,8 @@ public class CryptosystemPaillierServer extends CryptosystemAbstract {
         n = p.multiply(q);
         nsquare = n.multiply(n);
 
-        g = new BigInteger("2");
+        //g = new BigInteger("2");
+        g = n.add(BigInteger.ONE);
         lambda = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)).divide(
                 p.subtract(BigInteger.ONE).gcd(q.subtract(BigInteger.ONE)));
         /* check whether g is good.*/
@@ -102,7 +103,11 @@ public class CryptosystemPaillierServer extends CryptosystemAbstract {
      */
     public BigInteger Encryption(BigInteger m) {
         BigInteger r = new BigInteger(bitLength, new Random());
-        return (m.equals(BigInteger.ZERO))?(BigInteger.ONE):(g.modPow(m, nsquare).multiply(r.modPow(n, nsquare)).mod(nsquare));
+        
+        return (m.equals(BigInteger.ZERO))?
+        		(BigInteger.ONE):
+        		(m.multiply(n).add(BigInteger.ONE)).multiply(r.modPow(n, nsquare)).mod(nsquare);
+        		//(g.modPow(m, nsquare).multiply(r.modPow(n, nsquare)).mod(nsquare));
     }
     
     public BigInteger Decryption(BigInteger p) {

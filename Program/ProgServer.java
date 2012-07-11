@@ -21,8 +21,7 @@ public abstract class ProgServer extends Program {
     final private  int         serverPort   = 23456;             // server port number
     private ServerSocket       sock         = null;              // original server socket
     private Socket             clientSocket = null;              // socket created by accept
-
-	// Bin of HSV color histogram = 8 + 4 + 4 = 16 
+	
     //protected static final int BIN_HISTO = 16;
     protected static final int BIN_HISTO = 10000;     
     private boolean domains_file_existed = false;
@@ -39,9 +38,11 @@ public abstract class ProgServer extends Program {
 	protected String[] allDomains = null;
 	
 	protected HashMap<String, double[]> tagsHistogramMap = null;
+	protected HashMap<String, Map<Integer, Double>> tagsDescriptorMap = null;
 	protected double[][] mTagAverageHistogram = null;
 	protected Vector<Map<Integer, Double>> mTagAverageDescriptor = null;
-	protected double[][] mDomainAverageHistogram = null;	
+	protected double[][] mDomainAverageHistogram = null;
+	protected Vector<Map<Integer, Double>> mDomainAverageDescriptor = null;
     
     public void run() throws Exception {
     	create_socket_and_listen();
@@ -138,16 +139,21 @@ public abstract class ProgServer extends Program {
 			ImageClusteringByTags.getAllTags(imageClustersMap);
 		System.out.println("\t[S][SUCCESS]\tGenerate Image Clusters");	
 		
-		System.out.println("\t[S][START]\tGet Average Color Histogram");
+		System.out.println("\t[S][START]\tGet Average Histogram");
 		mTagAverageHistogram = 
 			ImageClusteringByTags.getTagAverageHistogram(imageClustersMap, allTags);
-		System.out.println("\t[S][SUCCESS]\tGet Average Color Histogram");
+		System.out.println("\t[S][SUCCESS]\tGet Average Histogram");
 		
 		tagsHistogramMap =
 			ImageClusteringByTags.getTagsHistogramMap(allTags, mTagAverageHistogram);
 		
+		System.out.println("\t[S][START]\tGet Average Descriptor");
 		mTagAverageDescriptor =
 			ImageClusteringByTags.getTagsDescriptor(mTagAverageHistogram);
+		System.out.println("\t[S][SUCCESS]\tGet Average Descriptor");
+		
+		tagsDescriptorMap = 
+			ImageClusteringByTags.getTagsDescriptorMap(allTags, mTagAverageDescriptor);				
 	}
 	
 	private void generateTagClusters() {		
@@ -163,14 +169,20 @@ public abstract class ProgServer extends Program {
 			DomainsData tmpDomainsData 
 				= TagClusteringByDomain.getDomainsData(databaseDirName);
 			
-			tagClustersMap = tmpDomainsData.tagClustersMap;
+			tagClustersMap = tmpDomainsData.tagClustersMap;			
 			allDomains = tmpDomainsData.allDomains;
 		}						
 		
-		System.out.println("\t[S][START]\tGet Domain Average Color Histogram");
-		mDomainAverageHistogram
-			= TagClusteringByDomain.getDomainAverageColorHistogram(tagClustersMap, allDomains, tagsHistogramMap);
-		System.out.println("\t[S][SUCCESS]\tGet Domain Average Color Histogram");		
+		System.out.println("\t[S][START]\tGet Domain Average Histogram");
+		mDomainAverageHistogram =
+			TagClusteringByDomain.getDomainAverageColorHistogram(tagClustersMap, allDomains, tagsHistogramMap);
+		System.out.println("\t[S][SUCCESS]\tGet Domain Average Histogram");
+		
+		System.out.println("\t[S][START]\tGet Domain Average Descriptor");
+		mDomainAverageDescriptor =
+			TagClusteringByDomain.getDomainAverageColorDescriptor(mDomainAverageHistogram);
+		System.out.println("\t[S][SUCCESS]\tGet Domain Average Descriptor");
+				
 	}	
 	
     private void cleanup() throws Exception {

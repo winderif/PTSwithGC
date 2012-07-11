@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.Map;
 
 import com.articulate.sigma.WordNet;
 import Utils.DomainsData;
@@ -161,5 +162,24 @@ public class TagClusteringByDomain {
 		}
 		
 		return mDomainAverageHistogram;
+	}
+	
+	public static Vector<Map<Integer, Double>> getDomainAverageColorDescriptor(
+			double[][] mDomainAverageHistogram) {
+		Vector<Map<Integer, Double>> tmpVec = new Vector<Map<Integer, Double>>();
+		
+		for(int i=0; i<mDomainAverageHistogram.length; i++) {			
+			Map<Integer, Double> des = Create.linkedHashMap();
+			for(int j=0; j<BIN_HISTO; j++) {
+				if(mDomainAverageHistogram[i][j] > 0.0) {
+					//System.out.print(mDomainAverageHistogram[i][j] + " ");
+					des.put(j, mDomainAverageHistogram[i][j]);
+				}
+			}
+			//System.out.println();
+			tmpVec.add(des);
+		}
+		
+		return tmpVec;
 	}
 }

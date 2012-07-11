@@ -28,14 +28,18 @@ public class EncTaggingSystemClient extends ProgClient {
 		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
 		EncProgCommon.oos.writeInt(videoFrames.size());
-		//System.out.println(videoFrames.size());
-		
+		//System.out.println(videoFrames.size());		
 		double startTime = System.nanoTime();
-		for(int i=0; i<videoFrames.size(); i++) {
-			EncProgCommon.oos.writeObject(
-					EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureDescriptor()));
-		}
-		/**
+		
+		//transferHistogram();
+		transferDescriptor();
+		
+		double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;    	    	
+    	System.out.println("[C][SUCCESS]\tsend Query datas." + time);
+    }
+    
+    private void transferHistogram() throws Exception {    	
 		for(int i=0; i<videoFrames.size(); i++) {
 			for(int j=0; j<BIN_HISTO; j++) {
 				//System.out.print(videoFrames.elementAt(i).getHistogram()[j] + " ");					
@@ -45,8 +49,7 @@ public class EncTaggingSystemClient extends ProgClient {
 			//System.out.println();
 		}
 		EncProgCommon.oos.flush();		
-		*/
-		/**
+				
 		for(int i=0; i<BIN_HISTO; i++) {
 			//System.out.print(queryAverageHistogram[i] + " ");
 			EncProgCommon.oos.writeObject(
@@ -54,10 +57,18 @@ public class EncTaggingSystemClient extends ProgClient {
 		}
 		//System.out.println();
 		EncProgCommon.oos.flush();
-		*/	
-		double endTime = System.nanoTime();
-		double time = (endTime - startTime)/1000000000.0;    	
-    	System.out.println("time: " + time);
+    }
+    
+    private void transferDescriptor() throws Exception {    	
+		for(int i=0; i<videoFrames.size(); i++) {
+			EncProgCommon.oos.writeObject(
+					EncProgCommon.encryption(mPaillier, videoFrames.elementAt(i).getFeatureDescriptor()));
+		}
+		EncProgCommon.oos.flush();
+		
+		EncProgCommon.oos.writeObject(
+				EncProgCommon.encryption(mPaillier, this.queryAverageDescriptor));
+		EncProgCommon.oos.flush();
     }
     
     protected void execFindCandidateTagClusters() throws Exception {
@@ -65,12 +76,11 @@ public class EncTaggingSystemClient extends ProgClient {
     	ComputingScore computeClient = 
     		new ComputingScoreClient(mPaillier);
     	computeClient.run();
-    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
+    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
     	
     	ComparisonProtocolOnClient protocolClient = 
     		new ComparisonProtocolOnClient(mPaillier); 
-    	protocolClient.run();
-    	//EncProgCommon.ois.readObject();
+    	protocolClient.run();    	
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    

@@ -33,8 +33,8 @@ public abstract class ProgClient extends Program {
     	super.init();
     }
 
-    private void create_socket_and_connect() throws Exception {
-    	EncProgCommon.ois.read();
+    private void create_socket_and_connect() throws Exception {    
+    	EncProgCommon.ois.readInt();
     	sock = new java.net.Socket(serverIPname, serverPort);          // create socket and connect    	
     	ProgCommon.oos  = new java.io.ObjectOutputStream(sock.getOutputStream());  
     	ProgCommon.ois  = new java.io.ObjectInputStream(sock.getInputStream());
