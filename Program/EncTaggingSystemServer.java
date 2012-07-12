@@ -12,7 +12,7 @@ import java.util.Random;
 
 import Protocol.ComparisonProtocolOnServer;
 import Utils.Create;
-import Utils.EncFastHungarianAlgorithm;
+import Matching.HEbasedHungarianAlgorithm;
 import Utils.FindExtremeValue;
 import Utils.Print;
 import Crypto.CryptosystemPaillierServer;
@@ -115,24 +115,43 @@ public class EncTaggingSystemServer extends ProgServer {
     		(Map<Integer, BigInteger>)TaggingSystemCommon.ois.readObject();
     }
     
-    protected void execFindCandidateTagClusters() throws Exception {
+    protected void execFindCandidateTagClusters() throws Exception {    	
+    	evaluateDomainDistance();		
+		
+		BigInteger threshold = evaluateThreshold();
+		
+    	// 80% of minimum distance		
+		findCandidateTags(threshold);    	
+    	    
+    	/** If # tag < # query */ 
+    	if(mTagAverageDescriptor.size() < mEncQueryDescriptor.size()) {
+    		System.out.println("\t[S][INFO]\t# query < # tag.");
+    		mEncQueryDescriptor = new Vector<Map<Integer, BigInteger>>();
+    		mEncQueryDescriptor.add(mEncQueryAverageDescriptor);
+    	}    	
+    }
+    
+    private void evaluateDomainDistance() throws Exception {
     	System.out.println("\t[S][START]\tEvaluate Encrypted Domain Distance.");
     	double startTime = System.nanoTime();
     	
     	mEncDomainDistance = new BigInteger[allDomains.length];    	
     	for(int i=0; i<mEncDomainDistance.length; i++) {
     		System.out.println("\t[S]\tComput distance " + i);
-    		EncProgCommon.oos.writeInt(0);
+    		
+    		EncProgCommon.oos.writeInt(CLIENT_EXEC);
     		mEncDomainDistance[i] = mDistance.evaluate(
-    				mPaillier, mEncQueryAverageDescriptor, mDomainAverageDescriptor.elementAt(i));    		
+    				mPaillier, mEncQueryAverageDescriptor, mDomainAverageDescriptor.elementAt(i));
+    		
     		System.out.println(mPaillier.Decryption(mEncDomainDistance[i]) + " ");    		
-    	}
-    	
+    	}    	
+    	EncProgCommon.oos.writeInt(CLIENT_EXIT);
+		EncProgCommon.oos.flush();
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
-    	System.out.println("\t[S][SUCCESS]\tEvaluate Encrypted Domain Distance." + time);    	    	    
+    	System.out.println("\t[S][SUCCESS]\tEvaluate Encrypted Domain Distance." + time);    	   
 				
-    	/** Debugging
+    	/** Debugging 
 		mEncDomainDistance = new BigInteger[allDomains.length];
 		for(int i=0; i<mEncDomainDistance.length; i++) {
 			mEncDomainDistance[i] = 
@@ -140,31 +159,31 @@ public class EncTaggingSystemServer extends ProgServer {
 			    //mPaillier.Encryption(new BigInteger(Long.valueOf(1000000+i).toString()));
 			System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");			
 		}
-		System.out.println();
+		System.out.println();		
 		*/
-		EncProgCommon.oos.writeInt(1);
-		EncProgCommon.oos.flush();
-		
-    	ComparisonProtocolOnServer cp_s
-    		= new ComparisonProtocolOnServer(mPaillier);
-    	
-    	BigInteger maxDistance 
-			= FindExtremeValue.findEncMaximum(mEncDomainDistance, cp_s, mPaillier);
+    }
+    
+    private BigInteger evaluateThreshold() throws Exception {
+    	ComparisonProtocolOnServer cp_s =
+    		new ComparisonProtocolOnServer(mPaillier);
+	
+    	BigInteger maxDistance = 
+    		FindExtremeValue.findEncMaximum(mEncDomainDistance, cp_s, mPaillier);
     	System.out.println(mPaillier.Decryption(maxDistance));
     	
-    	BigInteger minDistance 
-			= FindExtremeValue.findEncMinimum(mEncDomainDistance, cp_s, mPaillier);
+    	BigInteger minDistance =
+    		FindExtremeValue.findEncMinimum(mEncDomainDistance, cp_s, mPaillier);
     	System.out.println(mPaillier.Decryption(minDistance));
     	
     	BigInteger sMin = minDistance.pow(5).mod(mPaillier.nsquare);
     	System.out.println(mPaillier.Decryption(sMin));
     	
-    	BigInteger diff
-    		= maxDistance.multiply(minDistance.modInverse(mPaillier.nsquare))
+    	BigInteger diff =
+    		maxDistance.multiply(minDistance.modInverse(mPaillier.nsquare))
     					 .mod(mPaillier.nsquare);
     	
-    	BigInteger threshold
-    		= sMin.multiply(diff).mod(mPaillier.nsquare);
+    	BigInteger threshold =
+    		sMin.multiply(diff).mod(mPaillier.nsquare);
     	System.out.println("T : \t" + mPaillier.Decryption(threshold).divide(new BigInteger("5")));
     	
     	/** Debugging
@@ -175,23 +194,29 @@ public class EncTaggingSystemServer extends ProgServer {
     	    	System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
     		}
     	}
-    	*/
-    	
-    	/***/
-    	// 80% of minimum distance
+    	*/    	
+    	return threshold;
+    }
+    
+    private void findCandidateTags(BigInteger threshold) throws Exception {
     	System.out.println("\t[S][START]\tFind Candidate Tag.");
-    	startTime = System.nanoTime();
-    	    	
+    	double startTime = System.nanoTime();
+    	// Initialize
     	HashMap<String, Map<Integer, Double>> tmpCandidateTags = Create.hashMap();
     	BigInteger tmpDistance = null;
-    	
+    	ComparisonProtocolOnServer cp_s =
+    		new ComparisonProtocolOnServer(mPaillier);    	
+    	/** 
+    	 *  For each domain distance D, 
+    	 *  if D < threshold T, then get tags in this domain.    	 
+    	 */
     	for(int i=0; i<mEncDomainDistance.length; i++) {
     		tmpDistance = mEncDomainDistance[i].pow(5).mod(mPaillier.nsquare);    
-    		System.out.println(mPaillier.Decryption(tmpDistance) + " " + mPaillier.Decryption(threshold));
+    		//System.out.println(mPaillier.Decryption(tmpDistance) + " " + mPaillier.Decryption(threshold));
     		
-    		EncProgCommon.oos.writeInt(0);
+    		EncProgCommon.oos.writeInt(CLIENT_EXEC);
     		BigInteger min = cp_s.findMinimumOfTwoEncValues(tmpDistance, threshold);
-    		System.out.println("Min: " + mPaillier.Decryption(min));
+    		//System.out.println("Min: " + mPaillier.Decryption(min));
     	    if(min.equals(tmpDistance)) {
     	    	System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
     	    	System.out.print(allDomains[i] + "\t");
@@ -204,27 +229,24 @@ public class EncTaggingSystemServer extends ProgServer {
     	    	}
     	    	System.out.println();  	
     	    }
-    	}    	    
+    	}    	
+    	EncProgCommon.oos.writeInt(CLIENT_EXIT);
+		EncProgCommon.oos.flush();
+    	double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;
+    	System.out.println("\t[S][SUCCESS]\tFind Candidate Tag." + time);
     	
-    	endTime = System.nanoTime();
-		time = (endTime - startTime)/1000000000.0;
-    	System.out.println("\t[S][SUCCESS]\tFind Candidate Tag." + time);    	
-    	
+    	/**
+    	 *  Get Descriptor from candidate tags. 
+    	 */    	
     	allTags = new String[tmpCandidateTags.keySet().size()];
     	tmpCandidateTags.keySet().toArray(allTags);    	
     	mTagAverageDescriptor = new Vector<Map<Integer, Double>>();
     	for(int i=0; i<allTags.length; i++) {
-    		System.out.println(allTags[i]);    		
+    		System.out.print(allTags[i] + ", ");    		
     		mTagAverageDescriptor.add(tmpCandidateTags.get(allTags[i]));
     	}    	
-    	//System.out.println();
-    	/** If # tag < # query */ 
-    	if(mTagAverageDescriptor.size() < mEncQueryDescriptor.size()) {
-    		System.out.println("\t[S][INFO]\t# query < # tag.");
-    		mEncQueryDescriptor = new Vector<Map<Integer, BigInteger>>();
-    		mEncQueryDescriptor.add(mEncQueryAverageDescriptor);
-    	}
-    	EncProgCommon.oos.writeInt(1);
+    	System.out.println();
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    	    	
@@ -236,7 +258,7 @@ public class EncTaggingSystemServer extends ProgServer {
 			for(int j=0; j<this.mTagAverageDescriptor.size(); j++) {
 				System.out.printf("\t[S][START]\tComputing D(%d, %d)\n", i, j);
 				double start = System.nanoTime();
-				
+				EncProgCommon.oos.writeInt(CLIENT_EXEC);
 				this.mEncHungarianMatrix[i][j] = mDistance.evaluate(
 							mPaillier, 
 							mEncQueryDescriptor.elementAt(i), 
@@ -252,7 +274,8 @@ public class EncTaggingSystemServer extends ProgServer {
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
 		System.out.println("\t[S][SUCCESS]\tBuild Encrypted Bipartile Graph." + time);		
-		EncProgCommon.oos.writeObject(1);		
+		EncProgCommon.oos.writeInt(CLIENT_EXIT);
+		EncProgCommon.oos.flush();		
     }    
     
     protected void execFindBestMatching() throws Exception {	
@@ -260,13 +283,15 @@ public class EncTaggingSystemServer extends ProgServer {
 		
 		String sumType = "min";
 		int[][] assignment = new int[this.mEncHungarianMatrix.length][2];
-		EncFastHungarianAlgorithm EncFHA = 
-			new EncFastHungarianAlgorithm(
-					new ComparisonProtocolOnServer(mPaillier), mPaillier, null);
+		
+		HEbasedHungarianAlgorithm HEbasedFHA = 
+			new HEbasedHungarianAlgorithm(mPaillier);		
 		
 		double startTime = System.nanoTime();
 		/*** ***/
-		assignment = EncFHA.hgAlgorithm(this.mEncHungarianMatrix, sumType);
+		assignment = HEbasedFHA.hgAlgorithm(this.mEncHungarianMatrix, sumType);
+		EncProgCommon.oos.writeInt(CLIENT_EXIT);
+		EncProgCommon.oos.flush();
 		/*** ***/
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
@@ -278,7 +303,6 @@ public class EncTaggingSystemServer extends ProgServer {
 					this.mEncHungarianMatrix[assignment[k][0]][assignment[k][1]].toString(), 
 					this.allTags[assignment[k][1]]);			
 		}
-		
 		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);
 		
 		mMatchingTags = new String[this.mEncQueryHistogram.length];		
@@ -286,7 +310,6 @@ public class EncTaggingSystemServer extends ProgServer {
 			this.mMatchingTags[i] = this.allTags[assignment[i][1]];
 			//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
 		}
-		EncProgCommon.oos.writeObject(1);	
     }
     
     protected void execResultTransfer() throws Exception {

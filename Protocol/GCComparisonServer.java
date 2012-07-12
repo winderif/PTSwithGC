@@ -7,13 +7,10 @@ import FastGC.Program.*;
 import Crypto.*;
 import Program.EncProgCommon;
 
-public class GCComparisonServer {
+public class GCComparisonServer extends ComparisonProtocol  {
 	private CryptosystemPaillierServer mPaillier;
 	private BigInteger cInput;
-	
-	private static int RANDOM_BIT = 40;	
-	
-	private static final int L = 40;
+	private static int RANDOM_BIT = 40;		
 	private int K;
 	
 	public GCComparisonServer() {

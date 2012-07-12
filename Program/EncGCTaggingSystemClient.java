@@ -74,23 +74,22 @@ public class EncGCTaggingSystemClient extends ProgClient {
     
     protected void execFindCandidateTagClusters() throws Exception {
     	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
-    	ComputingScoreClient computeClient = 
+    	ComputingScore computeClient = 
     		new ComputingScoreClient(mPaillier);
+    		//new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();    	
-    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");
-    	EncProgCommon.ois.readObject();
+    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
     	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);
-    	protocolClient.run(); 
-    	EncProgCommon.ois.readObject();
+    	protocolClient.run();     	
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
-    	ComputingScore computeClient = 
-    		new DistanceWeightedL2squareClient(mPaillier);
-    		//new ComputingScoreClient(mPaillier);
+    	ComputingScore computeClient =
+    		new ComputingScoreClient(mPaillier);
+    		//new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();    	    	
     }    
     
@@ -98,8 +97,7 @@ public class EncGCTaggingSystemClient extends ProgClient {
     	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");    	
     	GCComparisonClient protocolClient = 
     		new GCComparisonClient(mPaillier);
-    	protocolClient.run();
-    	EncProgCommon.ois.readObject();
+    	protocolClient.run();    	
     }
     
     protected void execResultTransfer() throws Exception {

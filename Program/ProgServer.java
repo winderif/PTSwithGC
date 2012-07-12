@@ -24,6 +24,8 @@ public abstract class ProgServer extends Program {
 	
     //protected static final int BIN_HISTO = 16;
     protected static final int BIN_HISTO = 10000;     
+    protected static final int CLIENT_EXEC = 0;
+    protected static final int CLIENT_EXIT = 1;
     private boolean domains_file_existed = false;
     
     public static String databaseDirName;

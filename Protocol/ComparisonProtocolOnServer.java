@@ -6,15 +6,12 @@ import Utils.Print;
 import Crypto.CryptosystemPaillierServer;
 import Program.EncProgCommon;
 
-public class ComparisonProtocolOnServer{
+public class ComparisonProtocolOnServer extends ComparisonProtocol {
 	private CryptosystemPaillierServer mPaillier;
-	private static final int KAPA = 100;
-	private static final int L = 15;
+	private static final int KAPA = 100;	
 	private static final int U = 15;
 	private static final BigInteger L_big = new BigInteger(Integer.toString(L));
-	private static final BigInteger THREE = new BigInteger("3");
-	private static final BigInteger Enc_ZERO = BigInteger.ONE;	
-	private BigInteger TwoPowL = (new BigInteger("2")).pow(L);
+	private static final BigInteger THREE = new BigInteger("3");		
 	private BigInteger TwoPowNeL;
 	private BigInteger[] d_bin_Array;
 	private BigInteger[] r_bin_Array;
@@ -34,6 +31,13 @@ public class ComparisonProtocolOnServer{
 		this.r_bin_Array = new BigInteger[L+1];
 		this.c_Array = new BigInteger[L+1];
 	}
+	
+	private void reset() {
+		this.d_bin_Array = new BigInteger[L+1];
+		this.r_bin_Array = new BigInteger[L+1];
+		this.c_Array = new BigInteger[L+1];
+	}
+	
 	public BigInteger findMinimumOfTwoEncValues(BigInteger EncA, BigInteger EncB) {
 		try {
 			// [z] = [ 2^L + a - b ] = [2^L]*[a]*[b]^(-1)			
@@ -135,11 +139,6 @@ public class ComparisonProtocolOnServer{
 			return null;
 		}
 	}
-	private void reset() {
-		this.d_bin_Array = new BigInteger[L+1];
-		this.r_bin_Array = new BigInteger[L+1];
-		this.c_Array = new BigInteger[L+1];
-	}
 		
 	private void EncMask(BigInteger s) {
 		// [c_i] = [d^_i] * [r^_i] * [s] * {Multiply[w_j]}^3
@@ -154,7 +153,8 @@ public class ComparisonProtocolOnServer{
 	private BigInteger MultiplyOfEncXOR(int last) {
 		BigInteger tmp = BigInteger.ONE;
 		for(int j=0; j<last; j++) {
-			tmp = tmp.multiply(mPaillier.EncXOR(d_bin_Array[j], mPaillier.Encryption(r_bin_Array[j]), r_bin_Array[j]))
+			tmp = tmp.multiply(mPaillier.EncXOR(
+					d_bin_Array[j], mPaillier.Encryption(r_bin_Array[j]), r_bin_Array[j]))
 					 .mod(mPaillier.nsquare);
 		}		
 		return tmp;

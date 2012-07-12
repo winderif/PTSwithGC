@@ -6,24 +6,32 @@ import Crypto.*;
 import Program.EncProgCommon;
 import FastGC.Program.FindMinimumServer;
 
-public class GCComparisonClient {
+public class GCComparisonClient extends ComparisonProtocol {
 	private CryptosystemPaillierClient mPaillier;
+	private int exit = 0;
 	private BigInteger sInput;
 		
-	private static final int L = 40;
 	private int K;
 	
 	public GCComparisonClient() {
 		this.mPaillier = null;	
+		this.exit = 0;
 	}
 	
 	public GCComparisonClient(CryptosystemPaillierClient p) {
 		this.mPaillier = p;
+		this.exit = 0;
 	}
 	
 	public void run() throws Exception {
 		while(true) {
 			try {
+				this.exit = EncProgCommon.ois.readInt();
+				if(this.exit == 1) {
+					System.out.println("[C][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph.");
+					break;
+				}
+				
 				int type = EncProgCommon.ois.readInt();
 				K = EncProgCommon.ois.readInt();				
 				BigInteger[] y = new BigInteger[K];
@@ -60,7 +68,7 @@ public class GCComparisonClient {
 					}
 				}				
 			} catch(Exception e) {				
-				System.out.println("[C][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph.");				
+				e.printStackTrace();				
 				break;
 			}
 		}

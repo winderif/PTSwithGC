@@ -4,12 +4,9 @@ import java.math.BigInteger;
 import Crypto.CryptosystemPaillierClient;
 import Program.EncProgCommon;
 
-public class ComparisonProtocolOnClient {	
+public class ComparisonProtocolOnClient extends ComparisonProtocol {	
 	private CryptosystemPaillierClient mPaillier;
-	private int exit = 0;
-	private static final int L = 15;
-	private static final BigInteger TwoPowL = (new BigInteger("2")).pow(L);
-	private static final BigInteger Enc_ZERO = BigInteger.ONE;
+	private int exit = 0;			
 	
 	public ComparisonProtocolOnClient() {	
 		this.mPaillier = null;
@@ -80,13 +77,13 @@ public class ComparisonProtocolOnClient {
 				BigInteger z_LBS_Enc = new BigInteger(EncProgCommon.ois.readObject().toString());
 				//System.out.println("(" + z_LBS_Enc + ")");
 				BigInteger z_LBS = mPaillier.Decryption(z_LBS_Enc);
-				System.out.println("(" + z_LBS + ")");				
+				//System.out.println("(" + z_LBS + ")");				
 				//System.out.println(EncX + "\t" + EncY);
 				// z_LBS = 1 <=> x >= y, return No  [0]
 				// z_LBS = 0 <=> x <  y, return Yes [1]
 				BigInteger m_head = (z_LBS == BigInteger.ZERO)?
 						(mPaillier.Encryption(BigInteger.ONE)):(Enc_ZERO);
-				System.out.println("m_head\t" + mPaillier.Decryption(m_head));
+				//System.out.println("m_head\t" + mPaillier.Decryption(m_head));
 				EncProgCommon.oos.writeObject(m_head);
 				EncProgCommon.oos.flush();							
 			} catch(Exception e) {
@@ -94,9 +91,5 @@ public class ComparisonProtocolOnClient {
 				break;
 			}
 		}
-	}
-	
-	public static void main(String[] args) {
-		
 	}
 }

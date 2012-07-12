@@ -75,6 +75,7 @@ public class EncTaggingSystemClient extends ProgClient {
     	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
     	ComputingScore computeClient = 
     		new ComputingScoreClient(mPaillier);
+    		//new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();
     	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
     	
@@ -86,8 +87,8 @@ public class EncTaggingSystemClient extends ProgClient {
     protected void execBuildBipartiteGraph() throws Exception {    
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
     	ComputingScore computeClient = 
-    		//new ComputingScoreClient(mPaillier);
-    		new DistanceWeightedL2squareClient(mPaillier);
+    		new ComputingScoreClient(mPaillier);
+    		//new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();    	    
     	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");    	
     }    

@@ -55,7 +55,7 @@ public class FindExtremeValue {
 			
 			
 			length = (length+1) / 2;
-			System.out.println();
+			//System.out.println();
 		}
 		System.out.println();	
 				
@@ -131,6 +131,7 @@ public class FindExtremeValue {
 		BigInteger tmpMax;
 		
 		// type = 1, is Max
+		EncProgCommon.oos.writeInt(0);    	
 		tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
 		
 		System.out.println("\t[SUCCESS]\tfindEncMaximumGC()");
@@ -144,6 +145,7 @@ public class FindExtremeValue {
 		BigInteger tmpMin;
 		
 		// type = 0, is Min
+		EncProgCommon.oos.writeInt(0);
 		tmpMin = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 0);
 			
 		System.out.println("\t[SUCCESS]\tfindEncMiniimumGC()");
