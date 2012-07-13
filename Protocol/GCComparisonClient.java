@@ -54,14 +54,18 @@ public class GCComparisonClient extends ComparisonProtocol {
 				EncProgCommon.oos.flush();							
 				
 				for(int i=0; i < K; i++) {
+					// diff = dec.( [diff] )
 					BigInteger diffEnc
 						= mPaillier.Decryption(new BigInteger(EncProgCommon.ois.readObject().toString()));
 					//System.out.println(diffEnc);
+					
+					// If diff == 0, then return [0] = 1
 					if(diffEnc.equals(BigInteger.ZERO)) {
-						EncProgCommon.oos.writeObject(BigInteger.ONE);
+						EncProgCommon.oos.writeObject(Enc_ZERO);
 						EncProgCommon.oos.flush();		
 						break;
 					}
+					// If diff != 0, then return [1]
 					else {
 						EncProgCommon.oos.writeObject(mPaillier.Encryption(BigInteger.ONE));
 						EncProgCommon.oos.flush();

@@ -305,11 +305,20 @@ public class EncTaggingSystemServer extends ProgServer {
 		}
 		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);
 		
-		mMatchingTags = new String[this.mEncQueryHistogram.length];		
-		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
-			this.mMatchingTags[i] = this.allTags[assignment[i][1]];
-			//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
+		if(mEncQueryDescriptor.size() == 1) {
+			mMatchingTags = new String[mQueryNum];
+			mMatchingTags[0] = allTags[assignment[0][1]];
+			for(int i=1; i<mQueryNum; i++) {
+				mMatchingTags[i] = " ";					
+			}
 		}
+		else {
+			mMatchingTags = new String[this.mEncQueryDescriptor.size()];		
+			for(int i=0; i<this.mMatchingTags.length; i++) {
+				this.mMatchingTags[i] = this.allTags[assignment[i][1]];
+				//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
+			}	
+		}		
     }
     
     protected void execResultTransfer() throws Exception {

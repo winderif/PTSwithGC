@@ -124,7 +124,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 	}
 	
 	protected BigInteger findMinimum(BigInteger a, BigInteger b) throws Exception {
-		EncProgCommon.oos.writeObject(0);    	
+		EncProgCommon.oos.writeInt(0);    	
 		if(cp_s.findMinimumOfTwoEncValues(a, b).equals(a)) {
 			return a;
 		}

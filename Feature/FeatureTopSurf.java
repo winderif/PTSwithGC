@@ -116,7 +116,7 @@ public class FeatureTopSurf extends Feature {
 			
 				// split each line
 				String[] tmpLine = tmpFile.toString().split("\r\n");				
-				if(tmpLine[0] != "") {
+				if(tmpLine[0].equals("") == false) {
 					histogram = new double[TOPSURF_BIN];
 					descriptor = Create.linkedHashMap();					
 					
@@ -126,7 +126,7 @@ public class FeatureTopSurf extends Feature {
 						String[] tmpValue = tmpLine[i].split("\t");
 								
 						//System.out.println(tmpValue[0]);
-						index = Integer.parseInt(tmpValue[0]);						
+						index = Integer.parseInt(tmpValue[0]);				
 						// count of histogram
 						histogram[index] = 
 							Double.parseDouble(tmpValue[2]);
@@ -142,6 +142,7 @@ public class FeatureTopSurf extends Feature {
 					System.out.println("\nNo TopSurf feature." + imgFile.getAbsolutePath());
 					// All bin value is 0.
 					histogram = new double[TOPSURF_BIN];
+					descriptor.put(0, 0.0);
 				}							
 								
 				inFile.close();

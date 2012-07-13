@@ -29,6 +29,7 @@ public class GCbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 		}
 		
 		// type = 1, is Max
+		EncProgCommon.oos.writeInt(0);
 		tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
 			
 		return tmpMax;
@@ -57,6 +58,7 @@ public class GCbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 		}
 		
 		// type = 0, Min
+		EncProgCommon.oos.writeInt(0);
 		tmpMin = gcc_s.findMinimumOfTwoEncValues(min_Array, 0);
 		if(findMinimum(tmpMin, minval).equals(tmpMin))
 			return tmpMin;
@@ -65,7 +67,7 @@ public class GCbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 	}
 	protected BigInteger findMinimum(BigInteger a, BigInteger b) throws Exception {
 		// type = 0, Min
-		EncProgCommon.oos.writeObject(0);  
+		EncProgCommon.oos.writeInt(0);
 		if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{a, b}, 0).equals(a)) {
 			return a;
 		}

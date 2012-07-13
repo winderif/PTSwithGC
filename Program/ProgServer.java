@@ -15,6 +15,7 @@ import Utils.ImageClusteringByTags;
 import Utils.TagClusteringByDomain;
 import Utils.VideoFrame;
 import Utils.DomainsData;
+import Utils.Experiment;
 
 public abstract class ProgServer extends Program {
 
@@ -45,20 +46,31 @@ public abstract class ProgServer extends Program {
 	protected Vector<Map<Integer, Double>> mTagAverageDescriptor = null;
 	protected double[][] mDomainAverageHistogram = null;
 	protected Vector<Map<Integer, Double>> mDomainAverageDescriptor = null;
+	
+	protected Experiment mExp = null;
     
+	public ProgServer() {
+		this.mExp = new Experiment(this.databaseDirName);			
+	}
+	
     public void run() throws Exception {
     	create_socket_and_listen();
 
     	super.run();
 
     	cleanup();
+    	this.mExp.close();
     }
 
     protected void init() throws Exception {
+    	this.mExp.createSheet("Exec_Time", 0);
+    	
     	super.init();
     	
     	Program.iterCount = ProgCommon.ois.readInt();
-    	System.out.println(Program.iterCount);	
+    	System.out.println(Program.iterCount);        
+    	
+    	/** Create Excel sheet */    	
     }
 
     private void create_socket_and_listen() throws Exception {
@@ -132,7 +144,7 @@ public abstract class ProgServer extends Program {
 		}
     }
     
-	private void generateImageClusters() {
+	private void generateImageClusters() throws Exception {
 		System.out.println("\t[S][START]\tGenerate Image Clusters");
 		
 		imageClustersMap =
@@ -153,12 +165,14 @@ public abstract class ProgServer extends Program {
 		mTagAverageDescriptor =
 			ImageClusteringByTags.getTagsDescriptor(mTagAverageHistogram);
 		System.out.println("\t[S][SUCCESS]\tGet Average Descriptor");
+		/** Write # of tags*/
+		this.mExp.writeSheet(0, iter, 7, "# of Original Tags", mTagAverageDescriptor.size());
 		
 		tagsDescriptorMap = 
 			ImageClusteringByTags.getTagsDescriptorMap(allTags, mTagAverageDescriptor);				
 	}
 	
-	private void generateTagClusters() {		
+	private void generateTagClusters() throws Exception {		
 		if(domains_file_existed == false) {
 			
 			tagClustersMap 
@@ -184,7 +198,8 @@ public abstract class ProgServer extends Program {
 		mDomainAverageDescriptor =
 			TagClusteringByDomain.getDomainAverageColorDescriptor(mDomainAverageHistogram);
 		System.out.println("\t[S][SUCCESS]\tGet Domain Average Descriptor");
-				
+		/** Write # of domains */
+		this.mExp.writeSheet(0, iter, 8, "# of Domains", mDomainAverageDescriptor.size());
 	}	
 	
     private void cleanup() throws Exception {

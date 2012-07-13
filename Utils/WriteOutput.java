@@ -6,8 +6,8 @@ public class WriteOutput {
 	public static boolean writeTagResult(String[] mMatchingTags, int iter, int shoNum, String queryDirName) {
 		String method = "_orig";
 		//String method = "_impr";
-		//String Enc = "_NoEnc";
-		String Enc = "_HE";
+		String Enc = "_NoEnc";
+		//String Enc = "_HE";
 		String feature = "_TopSurf";
 		String distance = "_L2s";
 		//String distance = "_WL2s";

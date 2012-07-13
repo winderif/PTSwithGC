@@ -74,25 +74,33 @@ public class GCComparisonServer extends ComparisonProtocol  {
 			FindMinimumClient minimumClient = new FindMinimumClient(cInput, L, EncArray.length);
 			minimumClient.run();
 			
+			// Recv. [y_min]
 			BigInteger y_min_Enc
 				= new BigInteger(EncProgCommon.ois.readObject().toString());
 			//System.out.println("y_min_Enc:\t" + mPaillier.Decryption(y_min_Enc));
+			
+			// [x_min] = [y_min - x_min] = [y_min] * [r_min]^(-1) 
 			BigInteger x_min_Enc 
-				= y_min_Enc.multiply(r_min_Enc.modPow(BigInteger.ONE.negate(), mPaillier.nsquare))
+				= y_min_Enc.multiply(r_min_Enc.modInverse(mPaillier.nsquare))
 				  			.mod(mPaillier.nsquare);
-			System.out.println("x_min_Enc:\t" + mPaillier.Decryption(x_min_Enc));
+			//System.out.println("x_min_Enc:\t" + mPaillier.Decryption(x_min_Enc));
 					
 			for(int i=0; i < K; i++) {
+				/**
+				 *  [diff] = [x(i) - x_min]
+				 *  if @diff is 0, x(i) is x_min
+				 */				
 				BigInteger diffEnc 
 					= EncArray[i].multiply(x_min_Enc.modInverse(mPaillier.nsquare))
 								.mod(mPaillier.nsquare);
 				//System.out.println(mPaillier.Decryption(diffEnc));
+				
 				EncProgCommon.oos.writeObject(diffEnc);
 				EncProgCommon.oos.flush();	
 			
 				BigInteger lambda
 					= new BigInteger(EncProgCommon.ois.readObject().toString());
-				if(lambda.equals(BigInteger.ONE)) {
+				if(lambda.equals(Enc_ZERO)) {
 					return EncArray[i];
 				}				
 				else
@@ -102,10 +110,9 @@ public class GCComparisonServer extends ComparisonProtocol  {
 			return null;
 			
 		} catch(Exception e) {		
-			e.printStackTrace();
-			System.out.println("\t[S][SUCCESS]\tCompare.");			
-		}	
-		return null;
+			e.printStackTrace();			
+			return null;
+		}			
 	}
 	
 	private BigInteger mergeInput(BigInteger[] input) {

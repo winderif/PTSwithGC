@@ -31,8 +31,8 @@ class TestTaggingSystemClient {
 		}		
 		ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));	
 		//ProgClient.queryDirName = (String) parser.getOptionValue(optionQueryDirName, new String("query"));
-		ProgClient.queryDirName = (String) parser.getOptionValue(optionQueryDirName, new String("query_s"));
-		//ProgClient.queryDirName = "C:/Zone/javaworkspace/PTSwithGC/YouTube/Travel_Events/3";
+		//ProgClient.queryDirName = (String) parser.getOptionValue(optionQueryDirName, new String("query_s"));
+		ProgClient.queryDirName = "C:\\Zone\\javaworkspace\\PTSwithGC\\YouTube\\Autos_Vehicles\\3";
     }
 
     public static void main(String[] args) throws Exception {

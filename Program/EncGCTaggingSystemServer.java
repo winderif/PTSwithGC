@@ -135,7 +135,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
     private void evaluateDomainDistance() throws Exception {
     	System.out.println("\t[S][START]\tEvaluate Encrypted Domain Distance.");
     	double startTime = System.nanoTime();
-    	
+    	/***/
     	mEncDomainDistance = new BigInteger[allDomains.length];    	
     	for(int i=0; i<mEncDomainDistance.length; i++) {
     		System.out.println("\t[S]\tComput distance " + i);
@@ -151,6 +151,17 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
 		System.out.println("\t[S][SUCCESS]\tEvaluate Encrypted Domain Distance." + time);
+		
+		/** Debugging
+		mEncDomainDistance = new BigInteger[allDomains.length];
+		for(int i=0; i<mEncDomainDistance.length; i++) {
+			mEncDomainDistance[i] = 
+			    mPaillier.Encryption(BigInteger.probablePrime(10, new Random()));
+			    //mPaillier.Encryption(new BigInteger(Long.valueOf(1000000+i).toString()));
+			System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");			
+		}
+		System.out.println();		
+		*/
     }
     
     private BigInteger evaluateThreshold() throws Exception {
@@ -187,7 +198,8 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	GCComparisonServer gcc_s = new GCComparisonServer(mPaillier);
     	
     	for(int i=0; i<mEncDomainDistance.length; i++) {
-    		tmpDistance = mEncDomainDistance[i].pow(5).mod(mPaillier.nsquare);    
+    		tmpDistance = mEncDomainDistance[i].pow(5).mod(mPaillier.nsquare);  
+    		//System.out.println(mPaillier.Decryption(tmpDistance) + " " + mPaillier.Decryption(threshold));
     		
     		EncProgCommon.oos.writeInt(CLIENT_EXEC);
     	    if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmpDistance, threshold}, 0).equals(tmpDistance)) {
@@ -224,13 +236,13 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	System.out.println("\t[S][START]\tBuild Encrypted Bipartile Graph.");
 		double startTime = System.nanoTime();
 		
-		this.mEncHungarianMatrix = new BigInteger[this.mEncQueryHistogram.length][this.mTagAverageHistogram.length];
-		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
-			for(int j=0; j<this.mTagAverageHistogram.length; j++) {
+		this.mEncHungarianMatrix = new BigInteger[this.mEncQueryDescriptor.size()][this.mTagAverageDescriptor.size()];
+		for(int i=0; i<this.mEncQueryDescriptor.size(); i++) {
+			for(int j=0; j<this.mTagAverageDescriptor.size(); j++) {
 				System.out.printf("\t[S][START]\tComputing D(%d, %d)\n", i, j);
 				double start = System.nanoTime();
 				
-				EncProgCommon.oos.writeObject(CLIENT_EXEC);
+				EncProgCommon.oos.writeInt(CLIENT_EXEC);
 				this.mEncHungarianMatrix[i][j] = mDistance.evaluate(
 						mPaillier, 
 						mEncQueryDescriptor.elementAt(i), 
@@ -243,7 +255,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
 			}
 			//System.out.println();
 		}
-		EncProgCommon.oos.writeObject(CLIENT_EXIT);
+		EncProgCommon.oos.writeInt(CLIENT_EXIT);
     	EncProgCommon.oos.flush();
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
@@ -262,7 +274,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
 		double startTime = System.nanoTime();
 		/*** ***/
 		assignment = GCbasedFHA.hgAlgorithm(this.mEncHungarianMatrix, sumType);
-		EncProgCommon.oos.writeObject(CLIENT_EXIT);
+		EncProgCommon.oos.writeInt(CLIENT_EXIT);
     	EncProgCommon.oos.flush();
 		/*** ***/
 		double endTime = System.nanoTime();
@@ -278,11 +290,20 @@ public class EncGCTaggingSystemServer extends ProgServer {
 		
 		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);
 		
-		mMatchingTags = new String[this.mEncQueryHistogram.length];		
-		for(int i=0; i<this.mEncQueryHistogram.length; i++) {
-			this.mMatchingTags[i] = this.allTags[assignment[i][1]];
-			//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
-		}			
+		if(mEncQueryDescriptor.size() == 1) {
+			mMatchingTags = new String[mQueryNum];
+			mMatchingTags[0] = allTags[assignment[0][1]];
+			for(int i=1; i<mQueryNum; i++) {
+				mMatchingTags[i] = " ";					
+			}
+		}
+		else {
+			mMatchingTags = new String[this.mEncQueryDescriptor.size()];		
+			for(int i=0; i<this.mMatchingTags.length; i++) {
+				this.mMatchingTags[i] = this.allTags[assignment[i][1]];
+				//System.out.println("[MATCH]\t" + (i+1) + "\t" + this.mMatchingTags[i]);
+			}	
+		}				
     }
     
     protected void execResultTransfer() throws Exception {

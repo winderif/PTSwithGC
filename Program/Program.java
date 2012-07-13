@@ -22,13 +22,13 @@ public abstract class Program {
     protected void execute() throws Exception {
     	execQueryTransfer();
     	
-    	execFindCandidateTagClusters();
+    	//execFindCandidateTagClusters();
     	
     	execBuildBipartiteGraph();
     	
-    	//execFindBestMatching();
+    	execFindBestMatching();
     	
-    	//execResultTransfer();
+    	execResultTransfer();
     }    
     
     abstract protected void execQueryTransfer() throws Exception;
