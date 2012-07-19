@@ -8,11 +8,13 @@ public class Batch {
 			"C:/Zone/javaworkspace/PTSwithGC/YouTube";
 		String commad =
 			"java -Xms256m -Xmx1024m -jar TestTaggingSystemClient.jar -d ";
+			//"java -Xms256m -Xmx1024m -jar TestEncTaggingSystemClient.jar -d ";
 	
 		File databaseDirFile = new File(databaseDirName);
 					
 		try {			
 			FileWriter outFile = new FileWriter("tagSuggestionClient_orig.bat");
+			//FileWriter outFile = new FileWriter("tagSuggestionClient_orig_HE.bat");
 			PrintWriter out = new PrintWriter(outFile);
 			
 			for(File categoryDirFile : databaseDirFile.listFiles()) {
@@ -35,11 +37,13 @@ public class Batch {
 			"C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
 		String commad =
 			"java -Xms256m -Xmx1024m -jar TestTaggingSystemServer.jar -d ";
+			//"java -Xms256m -Xmx1024m -jar TestEncTaggingSystemServer.jar -d ";
 	
 		File databaseDirFile = new File(databaseDirName);
 					
 		try {			
 			FileWriter outFile = new FileWriter("tagSuggestionServer_orig.bat");
+			//FileWriter outFile = new FileWriter("tagSuggestionServer_orig_HE.bat");
 			PrintWriter out = new PrintWriter(outFile);
 			
 			for(File categoryDirFile : databaseDirFile.listFiles()) {
@@ -145,8 +149,8 @@ public class Batch {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//generateDomain();
-		//tagSuggestionServer();
-		//tagSuggestionClient();
+		tagSuggestionServer();
+		tagSuggestionClient();
 		//initialTags();		
 	}
 }

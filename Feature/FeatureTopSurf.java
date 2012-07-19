@@ -142,9 +142,8 @@ public class FeatureTopSurf extends Feature {
 					System.out.println("\nNo TopSurf feature." + imgFile.getAbsolutePath());
 					// All bin value is 0.
 					histogram = new double[TOPSURF_BIN];
-					descriptor.put(0, 0.0);
-				}							
-								
+					descriptor = Create.linkedHashMap();							
+				}															
 				inFile.close();
 			} catch(IOException e) {
 				e.printStackTrace();

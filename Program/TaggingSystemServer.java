@@ -14,7 +14,6 @@ import java.util.Iterator;
 import Utils.Create;
 import Utils.FastHungarianAlgorithm;
 import Utils.Print;
-import Utils.ValueComparator;
 import Score.*;
 
 public class TaggingSystemServer extends ProgServer {

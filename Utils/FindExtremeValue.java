@@ -13,9 +13,7 @@ public class FindExtremeValue {
 			CryptosystemPaillierServer ps) throws Exception {
 		//Finds the largest element in a positive array.
 		//works for arrays where all values are >= 0.				
-		System.out.println("\t[START]\tfindEncMaximum()");
-		double startTime = System.nanoTime();
-		
+				
 		int length = array.length;			
 		BigInteger[] tmp1DArray = array.clone();
 		BigInteger[] tmpMax = new BigInteger[length];		
@@ -28,8 +26,7 @@ public class FindExtremeValue {
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
 				EncProgCommon.oos.writeInt(0);
-				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {
-				//if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2])) {
+				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {				
 					tmpMax[j] = tmp1DArray[j*2+1];
 					tmpMax[j+(length+1)/2] = tmp1DArray[j*2];
 				}
@@ -46,23 +43,15 @@ public class FindExtremeValue {
 			for(int k=0; k<tmp1DArray.length; k++) {
 				tmp1DArray[k] = tmpMax[k];				
 			}
-			/** Debugging */			 
+			/** Debugging */				
 			System.out.println();
-			for(int k=0; k<tmp1DArray.length; k++) {				
-				System.out.print(ps.Decryption(tmp1DArray[k]) + " ");
-			}
-			System.out.println();
-			
+			Print.printEncArray(tmp1DArray, "\t[S]\tfindEncMaximum", ps);					
 			
 			length = (length+1) / 2;
 			//System.out.println();
 		}
 		System.out.println();	
-				
-		double endTime = System.nanoTime();
-		double time = (endTime - startTime)/1000000000.0;
-		System.out.println("\t[SUCCESS]\tfindEncMaximum()");
-		System.out.println("time: " + time);
+		
 		return tmp1DArray[0];			
 	}
 	
@@ -71,10 +60,7 @@ public class FindExtremeValue {
 			ComparisonProtocolOnServer cp_s,
 			CryptosystemPaillierServer ps) throws Exception {
 		//Finds the largest element in a positive array.
-		//works for arrays where all values are >= 0.
-		System.out.println("\t[START]\tfindEncMinimum()");
-		double startTime = System.nanoTime();
-		
+		//works for arrays where all values are >= 0.				
 		int length = array.length;			
 		BigInteger[] tmp1DArray = array.clone();		
 		BigInteger[] tmpMin = new BigInteger[length];				
@@ -87,8 +73,7 @@ public class FindExtremeValue {
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
 				EncProgCommon.oos.writeInt(0);
-				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {
-				//if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2])) {
+				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {				
 					tmpMin[j] = tmp1DArray[j*2+1];
 					tmpMin[j+(length+1)/2] = tmp1DArray[j*2];
 				}
@@ -107,48 +92,38 @@ public class FindExtremeValue {
 			}
 			/** Debugging */
 			System.out.println();
-			for(int k=0; k<tmp1DArray.length; k++) {				
-				System.out.print(ps.Decryption(tmp1DArray[k]) + " ");
-			}
-			System.out.println();			
+			Print.printEncArray(tmp1DArray, "\t[S]\tfindEncMinimum", ps);					
 			
 			length = (length+1) / 2;
 			System.out.println();
 		}
 		System.out.println();	
-		
-		double endTime = System.nanoTime();
-		double time = (endTime - startTime)/1000000000.0;
-		System.out.println("\t[SUCCESS]\tfindEncMinimum()");
-		System.out.println("time: " + time);
+			
 		return tmp1DArray[0];	
 	}	
 	
 	public static BigInteger findEncMaximumGC(BigInteger[] tmp1DArray, GCComparisonServer gcc_s) throws Exception {
 		//Finds the largest element in a positive array.
-		//works for arrays where all values are >= 0.	
-		System.out.println("\t[START]\tfindEncMaximumGC()");
+		//works for arrays where all values are >= 0.			
 		BigInteger tmpMax;
 		
 		// type = 1, is Max
 		EncProgCommon.oos.writeInt(0);    	
 		tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
-		
-		System.out.println("\t[SUCCESS]\tfindEncMaximumGC()");
+				
 		return tmpMax;
 	}
 	
 	public static BigInteger findEncMinimumGC(BigInteger[] tmp1DArray, GCComparisonServer gcc_s) throws Exception {
 		//Finds the largest element in a positive array.
 		//works for arrays where all values are >= 0.	
-		System.out.println("\t[START]\tfindEncMiniimumGC()");
+		
 		BigInteger tmpMin;
 		
 		// type = 0, is Min
 		EncProgCommon.oos.writeInt(0);
 		tmpMin = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 0);
-			
-		System.out.println("\t[SUCCESS]\tfindEncMiniimumGC()");
+					
 		return tmpMin;
 	}
 }

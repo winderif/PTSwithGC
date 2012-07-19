@@ -3,6 +3,7 @@
 package Program;
 
 import Score.*;
+import Utils.WriteOutput;
 import Crypto.CryptosystemPaillierClient;
 import Protocol.ComparisonProtocolOnClient;
 
@@ -74,7 +75,7 @@ public class EncTaggingSystemClient extends ProgClient {
     protected void execFindCandidateTagClusters() throws Exception {
     	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
     	ComputingScore computeClient = 
-    		new ComputingScoreClient(mPaillier);
+    		new DistanceL2squareClient(mPaillier);
     		//new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();
     	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
@@ -87,7 +88,7 @@ public class EncTaggingSystemClient extends ProgClient {
     protected void execBuildBipartiteGraph() throws Exception {    
     	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
     	ComputingScore computeClient = 
-    		new ComputingScoreClient(mPaillier);
+    		new DistanceL2squareClient(mPaillier);
     		//new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();    	    
     	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");    	
@@ -104,7 +105,9 @@ public class EncTaggingSystemClient extends ProgClient {
     	for(int i=0; i<videoFrames.size(); i++) {
     		mMatchingTags[i] = (String)EncProgCommon.ois.readObject();
     		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
-    	}    	
+    	}
+    	
+    	WriteOutput.writeTagResult(mMatchingTags, iter, videoFrames.size(), ProgClient.queryDirName);
     	System.out.println("[C][SUCCESS]\tRecv result from server.");
     }
 }

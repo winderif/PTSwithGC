@@ -184,7 +184,7 @@ public class DistanceL2square extends Distance {
 	}
 	
 	private void sendDistanceAdditivelyBlind(BigInteger[] x) throws Exception {
- 		System.out.println("\t[S][STRAT]\tsend AB datas of distance.");
+ 		//System.out.println("\t[S][STRAT]\tsend AB datas of distance.");
  		
  		EncProgCommon.oos.writeInt(x.length);
  		for(int i=0; i<x.length; i++) { 		

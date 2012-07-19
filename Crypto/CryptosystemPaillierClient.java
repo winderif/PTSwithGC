@@ -133,4 +133,28 @@ public class CryptosystemPaillierClient extends CryptosystemAbstract {
     	BigInteger[] tmp = {p, q};
     	return tmp;
     }
+    
+    public static void main(String[] args) {
+    	CryptosystemPaillierClient p_c = 
+    		new CryptosystemPaillierClient(1024, 64);
+    	BigInteger a = new BigInteger("10");
+    	BigInteger b = new BigInteger("20");
+    	BigInteger ea = p_c.Encryption(a);
+    	BigInteger eb = p_c.Encryption(b);
+    	BigInteger ec = ea.multiply(eb).mod(p_c.nsquare);
+    	BigInteger ed = ea.modPow(b, p_c.nsquare);
+    	BigInteger c = p_c.Decryption(ec);
+    	BigInteger d = p_c.Decryption(ed);
+    	System.out.println("a\t" + a);
+    	System.out.println("b\t" + b);
+    	System.out.println("c\t" + c);
+    	System.out.println("d\t" + d);
+    	double s = System.nanoTime();
+    	for(int i=0; i<1000; i++) {
+    		ea = p_c.Encryption(a);
+    	}
+    	double e = System.nanoTime();
+    	double time = (e - s) / 1000000000.0; 
+    	System.out.println("time\t" + time);
+    }
 }

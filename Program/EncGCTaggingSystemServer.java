@@ -167,16 +167,32 @@ public class EncGCTaggingSystemServer extends ProgServer {
     private BigInteger evaluateThreshold() throws Exception {
     	GCComparisonServer gcc_s = new GCComparisonServer(mPaillier);
     	
+    	System.out.println("\t[START]\tfindEncMaximumGC()");
+    	double startTime = System.nanoTime();
+    	
     	BigInteger maxDistance =  
 			FindExtremeValue.findEncMaximumGC(mEncDomainDistance, gcc_s);
-    	System.out.println(mPaillier.Decryption(maxDistance));
-	
+    	//System.out.println(mPaillier.Decryption(maxDistance));
+    	
+    	double endTime = System.nanoTime();
+		double time = (endTime - startTime)/1000000000.0;    	
+    	System.out.println("\t[SUCCESS]\tfindEncMaximumGC()" + time);
+    	this.mExp.writeSheet(0, iter, 11, "Find Maximum", time);
+    	
+    	System.out.println("\t[START]\tfindEncMiniimumGC()");
+    	startTime = System.nanoTime();
+    	
     	BigInteger minDistance =  
 			FindExtremeValue.findEncMinimumGC(mEncDomainDistance, gcc_s);
-    	System.out.println(mPaillier.Decryption(minDistance));
+    	//System.out.println(mPaillier.Decryption(minDistance));
+    	
+    	endTime = System.nanoTime();
+		time = (endTime - startTime)/1000000000.0;    	
+    	System.out.println("\t[SUCCESS]\tfindEncMiniimumGC()" + time);
+    	this.mExp.writeSheet(0, iter, 12, "Find Minimum", time);
 	
     	BigInteger sMin = minDistance.pow(5).mod(mPaillier.nsquare);
-    	System.out.println(mPaillier.Decryption(sMin));
+    	//System.out.println(mPaillier.Decryption(sMin));
 	
     	BigInteger diff =  
 			maxDistance.multiply(minDistance.modInverse(mPaillier.nsquare))
@@ -184,7 +200,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
 	
     	BigInteger threshold =
 			sMin.multiply(diff).mod(mPaillier.nsquare);
-    	System.out.println("T : \t" + mPaillier.Decryption(threshold).divide(new BigInteger("5")));
+    	//System.out.println("T : \t" + mPaillier.Decryption(threshold).divide(new BigInteger("5")));
     	
     	return threshold;
     }

@@ -110,7 +110,8 @@ public abstract class FastEncHungarianAlgorithm {
 		
 		for(int i=0; i<cost.length; i++) {	   								
 	   	    minval = cost[i][0];
-	   	    for(int j=0; j<cost[i].length; j++) {//1st inner loop finds min val in row.	   	    
+	   	    for(int j=0; j<cost[i].length; j++) {//1st inner loop finds min val in row.
+	   	    	//System.out.print(".");
 	   	        if(findMinimum(minval, cost[i][j]).equals(cost[i][j])) {
 	   	        //if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{minval, cost[i][j]}, 0).equals(cost[i][j])) {
 	   	            minval = cost[i][j];
