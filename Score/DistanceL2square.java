@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import Program.EncProgCommon;
 import Utils.AdditivelyBlindProtocol;
+import Blinding.*;
 import Crypto.CryptosystemPaillierServer;
 
 public class DistanceL2square extends Distance {	
@@ -175,22 +176,14 @@ public class DistanceL2square extends Distance {
 		BigInteger[] q_Enc_Array = new BigInteger[q_Enc.values().size()]; 
 		q_Enc.values().toArray(q_Enc_Array);
 		
-		AdditivelyBlindProtocol r = new AdditivelyBlindProtocol(mPaillier, q_Enc_Array);		
-		sendDistanceAdditivelyBlind(r.getAdditivelyBlindNumbers());
+		AdditiveBlinding r = 
+			//new AdditiveBlindingProtocol(mPaillier, q_Enc_Array);
+			new AdditiveBlindingPackingProtocol(mPaillier, q_Enc_Array);
 		
-		BigInteger s3_p = new BigInteger(EncProgCommon.ois.readObject().toString());
-		BigInteger s3 = r.getSumOfThirdPart(s3_p);
+		r.run();
+				
+		//BigInteger s3 = ((AdditiveBlindingProtocol)r).getThirdTerm(s3_p);
+		BigInteger s3 = ((AdditiveBlindingPackingProtocol)r).getmEncS3();
 		return s3;
 	}
-	
-	private void sendDistanceAdditivelyBlind(BigInteger[] x) throws Exception {
- 		//System.out.println("\t[S][STRAT]\tsend AB datas of distance.");
- 		
- 		EncProgCommon.oos.writeInt(x.length);
- 		for(int i=0; i<x.length; i++) { 		
- 			//System.out.println(x[i]); 			
- 			EncProgCommon.oos.writeObject(x[i]); 			
- 		}
- 		EncProgCommon.oos.flush(); 		
- 	}
 }

@@ -25,7 +25,7 @@ public class FindExtremeValue {
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
-				EncProgCommon.oos.writeInt(0);
+				EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
 				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {				
 					tmpMax[j] = tmp1DArray[j*2+1];
 					tmpMax[j+(length+1)/2] = tmp1DArray[j*2];
@@ -43,10 +43,10 @@ public class FindExtremeValue {
 			for(int k=0; k<tmp1DArray.length; k++) {
 				tmp1DArray[k] = tmpMax[k];				
 			}
-			/** Debugging */				
+			/** Debugging				
 			System.out.println();
 			Print.printEncArray(tmp1DArray, "\t[S]\tfindEncMaximum", ps);					
-			
+			*/
 			length = (length+1) / 2;
 			//System.out.println();
 		}
@@ -72,7 +72,7 @@ public class FindExtremeValue {
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");
-				EncProgCommon.oos.writeInt(0);
+				EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
 				if(cp_s.findMinimumOfTwoEncValues(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {				
 					tmpMin[j] = tmp1DArray[j*2+1];
 					tmpMin[j+(length+1)/2] = tmp1DArray[j*2];
@@ -90,10 +90,10 @@ public class FindExtremeValue {
 			for(int k=0; k<tmp1DArray.length; k++) {
 				tmp1DArray[k] = tmpMin[k];				
 			}
-			/** Debugging */
+			/** Debugging 
 			System.out.println();
 			Print.printEncArray(tmp1DArray, "\t[S]\tfindEncMinimum", ps);					
-			
+			*/
 			length = (length+1) / 2;
 			System.out.println();
 		}
@@ -108,7 +108,7 @@ public class FindExtremeValue {
 		BigInteger tmpMax;
 		
 		// type = 1, is Max
-		EncProgCommon.oos.writeInt(0);    	
+		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);    	
 		tmpMax = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 1);
 				
 		return tmpMax;
@@ -121,7 +121,7 @@ public class FindExtremeValue {
 		BigInteger tmpMin;
 		
 		// type = 0, is Min
-		EncProgCommon.oos.writeInt(0);
+		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
 		tmpMin = gcc_s.findMinimumOfTwoEncValues(tmp1DArray, 0);
 					
 		return tmpMin;

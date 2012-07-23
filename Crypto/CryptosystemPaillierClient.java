@@ -136,7 +136,78 @@ public class CryptosystemPaillierClient extends CryptosystemAbstract {
     
     public static void main(String[] args) {
     	CryptosystemPaillierClient p_c = 
-    		new CryptosystemPaillierClient(1024, 64);
+    		new CryptosystemPaillierClient(512, 64);
+    	
+    	int num = 20;
+    	int bitR = 10;
+    	int bitW = 10; 
+    	BigInteger[] w = new BigInteger[num];
+    	BigInteger[] wEnc = new BigInteger[num];
+    	BigInteger[] r = new BigInteger[num];
+    	BigInteger MAX = BigInteger.ONE.shiftLeft(bitR-1);
+    	BigInteger tmp = BigInteger.ZERO;
+    	BigInteger tmpShift = BigInteger.ZERO;
+    	BigInteger sumEnc = BigInteger.ONE;
+    	for(int i=0; i<num; i++) {
+    		w[i] = new BigInteger(Integer.valueOf(i+1).toString());
+    		wEnc[i] = p_c.Encryption(w[i]);
+    		sumEnc = 
+    			sumEnc.multiply(wEnc[i].modPow(
+    							BigInteger.ONE.shiftLeft((bitR + bitW) * i), 
+    							p_c.nsquare));
+    		    		
+    		r[i] = new BigInteger(bitR + bitW, new Random());
+    		BigInteger sum = w[i].add(MAX).add(r[i]);
+    		BigInteger shift = MAX.add(r[i]);
+    		tmp = tmp.add(sum.shiftLeft((bitR + bitW) * i));
+    		tmpShift = tmpShift.add(shift.shiftLeft((bitR + bitW) * i));
+    		System.out.print(w[i] + " " + r[i] + " ");
+    	}
+    	BigInteger tmpEnc = p_c.Encryption(tmpShift);
+    	BigInteger xEnc = tmpEnc.multiply(sumEnc).mod(p_c.nsquare);
+    	System.out.println();
+    	System.out.println("tmp\t" + tmp);
+    	System.out.println("xEnc\t" + p_c.Decryption(xEnc));
+    	
+    	BigInteger mask = BigInteger.ONE.shiftLeft(bitR + bitW).subtract(BigInteger.ONE);
+    	BigInteger tmpW;
+    	BigInteger tmpWpack;
+    	BigInteger s3_p = BigInteger.ZERO;
+    	BigInteger s3Pack = BigInteger.ZERO;
+    	BigInteger xPack = p_c.Decryption(xEnc);
+    	for(int i=0; i<num; i++) {    		
+    		tmpWpack = xPack.and(mask).subtract(MAX);
+    		tmpW = tmp.and(mask).subtract(MAX);    	
+    		
+    		xPack = xPack.shiftRight(bitR + bitW);
+    		tmp = tmp.shiftRight(bitR + bitW);
+    		
+    		s3Pack = s3Pack.add(tmpWpack.multiply(tmpWpack));
+    		s3_p = s3_p.add(tmpW.multiply(tmpW));
+    		
+    		System.out.print(tmpW + " " + tmpWpack + " ");
+    	}
+    	System.out.println();
+    	BigInteger s3pEnc = p_c.Encryption(s3Pack);
+    	
+    	BigInteger TWO = BigInteger.ONE.add(BigInteger.ONE);
+    	BigInteger r_sum = BigInteger.ZERO;
+    	BigInteger wr_sum = BigInteger.ZERO;
+    	BigInteger wr_sumEnc = BigInteger.ONE;
+    	
+    	for(int i=0; i<num; i++) {
+    		r_sum = r_sum.add(r[i].multiply(r[i]));
+    		wr_sum = wr_sum.add(TWO.multiply(w[i]).multiply(r[i]));
+    		wr_sumEnc = wr_sumEnc.multiply(wEnc[i].modPow(TWO.multiply(r[i]), p_c.nsquare));
+    	}    	
+    	wr_sumEnc = wr_sumEnc.modInverse(p_c.nsquare);    	
+    	BigInteger r_sumEnc = p_c.Encryption(r_sum.negate());
+    	
+    	BigInteger s3 = s3_p.subtract(r_sum).subtract(wr_sum);
+    	BigInteger s3Enc = s3pEnc.multiply(r_sumEnc).multiply(wr_sumEnc).mod(p_c.nsquare);
+    	System.out.println("s3\t" + s3);
+    	System.out.println("s3\t" + p_c.Decryption(s3Enc));
+    	
     	BigInteger a = new BigInteger("10");
     	BigInteger b = new BigInteger("20");
     	BigInteger ea = p_c.Encryption(a);
@@ -148,13 +219,6 @@ public class CryptosystemPaillierClient extends CryptosystemAbstract {
     	System.out.println("a\t" + a);
     	System.out.println("b\t" + b);
     	System.out.println("c\t" + c);
-    	System.out.println("d\t" + d);
-    	double s = System.nanoTime();
-    	for(int i=0; i<1000; i++) {
-    		ea = p_c.Encryption(a);
-    	}
-    	double e = System.nanoTime();
-    	double time = (e - s) / 1000000000.0; 
-    	System.out.println("time\t" + time);
+    	System.out.println("d\t" + d);    	
     }
 }

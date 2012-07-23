@@ -10,6 +10,7 @@ import java.util.Vector;
 import java.util.Random;
 
 import Protocol.GCComparisonServer;
+import Utils.ClientState;
 import Utils.Create;
 import Utils.Print;
 import Matching.GCbasedHungarianAlgorithm;
@@ -140,13 +141,13 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	for(int i=0; i<mEncDomainDistance.length; i++) {
     		System.out.println("\t[S]\tComput distance " + i);
     		
-    		EncProgCommon.oos.writeInt(CLIENT_EXEC);
+    		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
     		mEncDomainDistance[i] = mDistance.evaluate(
     				mPaillier, mEncQueryAverageDescriptor, mDomainAverageDescriptor.elementAt(i));
     		
     		System.out.println(mPaillier.Decryption(mEncDomainDistance[i]));
     	} 
-    	EncProgCommon.oos.writeInt(CLIENT_EXIT);
+    	EncProgCommon.oos.writeObject(ClientState.CLIENT_EXIT);
     	EncProgCommon.oos.flush();
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
@@ -217,7 +218,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
     		tmpDistance = mEncDomainDistance[i].pow(5).mod(mPaillier.nsquare);  
     		//System.out.println(mPaillier.Decryption(tmpDistance) + " " + mPaillier.Decryption(threshold));
     		
-    		EncProgCommon.oos.writeInt(CLIENT_EXEC);
+    		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
     	    if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmpDistance, threshold}, 0).equals(tmpDistance)) {
     	    	System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
     	    	System.out.print(allDomains[i] + "\t");
@@ -231,7 +232,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
     	    	System.out.println();  	
     	    }
     	}    	    
-    	EncProgCommon.oos.writeInt(CLIENT_EXIT);
+    	EncProgCommon.oos.writeObject(ClientState.CLIENT_EXIT);
     	EncProgCommon.oos.flush();
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
@@ -258,7 +259,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
 				System.out.printf("\t[S][START]\tComputing D(%d, %d)\n", i, j);
 				double start = System.nanoTime();
 				
-				EncProgCommon.oos.writeInt(CLIENT_EXEC);
+				EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
 				this.mEncHungarianMatrix[i][j] = mDistance.evaluate(
 						mPaillier, 
 						mEncQueryDescriptor.elementAt(i), 
@@ -271,7 +272,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
 			}
 			//System.out.println();
 		}
-		EncProgCommon.oos.writeInt(CLIENT_EXIT);
+		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXIT);
     	EncProgCommon.oos.flush();
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
@@ -290,7 +291,7 @@ public class EncGCTaggingSystemServer extends ProgServer {
 		double startTime = System.nanoTime();
 		/*** ***/
 		assignment = GCbasedFHA.hgAlgorithm(this.mEncHungarianMatrix, sumType);
-		EncProgCommon.oos.writeInt(CLIENT_EXIT);
+		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXIT);
     	EncProgCommon.oos.flush();
 		/*** ***/
 		double endTime = System.nanoTime();

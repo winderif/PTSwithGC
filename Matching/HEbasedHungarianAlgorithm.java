@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import Crypto.CryptosystemPaillierServer;
 import Program.EncProgCommon;
 import Protocol.ComparisonProtocolOnServer;
+import Utils.ClientState;
 
 public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 	private ComparisonProtocolOnServer cp_s;
@@ -124,7 +125,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 	}
 	
 	protected BigInteger findMinimum(BigInteger a, BigInteger b) throws Exception {
-		EncProgCommon.oos.writeInt(0);    	
+		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);    	
 		if(cp_s.findMinimumOfTwoEncValues(a, b).equals(a)) {
 			return a;
 		}

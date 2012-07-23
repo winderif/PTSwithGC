@@ -2,7 +2,8 @@ package Utils;
 
 import java.math.BigInteger;
 import java.util.Random;
-import Crypto.CryptosystemPaillierServer;;
+import Crypto.CryptosystemPaillierServer;
+import Program.EncProgCommon;
 
 public class AdditivelyBlindProtocol {
 	private CryptosystemPaillierServer mPaillier = null;
@@ -11,7 +12,8 @@ public class AdditivelyBlindProtocol {
 	private BigInteger[] mEncOriginalNumbers = null;
 	private BigInteger[] mEncBlindNumbers = null;
 	private int vectorLength;
-	private static int RANDOM_BIT = 10; 
+	private static int RANDOM_BIT = 10;
+	private static int SIGMA_BIT = 10;
 	
 	public AdditivelyBlindProtocol(CryptosystemPaillierServer serverPaillier, BigInteger[] originalNumbers) {
 		this.mPaillier = serverPaillier;
@@ -22,29 +24,30 @@ public class AdditivelyBlindProtocol {
 		// [x]
 		this.mEncOriginalNumbers = originalNumbers;
 		this.mEncBlindNumbers = new BigInteger[vectorLength];
+		
 		numberAssignment();
+		// [r_i] = Enc.(r_i)
 		this.mEncUniformRandomNumbers = encryption(this.mUniformRandomNumbers);
 		this.mEncBlindNumbers = CalculateAdditivelyBlindNumbers();
 	}
 	
 	private void numberAssignment() {
 		for(int i=0; i<this.vectorLength; i++) {
-			this.mUniformRandomNumbers[i] = BigInteger.probablePrime(RANDOM_BIT, new Random());			
+			// r_i = (l + sigma)-bit random value
+			this.mUniformRandomNumbers[i] = 
+				new BigInteger(RANDOM_BIT + SIGMA_BIT, new Random());			
 		}
 	}
 	
 	private BigInteger[] encryption(BigInteger[] plaintexts) {
 		BigInteger[] ciphertexts = new BigInteger[this.vectorLength];
-		for(int i=0; i<this.vectorLength; i++) {
-			ciphertexts[i] = this.mPaillier.Encryption(plaintexts[i]);			
-		}
+		ciphertexts = EncProgCommon.encryption(mPaillier, plaintexts);		
 		return ciphertexts;
 	}
 	
 	private BigInteger[] CalculateAdditivelyBlindNumbers() {
 		BigInteger[] tmp = new BigInteger[vectorLength];
-		for(int i=0; i<this.vectorLength; i++) {
-			//tmp[i] = this.mEncOriginalNumbers[i];			
+		for(int i=0; i<this.vectorLength; i++) {			
 			tmp[i] = this.mEncOriginalNumbers[i].multiply(this.mEncUniformRandomNumbers[i])
 												.mod(this.mPaillier.nsquare);
 			//System.out.print("tmp[i]:\t" + mPaillier.Decryption(mEncOriginalNumbers[i]) + " " + mUniformRandomNumbers[i]);
@@ -53,14 +56,7 @@ public class AdditivelyBlindProtocol {
 		return tmp;
 	}
 	
-	public BigInteger[] getAdditivelyBlindNumbers() {
-		/** Testing
-		BigInteger[] tmp = new BigInteger[16];
-		for(int i=0; i<16; i++) {
-			tmp[i] = new BigInteger(Integer.toString(i+1));
-		}
-		return tmp;
-		*/
+	public BigInteger[] getAdditivelyBlindNumbers() {		
 		return this.mEncBlindNumbers;
 	}
 	

@@ -24,13 +24,11 @@ public abstract class ProgServer extends Program {
     private Socket             clientSocket = null;              // socket created by accept
 	
     //protected static final int BIN_HISTO = 16;
-    protected static final int BIN_HISTO = 10000;     
-    protected static final int CLIENT_EXEC = 0;
-    protected static final int CLIENT_EXIT = 1;
+    protected static final int BIN_HISTO = 10000;         
     private boolean domains_file_existed = false;
     
     public static String databaseDirName;
-    protected File[] databaseTagDirFile = null;	
+    protected File[] databaseTagDirFile = null;
     protected Vector<File[]> databaseDataFile = new Vector<File[]>();
     protected Vector<Vector<VideoFrame>> databaseData = new Vector<Vector<VideoFrame>>();
 	

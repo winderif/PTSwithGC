@@ -3,15 +3,17 @@ package Score;
 import Crypto.CryptosystemPaillierClient;
 import Program.EncProgCommon;
 import Score.ComputingScore;
+import Utils.ClientState;
+
 import java.math.BigInteger;
 
 public class DistanceL2squareClient extends ComputingScore {
 	private CryptosystemPaillierClient mPaillier;
-	private int exit = 0;
+	private ClientState exit = ClientState.CLIENT_EXEC;
 	
 	public DistanceL2squareClient(CryptosystemPaillierClient arg0) {
 		this.mPaillier = arg0;
-		this.exit = 0;
+		this.exit = ClientState.CLIENT_EXEC;
 	}
 	
 	public void run() throws Exception {
@@ -24,8 +26,8 @@ public class DistanceL2squareClient extends ComputingScore {
 	protected void execute() {		
 		while(true) {
 			try {
-				this.exit = EncProgCommon.ois.readInt();
-				if(this.exit == 1) {
+				this.exit = (ClientState)EncProgCommon.ois.readObject();
+				if(this.exit.equals(ClientState.CLIENT_EXIT)) {
 					System.out.println("[C][SUCCESS]\tComplete Compute distance.");
 					break;
 				}

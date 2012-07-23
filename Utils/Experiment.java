@@ -12,6 +12,7 @@ public class Experiment {
 	private static StringBuilder fileName = null;
 	
 	public Experiment(String dirName) {
+		/**
 		//System.out.println(dirName);
 		
 		//fileName = new StringBuilder("Exp_YouTube_orig_NoEnc_TopSurf_10000_L2s");
@@ -28,8 +29,9 @@ public class Experiment {
 		fileName.append("_");
 		fileName.append(token2[2]);
 		fileName.append(".xls");
-					
-		File xlsFile = new File(fileName.toString());
+		 */		
+		File xlsFile = new File(dirName + ".xls");
+		//File xlsFile = new File(fileName.toString());
 		System.out.println(xlsFile.getAbsolutePath());		
 		
 		try {									

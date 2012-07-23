@@ -38,6 +38,14 @@ public class EncProgCommon extends ProgCommon {
 		return encryption(cryptosystem, DoubleToBigInteger2DArray(plaintexts));
 	}
 	
+	public static BigInteger[] encryption(CryptosystemAbstract cryptosystem, BigInteger[] plaintexts) {
+		BigInteger[] ciphertexts = new BigInteger[plaintexts.length];
+		for(int i=0; i<ciphertexts.length; i++) {			
+			ciphertexts[i] = encryption(cryptosystem, plaintexts[i]);			
+		}
+		return ciphertexts;
+	}
+	
 	public static BigInteger[][] encryption(CryptosystemAbstract cryptosystem, BigInteger[][] plaintexts) {
 		BigInteger[][] ciphertexts = new BigInteger[plaintexts.length][plaintexts[0].length];
 		for(int i=0; i<ciphertexts.length; i++) {

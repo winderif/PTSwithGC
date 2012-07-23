@@ -4,30 +4,31 @@ import java.math.BigInteger;
 
 import Crypto.*;
 import Program.EncProgCommon;
+import Utils.ClientState;
 import FastGC.Program.FindMinimumServer;
 
 public class GCComparisonClient extends ComparisonProtocol {
 	private CryptosystemPaillierClient mPaillier;
-	private int exit = 0;
+	private ClientState exit = ClientState.CLIENT_EXEC;
 	private BigInteger sInput;
 		
 	private int K;
 	
 	public GCComparisonClient() {
 		this.mPaillier = null;	
-		this.exit = 0;
+		this.exit = ClientState.CLIENT_EXEC;
 	}
 	
 	public GCComparisonClient(CryptosystemPaillierClient p) {
 		this.mPaillier = p;
-		this.exit = 0;
+		this.exit = ClientState.CLIENT_EXEC;
 	}
 	
 	public void run() throws Exception {
 		while(true) {
 			try {
-				this.exit = EncProgCommon.ois.readInt();
-				if(this.exit == 1) {
+				this.exit = (ClientState)EncProgCommon.ois.readObject();
+				if(this.exit.equals(ClientState.CLIENT_EXIT)) {
 					System.out.println("[C][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph.");
 					break;
 				}
