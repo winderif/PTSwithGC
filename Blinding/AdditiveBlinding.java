@@ -6,15 +6,14 @@ import Crypto.CryptosystemPaillierServer;
 import Program.EncProgCommon;
 
 public abstract class AdditiveBlinding {
-	protected static final int RANDOM_BIT = 10;
-	protected static final int DATA_BIT = 10;
+	protected static final int RANDOM_BIT = 15;
+	protected static final int DATA_BIT = 15;
 	protected final int NUM_DATA;
 	
 	protected CryptosystemPaillierServer mPaillier = null;
 	
 	protected BigInteger[] mEncData = null;
-	protected BigInteger[] mRandomValues = null;
-	protected BigInteger[] mEncRandomValues = null;
+	protected BigInteger[] mRandomValues = null;	
 	
 	public AdditiveBlinding(
 			CryptosystemPaillierServer paillier,
@@ -33,8 +32,6 @@ public abstract class AdditiveBlinding {
 	protected void init() {
 		createRandomValues();
 		
-		encryptRandomValues();
-		
 		initialize();	
 	}
 	
@@ -48,10 +45,5 @@ public abstract class AdditiveBlinding {
 			this.mRandomValues[i] = 
 				new BigInteger(RANDOM_BIT + DATA_BIT, new Random());
 		}
-	}
-	
-	protected void encryptRandomValues() {
-		this.mEncRandomValues = 
-			EncProgCommon.encryption(this.mPaillier, this.mRandomValues);			
-	}
+	}	
 }

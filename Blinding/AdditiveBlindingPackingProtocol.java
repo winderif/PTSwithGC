@@ -9,13 +9,13 @@ import Program.EncProgCommon;
 public class AdditiveBlindingPackingProtocol extends AdditiveBlinding 
 											implements Packing {	
 	
-	private int K_BLIND = 20;
+	private int K_BLIND = 16;
 	private int K_REMAINING = 0;
 	private int K_CIPHER = 0;
 	
 	private BigInteger MAX = null;
 		
-	protected BigInteger[] mEncPackedValues = null;
+	private BigInteger[] mEncPackedValues = null;
 	private BigInteger mEncS3 = BigInteger.ONE;
 	
 	public AdditiveBlindingPackingProtocol(
@@ -35,7 +35,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			mEncPackedValues = new BigInteger[K_CIPHER];
 		}		
 				
-		MAX = BigInteger.ONE.shiftLeft(this.RANDOM_BIT - 1);						
+		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);						
 	}
 	
 	protected void execute() throws Exception {	

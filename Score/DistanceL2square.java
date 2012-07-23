@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import Program.EncProgCommon;
 import Utils.AdditivelyBlindProtocol;
+import Utils.Print;
 import Blinding.*;
 import Crypto.CryptosystemPaillierServer;
 
@@ -150,7 +151,7 @@ public class DistanceL2square extends Distance {
 				}
 				else {
 					// (-2)*w
-					BigInteger tmpPow = dPair.getValue().multiply(new BigInteger("2"));
+					BigInteger tmpPow = dPair.getValue().shiftLeft(1);
 					//System.out.println("tmpPow:\t" + tmpPow + " ");
 					// [w_bar]^((-2)*w) and w1*w2
 					BigInteger tmpMul = qPair.getValue().modPow(tmpPow, mPaillier.nsquare);
@@ -172,18 +173,20 @@ public class DistanceL2square extends Distance {
 	private BigInteger evaluateThirdTerm(
 			CryptosystemPaillierServer mPaillier,
 			Map<Integer, BigInteger> q_Enc) throws Exception {
-				
+						
 		BigInteger[] q_Enc_Array = new BigInteger[q_Enc.values().size()]; 
-		q_Enc.values().toArray(q_Enc_Array);
+		q_Enc.values().toArray(q_Enc_Array);		
 		
 		AdditiveBlinding r = 
 			//new AdditiveBlindingProtocol(mPaillier, q_Enc_Array);
 			new AdditiveBlindingPackingProtocol(mPaillier, q_Enc_Array);
 		
 		r.run();
-				
-		//BigInteger s3 = ((AdditiveBlindingProtocol)r).getThirdTerm(s3_p);
-		BigInteger s3 = ((AdditiveBlindingPackingProtocol)r).getmEncS3();
+		/**
+		BigInteger s3_p = new BigInteger(EncProgCommon.ois.readObject().toString());
+		BigInteger s3 = ((AdditiveBlindingProtocol)r).getThirdTerm(s3_p);
+		*/
+		BigInteger s3 = ((AdditiveBlindingPackingProtocol)r).getmEncS3();		
 		return s3;
 	}
 }

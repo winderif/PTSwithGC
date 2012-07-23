@@ -8,15 +8,27 @@ import Program.EncProgCommon;
 
 public class AdditiveBlindingProtocol extends AdditiveBlinding {
 	
-	protected BigInteger[] mEncBlindValues = null;
+	protected BigInteger[] mEncRandomValues = null;
+	protected BigInteger[] mEncBlindValues = null;	
 	
 	public AdditiveBlindingProtocol(
 			CryptosystemPaillierServer paillier,
 			BigInteger[] EncData) {
 		super(paillier, EncData);
-	}
+	}	
 	
 	protected void initialize() {
+		encryptRandomValues();
+		
+		addEncBlindValues();
+	}
+	
+	private void encryptRandomValues() {
+		this.mEncRandomValues = 
+			EncProgCommon.encryption(this.mPaillier, this.mRandomValues);			
+	}
+	
+	private void addEncBlindValues() {
 		this.mEncBlindValues = new BigInteger[this.NUM_DATA];
 		for(int i=0; i<this.mEncBlindValues.length; i++) {
 			// [x] = [w + r] = [w] * [r] 

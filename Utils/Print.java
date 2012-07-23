@@ -26,7 +26,7 @@ public class Print {
 	public static void printArray(BigInteger[] tmpArray, String info) {
 		System.out.println(info);
 		for(int i=0; i<tmpArray.length; i++) {
-			System.out.print(tmpArray[i]);
+			System.out.print(tmpArray[i] + " ");
 		}
 		System.out.println();
 	}
@@ -34,7 +34,7 @@ public class Print {
 	public static void printEncArray(BigInteger[] tmpArray, String info, CryptosystemPaillierServer paillier) {
 		System.out.println(info);
 		for(int i=0; i<tmpArray.length; i++) {
-			System.out.print(paillier.Decryption(tmpArray[i]));
+			System.out.print(paillier.Decryption(tmpArray[i]) + " ");
 		}
 		System.out.println();
 	}
