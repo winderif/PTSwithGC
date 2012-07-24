@@ -6,5 +6,5 @@ import java.io.*;
 
 public abstract class ProgCommon {
     public static ObjectOutputStream oos        = null;              // socket output stream
-    public static ObjectInputStream  ois        = null;              // socket input stream        
+    public static ObjectInputStream  ois        = null;              // socket input stream    				
 }

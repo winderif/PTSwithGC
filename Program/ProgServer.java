@@ -24,7 +24,7 @@ public abstract class ProgServer extends Program {
     private Socket             clientSocket = null;              // socket created by accept
 	
     //protected static final int BIN_HISTO = 16;
-    protected static final int BIN_HISTO = 10000;         
+    protected static final int BIN_HISTO = 10000;
     private boolean domains_file_existed = false;
     
     public static String databaseDirName;
@@ -43,7 +43,7 @@ public abstract class ProgServer extends Program {
 	protected double[][] mTagAverageHistogram = null;
 	protected Vector<Map<Integer, Double>> mTagAverageDescriptor = null;
 	protected double[][] mDomainAverageHistogram = null;
-	protected Vector<Map<Integer, Double>> mDomainAverageDescriptor = null;
+	protected Vector<Map<Integer, Double>> mDomainAverageDescriptor = null;		
 	
 	protected Experiment mExp = null;
     
@@ -66,9 +66,7 @@ public abstract class ProgServer extends Program {
     	super.init();
     	
     	Program.iterCount = ProgCommon.ois.readInt();
-    	System.out.println(Program.iterCount);        
-    	
-    	/** Create Excel sheet */    	
+    	System.out.println(Program.iterCount);            	    	    
     }
 
     private void create_socket_and_listen() throws Exception {
@@ -85,12 +83,12 @@ public abstract class ProgServer extends Program {
     }
     
     protected void initialize() throws Exception {
-    	loadQuery();
+    	loadQuery();        
     	
-    	generateImageClusters();    	
+    	generateImageClusters();
     	
-    	generateTagClusters();    	    	
-    }       
+    	generateTagClusters();    	
+    }
     
     private void loadQuery() {
 		File dirFile = new File(databaseDirName);

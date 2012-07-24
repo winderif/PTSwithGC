@@ -121,6 +121,8 @@ public class FeatureTopSurf extends Feature {
 					descriptor = Create.linkedHashMap();					
 					
 					int index = 0;				
+					double tf = 0.0;
+					double idf = 0.0;
 					for(int i=0; i<tmpLine.length; i++) {
 						//System.out.println(tmpLine[i]);
 						String[] tmpValue = tmpLine[i].split("\t");
@@ -128,9 +130,10 @@ public class FeatureTopSurf extends Feature {
 						//System.out.println(tmpValue[0]);
 						index = Integer.parseInt(tmpValue[0]);				
 						// count of histogram
-						histogram[index] = 
-							Double.parseDouble(tmpValue[2]);
-						descriptor.put(index, Double.parseDouble(tmpValue[2]));
+						tf = Double.parseDouble(tmpValue[2]);
+						idf = Double.parseDouble(tmpValue[3]);
+						histogram[index] = tf * idf;
+						descriptor.put(index, tf * idf);
 					}
 					/** debugging 								
 					for(int i=0; i<histogram.length; i++) {

@@ -54,16 +54,19 @@ public abstract class ProgClient extends Program {
     protected void initialize() throws Exception {
     	//loadQuery();
     	loadQueryVideos();
-    	
+    	    	
     	//getQueryAverageHistorgram();    	
     	//getQueryAverageDescriptor();
     }
     
     protected void execute() throws Exception {
     	//System.out.println("iter: " + iter);
-    	videoFrames = videoShots.elementAt(iter);    	    	
+    	videoFrames = videoShots.elementAt(iter);    	
+    	
     	getQueryAverageHistorgram();
+    	
     	getQueryAverageDescriptor();
+    	
     	super.execute();
     }        
     
