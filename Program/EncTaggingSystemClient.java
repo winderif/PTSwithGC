@@ -5,23 +5,29 @@ package Program;
 import Score.*;
 import Utils.WriteOutput;
 import Crypto.CryptosystemPaillierClient;
+import Crypto.CryptosystemDGKClient;
 import Protocol.ComparisonProtocolOnClient;
 
 public class EncTaggingSystemClient extends ProgClient {
 	private String[] mMatchingTags = null;
 	private CryptosystemPaillierClient mPaillier = null;
+	private CryptosystemDGKClient mDGK = null;
 	
 	public EncTaggingSystemClient() {
 		this.mPaillier = new CryptosystemPaillierClient();
+		this.mDGK = new CryptosystemDGKClient();
     }
 
     protected void init() throws Exception {
     	super.init();
     	
     	// key generation and send to server
-    	System.out.println("[C][STRAT]\tsend public key pair (n, g).");
-    	EncProgCommon.oos.writeObject(mPaillier.getPublicKey()[0]);
-    	EncProgCommon.oos.writeObject(mPaillier.getPublicKey()[1]);
+    	System.out.println("[C][STRAT]\tsend Paillier public key pair (n, g).");
+    	EncProgCommon.oos.writeObject(mPaillier.getPublicKey());
+    	
+    	System.out.println("[C][STRAT]\tsend DGK public key pair (n, g, h, u).");
+    	EncProgCommon.oos.writeObject(mDGK.getPublicKey());
+
     	EncProgCommon.oos.flush();
     }
     
@@ -82,7 +88,7 @@ public class EncTaggingSystemClient extends ProgClient {
     	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
     	
     	ComparisonProtocolOnClient protocolClient = 
-    		new ComparisonProtocolOnClient(mPaillier); 
+    		new ComparisonProtocolOnClient(mPaillier, mDGK); 
     	protocolClient.run();    	
     }
     
@@ -98,7 +104,7 @@ public class EncTaggingSystemClient extends ProgClient {
     protected void execFindBestMatching() throws Exception {
     	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");	
     	ComparisonProtocolOnClient protocolClient = 
-    		new ComparisonProtocolOnClient(mPaillier); 
+    		new ComparisonProtocolOnClient(mPaillier, mDGK); 
     	protocolClient.run();    	
     }
     

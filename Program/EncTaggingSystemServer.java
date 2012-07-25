@@ -17,11 +17,13 @@ import Utils.ClientState;
 import Utils.FindExtremeValue;
 import Utils.Print;
 import Crypto.CryptosystemPaillierServer;
+import Crypto.CryptosystemDGKServer;
 import Score.*;
 
 public class EncTaggingSystemServer extends ProgServer {
 
 	private CryptosystemPaillierServer mPaillier = null;
+	private CryptosystemDGKServer mDGK = null;
 	private Distance mDistance = null;
 
 	private int mQueryNum = 0;
@@ -44,14 +46,15 @@ public class EncTaggingSystemServer extends ProgServer {
     	super.init();
     	
     	// recv key from client and setup
-    	BigInteger[] pkey = new BigInteger[2]; 		
-    	pkey[0] = new BigInteger(EncProgCommon.ois.readObject().toString());
-    	pkey[1] = new BigInteger(EncProgCommon.ois.readObject().toString());
+    	BigInteger[] pkey = (BigInteger[])EncProgCommon.ois.readObject();    	
     	this.mPaillier = new CryptosystemPaillierServer(pkey);
-    	System.out.println("\t[S][SUCCESS]\treceive public key pair (n, g).");
+    	System.out.println("\t[S][SUCCESS]\treceive Paillier public key pair (n, g).");
     	
-    	this.mDistance = new DistanceL2square();
-    	//this.mDistance = new DistanceWeightedL2square();    	
+    	BigInteger[] dkey = (BigInteger[])EncProgCommon.ois.readObject();    	
+    	this.mDGK = new CryptosystemDGKServer(dkey);
+    	System.out.println("\t[S][SUCCESS]\treceive DGK public key pair (n, g, h, u).");
+    	
+    	this.mDistance = new DistanceL2square();    	    
     	
     	/**
     	System.out.println("\t[S][START]\tEncrypt Database.");
@@ -174,7 +177,7 @@ public class EncTaggingSystemServer extends ProgServer {
     
     private BigInteger evaluateThreshold() throws Exception {
     	ComparisonProtocolOnServer cp_s =
-    		new ComparisonProtocolOnServer(mPaillier);
+    		new ComparisonProtocolOnServer(mPaillier, mDGK);
 	
     	System.out.println("\t[START]\tfindEncMaximum()");
 		double startTime = System.nanoTime();
@@ -230,7 +233,7 @@ public class EncTaggingSystemServer extends ProgServer {
     	HashMap<String, Map<Integer, Double>> tmpCandidateTags = Create.hashMap();
     	BigInteger tmpDistance = null;
     	ComparisonProtocolOnServer cp_s =
-    		new ComparisonProtocolOnServer(mPaillier);    	
+    		new ComparisonProtocolOnServer(mPaillier, mDGK);    	
     	/** 
     	 *  For each domain distance D, 
     	 *  if D < threshold T, then get tags in this domain.    	 
@@ -314,7 +317,7 @@ public class EncTaggingSystemServer extends ProgServer {
 		int[][] assignment = new int[this.mEncHungarianMatrix.length][2];
 		
 		HEbasedHungarianAlgorithm HEbasedFHA = 
-			new HEbasedHungarianAlgorithm(mPaillier);		
+			new HEbasedHungarianAlgorithm(mPaillier, mDGK);		
 		
 		double startTime = System.nanoTime();
 		/*** ***/

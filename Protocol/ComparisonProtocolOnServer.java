@@ -4,14 +4,18 @@ import java.math.BigInteger;
 import java.util.Random;
 import Utils.Print;
 import Crypto.CryptosystemPaillierServer;
+import Crypto.CryptosystemDGKServer;
 import Program.EncProgCommon;
 
 public class ComparisonProtocolOnServer extends ComparisonProtocol {
 	private CryptosystemPaillierServer mPaillier;
+	private CryptosystemDGKServer mDGK;
+	
 	private static final int KAPA = 100;	
 	private static final int U = 15;
 	private static final BigInteger L_big = new BigInteger(Integer.toString(L));
 	private static final BigInteger THREE = new BigInteger("3");		
+	
 	private BigInteger TwoPowNeL;
 	private BigInteger[] d_bin_Array;
 	private BigInteger[] r_bin_Array;
@@ -20,13 +24,17 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 	
 	public ComparisonProtocolOnServer() {
 		this.mPaillier = null;
+		this.mDGK = null;
 		this.d_bin_Array = null;
 		this.r_bin_Array = null;
 		this.c_Array = null;
 	}
-	public ComparisonProtocolOnServer(CryptosystemPaillierServer p) {
+	public ComparisonProtocolOnServer(
+			CryptosystemPaillierServer p, CryptosystemDGKServer dgk) {
 		this.mPaillier = p;		
-		TwoPowNeL = (new BigInteger("2")).modPow(L_big.negate(), mPaillier.nsquare);		
+		this.mDGK = dgk;
+		//TwoPowNeL = (new BigInteger("2")).modPow(L_big.negate(), mPaillier.nsquare);
+		TwoPowNeL = (BigInteger.ONE.shiftLeft(L)).modInverse(mPaillier.nsquare);
 		this.d_bin_Array = new BigInteger[L+1];
 		this.r_bin_Array = new BigInteger[L+1];
 		this.c_Array = new BigInteger[L+1];

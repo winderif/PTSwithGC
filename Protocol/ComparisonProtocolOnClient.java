@@ -1,20 +1,27 @@
 package Protocol;
 
 import java.math.BigInteger;
+
+import Crypto.CryptosystemDGKClient;
 import Crypto.CryptosystemPaillierClient;
 import Program.EncProgCommon;
 import Utils.ClientState;
 
 public class ComparisonProtocolOnClient extends ComparisonProtocol {	
 	private CryptosystemPaillierClient mPaillier;
+	private CryptosystemDGKClient mDGK;
+	
 	private ClientState exit = ClientState.CLIENT_EXEC;			
 	
 	public ComparisonProtocolOnClient() {	
 		this.mPaillier = null;
+		this.mDGK = null;		
 		this.exit = ClientState.CLIENT_EXEC;
 	}
-	public ComparisonProtocolOnClient(CryptosystemPaillierClient p) {		
+	public ComparisonProtocolOnClient(
+			CryptosystemPaillierClient p, CryptosystemDGKClient dgk) {		
 		this.mPaillier = p;
+		this.mDGK = dgk;
 		this.exit = ClientState.CLIENT_EXEC;	
 	}
 	

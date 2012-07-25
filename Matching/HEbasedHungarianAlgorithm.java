@@ -2,6 +2,7 @@ package Matching;
 
 import java.math.BigInteger;
 
+import Crypto.CryptosystemDGKServer;
 import Crypto.CryptosystemPaillierServer;
 import Program.EncProgCommon;
 import Protocol.ComparisonProtocolOnServer;
@@ -10,9 +11,10 @@ import Utils.ClientState;
 public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 	private ComparisonProtocolOnServer cp_s;
 	
-	public HEbasedHungarianAlgorithm(CryptosystemPaillierServer paillier) {
+	public HEbasedHungarianAlgorithm(
+			CryptosystemPaillierServer paillier, CryptosystemDGKServer dgk) {		
 		super(paillier);
-		cp_s = new ComparisonProtocolOnServer(paillier);
+		cp_s = new ComparisonProtocolOnServer(paillier, dgk);
 	}
 	
 	protected BigInteger findEncLargest(BigInteger[][] array) throws Exception {
