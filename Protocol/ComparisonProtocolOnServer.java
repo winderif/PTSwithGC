@@ -17,6 +17,8 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 	private static final int U = 8;
 	private static final BigInteger THREE = new BigInteger("3");		
 	
+	// Paillier [1]
+	private static BigInteger EncP_ONE;
 	// DGK [[1]]
 	private static BigInteger EncDGK_ONE;
 	// DGK [[-1]]
@@ -45,6 +47,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 		this.r_bin_Array = new BigInteger[L+1];
 		this.c_Array = new BigInteger[L+1];
 		
+		EncP_ONE = mPaillier.Encryption(BigInteger.ONE);
 		EncDGK_ONE = mDGK.Encryption(BigInteger.ONE);
 		EncDGK_NegONE = mDGK.Encryption(BigInteger.ONE.negate());
 		
@@ -168,10 +171,13 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 	private void EncMask(BigInteger s) {
 		// [[c_i]] = [[d^_i]] * [[r^_i]] * [[s]] * {Multiply[w_j]}^3
 		for(int i=0; i<L+1; i++) {
-			c_Array[i] = (d_bin_Array[i].multiply(mDGK.Encryption(r_bin_Array[i].negate()))
-										.multiply(s))
-										.multiply(MultiplyOfEncXOR(i).modPow(THREE, mDGK.n))
-										.mod(mDGK.n);								
+			c_Array[i] = 
+				(d_bin_Array[i].multiply(
+						(r_bin_Array[i].negate().equals(BigInteger.ZERO))?
+						(Enc_ZERO):(EncDGK_NegONE))
+								.multiply(s))
+								.multiply(MultiplyOfEncXOR(i).modPow(THREE, mDGK.n))
+								.mod(mDGK.n);								
 		}
 	}
 	
@@ -179,7 +185,9 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 		BigInteger tmp = BigInteger.ONE;
 		for(int j=0; j<last; j++) {
 			tmp = tmp.multiply(mDGK.EncXOR(
-					d_bin_Array[j], mDGK.Encryption(r_bin_Array[j]), r_bin_Array[j]))
+					d_bin_Array[j], 
+					(r_bin_Array[j].equals(BigInteger.ZERO))?(Enc_ZERO):(EncDGK_ONE), 
+					r_bin_Array[j]))
 					 .mod(mDGK.n);
 		}		
 		return tmp;
@@ -191,7 +199,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 			return lambda_b;
 		}
 		else {			
-			return mPaillier.EncXOR(lambda_b, mPaillier.Encryption(BigInteger.ONE), BigInteger.ONE);
+			return mPaillier.EncXOR(lambda_b, EncP_ONE, BigInteger.ONE);
 		}
 	}
 }
