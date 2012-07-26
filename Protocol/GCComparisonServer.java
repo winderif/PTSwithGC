@@ -1,7 +1,6 @@
 package Protocol;
 
 import java.math.BigInteger;
-import java.util.Random;
 import FastGC.Program.*;
 
 import Crypto.*;

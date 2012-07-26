@@ -38,8 +38,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");				
-				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {
-				//if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2])) {
+				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {				
 					tmpMax[j] = tmp1DArray[j*2+1];
 					tmpMax[j+(length+1)/2] = tmp1DArray[j*2];
 				}
@@ -95,8 +94,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
 				System.out.print(j + " ");				
-				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {
-				//if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmp1DArray[j*2], tmp1DArray[j*2+1]}, 0).equals(tmp1DArray[j*2+1])) {
+				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {				
 					tmpMin[j] = tmp1DArray[j*2+1];
 					tmpMin[j+(length+1)/2] = tmp1DArray[j*2];
 				}
@@ -123,7 +121,10 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 			length = (length+1) / 2;	
 			System.out.println();
 		}
-		return tmpMin[0];
+		if(findMinimum(tmpMin[0], minval).equals(tmpMin[0]))
+			return tmpMin[0];
+		else
+			return minval;		
 	}
 	
 	protected BigInteger findMinimum(BigInteger a, BigInteger b) throws Exception {

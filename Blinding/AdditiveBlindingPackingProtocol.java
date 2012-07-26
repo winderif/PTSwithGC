@@ -15,7 +15,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 	private int K_CIPHER = 0;
 	
 	private static BigInteger MAX;
-	private static BigInteger SHIFT_BASE;
+	private static BigInteger SHIFT_BASE;	
 		
 	private BigInteger[] mEncPackedValues = null;
 	private BigInteger mEncS3 = BigInteger.ONE;
@@ -26,20 +26,19 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 		super(paillier, EncData);				
 	}
 	
-	protected void initialize() {		
-		K_CIPHER = this.NUM_DATA / K_BLIND;		
-		K_REMAINING = this.NUM_DATA - (K_BLIND * K_CIPHER);		
+	protected void initialize() {
+		// # Packing ciphertexts will be sended 
+		K_CIPHER = this.NUM_DATA / K_BLIND;
+		// # values that will be packed is remaining		
+		K_REMAINING = this.NUM_DATA - (K_BLIND * K_CIPHER);
+		// If have remaining values, packing ciphertexts +1
+		mEncPackedValues = 
+			new BigInteger[(K_REMAINING != 0)?(K_CIPHER + 1):(K_CIPHER)];
 		
-		if(K_REMAINING != 0) {
-			mEncPackedValues = new BigInteger[K_CIPHER + 1];			
-		}
-		else {
-			mEncPackedValues = new BigInteger[K_CIPHER];
-		}		
 		// MAX = 2^(L-1)
 		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);	
-		
-		SHIFT_BASE = BigInteger.ONE.shiftLeft(this.RANDOM_BIT + this.DATA_BIT);
+		// shift_base = 2^(L + sigma) in Horner's method
+		SHIFT_BASE = BigInteger.ONE.shiftLeft(this.RANDOM_BIT + this.DATA_BIT);				
 	}
 	
 	protected void execute() throws Exception {	
@@ -58,6 +57,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			mEncS3 = mEncS3.multiply(s3K);
 		}		
 				
+		// If have remaining, then send [true]
 		if(K_REMAINING != 0) {
 			EncProgCommon.oos.writeBoolean(true);
 			
@@ -81,9 +81,13 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 		BigInteger EncDataShift = this.mEncData[start + (k_blind - 1)];
 		BigInteger randomShift = MAX.add(this.mRandomValues[start + (k_blind - 1)]);
 		/**
-		 *  Horner's method
+		 *  Horner's method		 
+		 *  @shift_base = 2^(RANDOM_BIT + DATA_BIT)
+		 *  @[x] = [w_K']
+		 *  @r = r_K' + MAX
 		 *  for K'-1 to 1 do
-		 *  	[x] = [x]^shift_base * [w_j]
+		 *  	[x] = [x] ^ shift_base * [w_j]
+		 *  	r   = r * shift_base + (r_j + MAX)
 		 *  end	 
 		 */		
 		for(int i=(k_blind-1) - 1; i>=0; i--) {
@@ -135,11 +139,13 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			neg_TWO_r = (mRandomValues[start + i].shiftLeft(1)).negate();
 			// [w]^(-2r) mod N
 			Enc_sum_wr_neg_TWO = 
-				Enc_sum_wr_neg_TWO.multiply(mEncData[start + i].modPow(neg_TWO_r, mPaillier.nsquare));			
+				Enc_sum_wr_neg_TWO.multiply(
+						mEncData[start + i].modPow(neg_TWO_r, mPaillier.nsquare));			
 		}		
 		// -(r^2) = (-1) * (r^2)
 		// [-(r^2)] = Enc.( -(r^2) )
-		BigInteger Enc_neg_sum_r_square = mPaillier.Encryption(sum_r_square.negate());
+		BigInteger Enc_neg_sum_r_square = 
+			mPaillier.Encryption(sum_r_square.negate());
 		
 		// [s3] = [s3_c] * [- Sum(r^2)] * multiply([w]^(-2r))
 		return s3_c.multiply(Enc_neg_sum_r_square)

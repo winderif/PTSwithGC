@@ -182,10 +182,11 @@ public class DistanceL2square extends Distance {
 			new AdditiveBlindingPackingProtocol(mPaillier, q_Enc_Array);
 		
 		r.run();
-		/**
+		/** No packing
 		BigInteger s3_p = new BigInteger(EncProgCommon.ois.readObject().toString());
 		BigInteger s3 = ((AdditiveBlindingProtocol)r).getThirdTerm(s3_p);
-		*/
+		*/		
+		/** Packing */
 		BigInteger s3 = ((AdditiveBlindingPackingProtocol)r).getmEncS3();		
 		return s3;
 	}

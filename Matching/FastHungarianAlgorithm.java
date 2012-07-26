@@ -535,8 +535,7 @@ public class FastHungarianAlgorithm {
 					minval = cost[i][j];
 				}
 			}
-		}
-		
+		}		
 		return minval;
 	}
 	

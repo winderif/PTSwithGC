@@ -22,7 +22,7 @@ public abstract class Program {
     protected void execute() throws Exception {
     	execQueryTransfer();
     	
-    	execFindCandidateTagClusters();
+    	//execFindCandidateTagClusters();
     	
     	execBuildBipartiteGraph();
     	

@@ -2,7 +2,6 @@ package Score;
 
 import java.math.BigInteger;
 import java.util.Map;
-import java.util.LinkedHashMap;
 import java.util.Iterator;
 
 import Crypto.CryptosystemPaillierServer;
