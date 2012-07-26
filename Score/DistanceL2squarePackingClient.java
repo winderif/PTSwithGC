@@ -66,7 +66,7 @@ public class DistanceL2squarePackingClient extends ComputingScore {
 		
 		for(int j=0; j<k_blind; j++) {	
 			// x' = x_j - 2^(L-1)
-			BigInteger tmpX = xPacked.and(MASK).subtract(MAX);						
+			BigInteger tmpX = (xPacked.and(MASK)).subtract(MAX);						
 			// shift
 			xPacked = xPacked.shiftRight(this.RANDOM_BIT + this.DATA_BIT);
 			// x'^2 = x' * x'

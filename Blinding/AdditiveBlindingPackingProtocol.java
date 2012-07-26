@@ -5,6 +5,7 @@ import java.math.BigInteger;
 
 import Crypto.CryptosystemPaillierServer;
 import Program.EncProgCommon;
+import Utils.Print;
 
 public class AdditiveBlindingPackingProtocol extends AdditiveBlinding 
 											implements Packing {	
@@ -13,7 +14,8 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 	private int K_REMAINING = 0;
 	private int K_CIPHER = 0;
 	
-	private BigInteger MAX = null;
+	private static BigInteger MAX;
+	private static BigInteger SHIFT_BASE;
 		
 	private BigInteger[] mEncPackedValues = null;
 	private BigInteger mEncS3 = BigInteger.ONE;
@@ -35,7 +37,9 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			mEncPackedValues = new BigInteger[K_CIPHER];
 		}		
 		// MAX = 2^(L-1)
-		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);						
+		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);	
+		
+		SHIFT_BASE = BigInteger.ONE.shiftLeft(this.RANDOM_BIT + this.DATA_BIT);
 	}
 	
 	protected void execute() throws Exception {	
@@ -74,27 +78,26 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 	}
 	
 	public BigInteger packing(int start, int k_blind) {
-		BigInteger EncDataShift = BigInteger.ONE;
-		BigInteger randomShift = BigInteger.ZERO;
-		
-		for(int i=0; i<k_blind; i++) {
-			// 2^[(L + sigma)*(j - 1)]
-			BigInteger shiftValue = 
-				BigInteger.ONE.shiftLeft((this.RANDOM_BIT + this.DATA_BIT) * i);
+		BigInteger EncDataShift = this.mEncData[start + (k_blind - 1)];
+		BigInteger randomShift = MAX.add(this.mRandomValues[start + (k_blind - 1)]);
+		/**
+		 *  Horner's method
+		 *  for K'-1 to 1 do
+		 *  	[x] = [x]^shift_base * [w_j]
+		 *  end	 
+		 */		
+		for(int i=(k_blind-1) - 1; i>=0; i--) {
+			EncDataShift = (EncDataShift.modPow(SHIFT_BASE, mPaillier.nsquare))
+										.multiply(this.mEncData[start + i]).mod(mPaillier.nsquare);
 			
-			// multiply( [w_i]^shiftValue )
-			EncDataShift = EncDataShift.multiply(
-						this.mEncData[i + start].modPow(shiftValue, mPaillier.nsquare));
-						
-			// sum( (MAX + r_i) * shiftValue )
-			randomShift = randomShift.add(
-						(MAX.add(this.mRandomValues[i + start])
-							.shiftLeft((this.RANDOM_BIT + this.DATA_BIT) * i)));			
-		}		
-		BigInteger EncRandomShift = mPaillier.Encryption(randomShift);
+			randomShift = (randomShift.shiftLeft(this.RANDOM_BIT + this.DATA_BIT))
+										.add(MAX.add(this.mRandomValues[start + i]));
+		}			
+		BigInteger EncRandomShift = mPaillier.Encryption(randomShift);		
+		
 		// get [x]
 		BigInteger xEnc = EncDataShift.multiply(EncRandomShift).mod(mPaillier.nsquare);
-		
+				
 		return xEnc;
 	}
 	
@@ -127,12 +130,12 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 		for(int i=0; i<k_blind; i++) {
 			// (r^2) = r * r
 			sum_r_square = 
-				sum_r_square.add(mRandomValues[i + start].multiply(mRandomValues[i + start]));				
+				sum_r_square.add(mRandomValues[start + i].multiply(mRandomValues[start + i]));				
 			// (-2)*r
-			neg_TWO_r = (mRandomValues[i + start].shiftLeft(1)).negate();
+			neg_TWO_r = (mRandomValues[start + i].shiftLeft(1)).negate();
 			// [w]^(-2r) mod N
 			Enc_sum_wr_neg_TWO = 
-				Enc_sum_wr_neg_TWO.multiply(mEncData[i + start].modPow(neg_TWO_r, mPaillier.nsquare));			
+				Enc_sum_wr_neg_TWO.multiply(mEncData[start + i].modPow(neg_TWO_r, mPaillier.nsquare));			
 		}		
 		// -(r^2) = (-1) * (r^2)
 		// [-(r^2)] = Enc.( -(r^2) )

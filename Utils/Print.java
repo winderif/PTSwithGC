@@ -38,4 +38,14 @@ public class Print {
 		}
 		System.out.println();
 	}
+	
+	public static void printValue(BigInteger tmpValue, String info) {
+		System.out.println(info);
+		System.out.println(tmpValue);		
+	}
+	
+	public static void printEncValue(BigInteger tmpValue, String info, CryptosystemPaillierServer paillier) {
+		System.out.println(info);
+		System.out.println(paillier.Decryption(tmpValue));		
+	}
 }
