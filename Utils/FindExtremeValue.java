@@ -43,12 +43,13 @@ public class FindExtremeValue {
 			for(int k=0; k<tmp1DArray.length; k++) {
 				tmp1DArray[k] = tmpMax[k];				
 			}
-			/** Debugging				
+			/** Debugging		
 			System.out.println();
-			Print.printEncArray(tmp1DArray, "\t[S]\tfindEncMaximum", ps);					
-			*/
+			Print.printEncArray(tmp1DArray, "\t[S]\tfindEncMaximum", ps);
+			*/					
+			
 			length = (length+1) / 2;
-			//System.out.println();
+			System.out.println();
 		}
 		System.out.println();	
 		

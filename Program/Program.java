@@ -28,8 +28,8 @@ public abstract class Program {
     	
     	execFindBestMatching();
     	
-    	execResultTransfer();
-    }    
+    	//execResultTransfer();
+    }
     
     abstract protected void execQueryTransfer() throws Exception;
     

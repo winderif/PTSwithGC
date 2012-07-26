@@ -60,16 +60,16 @@ public class CryptosystemDGKClient extends CryptosystemAbstract {
     private static final BigInteger TWO = new BigInteger("2");
     
     public CryptosystemDGKClient() {
-    	this.k = 1024;
+    	this.k = 512;
     	this.t = 160;
-    	this.l = 16;
+    	this.l = 8;
         KeyGeneration(512, 64, null);
     }
     
     public CryptosystemDGKClient(int bitLengthVal, int certainty) {
-    	this.k = 1024;
+    	this.k = 512;
     	this.t = 160;
-    	this.l = 16;
+    	this.l = 8;
         KeyGeneration(bitLengthVal, certainty, null);
     }
     
@@ -235,7 +235,8 @@ public class CryptosystemDGKClient extends CryptosystemAbstract {
      */
     public BigInteger Encryption(BigInteger m, BigInteger r) {
     	if(m.compareTo(this.u) == -1) {        	        	       
-            return (g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);
+            return (m.equals(BigInteger.ZERO))?
+            		(this.EncZero):(g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);
         }
         // If m >= u, then result may be error.
         else {
@@ -252,7 +253,8 @@ public class CryptosystemDGKClient extends CryptosystemAbstract {
         if(m.compareTo(this.u) == -1) {        	
         	BigInteger r = RandomIntLimit(n_square);
         	        
-            return (g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);            
+        	return (m.equals(BigInteger.ZERO))?
+            		(this.EncZero):(g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);            
         }
         // If m >= u, then result may be error.
         else {

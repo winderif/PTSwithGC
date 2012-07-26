@@ -29,6 +29,7 @@ import java.math.*;
  */
 public abstract class CryptosystemAbstract {
     protected int bitLength;        
+    protected final BigInteger EncZero = BigInteger.ONE;
 
     private void setBitLength(int length) { this.bitLength = length; }
     

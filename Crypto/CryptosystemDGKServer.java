@@ -42,16 +42,18 @@ public class CryptosystemDGKServer extends CryptosystemAbstract {
     
     public BigInteger n_square;
     
+    private static final BigInteger TWO = new BigInteger("2");
+    
     public CryptosystemDGKServer() {
-    	this.k = 1024;
+    	this.k = 512;
     	this.t = 160;
-    	this.l = 16;        
+    	this.l = 8;        
     }
     
     public CryptosystemDGKServer(BigInteger[] publicKey) {
-    	this.k = 1024;
+    	this.k = 512;
     	this.t = 160;
-    	this.l = 16;
+    	this.l = 8;
         KeyGeneration(512, 64, publicKey);
     }        
 
@@ -101,7 +103,8 @@ public class CryptosystemDGKServer extends CryptosystemAbstract {
      */
     public BigInteger Encryption(BigInteger m, BigInteger r) {
     	if(m.compareTo(this.u) == -1) {        	        	       
-            return (g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);
+    		return (m.equals(BigInteger.ZERO))?
+            		(this.EncZero):(g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);
         }
         // If m >= u, then result may be error.
         else {
@@ -118,7 +121,8 @@ public class CryptosystemDGKServer extends CryptosystemAbstract {
         if(m.compareTo(this.u) == -1) {        	
         	BigInteger r = RandomIntLimit(n_square);
         	        
-            return (g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);            
+        	return (m.equals(BigInteger.ZERO))?
+            		(this.EncZero):(g.modPow(m, n).multiply(h.modPow(r, n))).mod(n);            
         }
         // If m >= u, then result may be error.
         else {
@@ -134,6 +138,19 @@ public class CryptosystemDGKServer extends CryptosystemAbstract {
     public BigInteger Decryption(BigInteger c) {    	       
     	System.err.println("\t[S]\tCryptosystem server cannot use the method of decryption.");
     	return c;
+    }
+    
+    /**
+     * XOR in encrypted domain
+     * @param EncA
+     * @param EncB
+     * @param B
+     * @return
+     * 12.03.29 winderif
+     */
+    public BigInteger EncXOR(BigInteger EncA, BigInteger EncB, BigInteger B) {
+    	// [w] = [a + b - 2ab] = [a]*[b]*[a]^(-2b)
+    	return EncA.multiply(EncB).multiply(EncA.modPow(B.multiply(TWO).negate(), n));
     }
     
     /**

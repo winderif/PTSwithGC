@@ -105,7 +105,7 @@ public class CryptosystemPaillierServer extends CryptosystemAbstract {
         BigInteger r = new BigInteger(bitLength, new Random());
         
         return (m.equals(BigInteger.ZERO))?
-        		(BigInteger.ONE):
+        		(this.EncZero):
         		(m.multiply(n).add(BigInteger.ONE)).multiply(r.modPow(n, nsquare)).mod(nsquare);
         		//(g.modPow(m, nsquare).multiply(r.modPow(n, nsquare)).mod(nsquare));
     }

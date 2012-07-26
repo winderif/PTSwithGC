@@ -34,7 +34,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 		else {
 			mEncPackedValues = new BigInteger[K_CIPHER];
 		}		
-				
+		// MAX = 2^(L-1)
 		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);						
 	}
 	

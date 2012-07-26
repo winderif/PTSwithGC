@@ -181,6 +181,8 @@ public class EncTaggingSystemServer extends ProgServer {
 	
     	System.out.println("\t[START]\tfindEncMaximum()");
 		double startTime = System.nanoTime();
+			
+		//Print.printEncArray(mEncDomainDistance, "mEncDomainDistance", mPaillier);
 		
     	BigInteger maxDistance = 
     		FindExtremeValue.findEncMaximum(mEncDomainDistance, cp_s, mPaillier);

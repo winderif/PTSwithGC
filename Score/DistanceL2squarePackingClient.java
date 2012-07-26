@@ -11,14 +11,14 @@ public class DistanceL2squarePackingClient extends ComputingScore {
 	private CryptosystemPaillierClient mPaillier;
 	private ClientState exit = ClientState.CLIENT_EXEC;
 	
-	private BigInteger MAX = null;
-	private BigInteger MASK = null;
+	private static BigInteger MAX;
+	private static BigInteger MASK;
 	
 	public DistanceL2squarePackingClient(CryptosystemPaillierClient arg0) {
 		this.mPaillier = arg0;
 		this.exit = ClientState.CLIENT_EXEC;
-		this.MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);
-		this.MASK = BigInteger.ONE.shiftLeft(this.RANDOM_BIT + this.DATA_BIT)
+		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);
+		MASK = BigInteger.ONE.shiftLeft(this.RANDOM_BIT + this.DATA_BIT)
 									.subtract(BigInteger.ONE);
 	}
 	
