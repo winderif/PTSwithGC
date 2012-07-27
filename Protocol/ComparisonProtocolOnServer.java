@@ -96,7 +96,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 			// r^ = r mod 2^L
 			BigInteger r_head = r.mod(MAX);
 			//System.out.println("r_head\t" + r_head);
-			String r_bin = Long.toBinaryString(r_head.longValue());
+			String r_bin = r_head.toString(2);
 			// r^_0 ... r^_L-1
 			for(int i=0; i<(L+1) - r_bin.length(); i++) {
 				r_bin_Array[i] = BigInteger.ZERO;
@@ -116,7 +116,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 					
 			// [[s]] = Enc.DGK( s )
 			BigInteger s_Enc = (s.equals(BigInteger.ONE))?
-					(EncDGK_ONE):(EncDGK_NegONE);
+					(EncDGK_ONE):(EncDGK_NegONE);			
 			
 			// Comparing Private Inputs with DGK cryptosystem
 			EncMask(s_Enc);
@@ -130,11 +130,11 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 			EncProgCommon.oos.flush();
 			
 			//System.out.println("\t[S][START]\tGet lambda_b value");
-						
+									
 			BigInteger lambda_Enc = 
 				transformLambda(new BigInteger(EncProgCommon.ois.readObject().toString()), s);
-			//System.out.println("lambda = " + lambda);
-			
+			//System.out.println("lambda = " + lambda);		
+				
 			// [r^] = Enc.(r^) 
 			BigInteger r_head_Enc = mPaillier.Encryption(r_head);
 							
@@ -168,7 +168,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 		}
 	}
 		
-	private void EncMask(BigInteger s) {
+	private void EncMask(BigInteger s) {		
 		// [[c_i]] = [[d^_i]] * [[r^_i]] * [[s]] * {Multiply[w_j]}^3
 		for(int i=0; i<L+1; i++) {
 			c_Array[i] = 
@@ -178,7 +178,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 								.multiply(s))
 								.multiply(MultiplyOfEncXOR(i).modPow(THREE, mDGK.n))
 								.mod(mDGK.n);								
-		}
+		}		
 	}
 	
 	private BigInteger MultiplyOfEncXOR(int last) {
@@ -201,5 +201,5 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 		else {			
 			return mPaillier.EncXOR(lambda_b, EncP_ONE, BigInteger.ONE);
 		}
-	}
+	}		
 }

@@ -308,9 +308,8 @@ public class CryptosystemDGKClient extends CryptosystemAbstract {
      * @param limit
      * @return
      */
-    private BigInteger RandomIntLimit(BigInteger limit) {
-    	Random rnd = new Random();    	
-    	return new BigInteger(limit.bitLength(), rnd);
+    private BigInteger RandomIntLimit(BigInteger limit) {    
+    	return new BigInteger(limit.bitLength(), new Random());
     }
     
     /**

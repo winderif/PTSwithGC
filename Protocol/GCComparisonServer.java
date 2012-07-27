@@ -5,6 +5,7 @@ import FastGC.Program.*;
 
 import Crypto.*;
 import Program.EncProgCommon;
+import Utils.Print;
 
 public class GCComparisonServer extends ComparisonProtocol  {
 	private CryptosystemPaillierServer mPaillier;
@@ -28,9 +29,7 @@ public class GCComparisonServer extends ComparisonProtocol  {
 		BigInteger r_min_Enc = mPaillier.Encryption(r_min);
 					
 		/*** Printing */
-		for(int i=0; i < K; i++)
-			System.out.print(mPaillier.Decryption(EncArray[i]) + " ");
-		System.out.println();
+		Print.printEncArray(EncArray, "EncArray", mPaillier);		
 				
 		// initial r
 		for(int i=0; i < K; i++) {
@@ -43,7 +42,9 @@ public class GCComparisonServer extends ComparisonProtocol  {
 
 		// initial y, [y] = [x + r] = [x] * [r]		
 		for(int i=0; i < K; i++) {
-			y_Array_Enc[i] = EncArray[i].multiply(mPaillier.Encryption(r_Array[i])).mod(mPaillier.nsquare);
+			y_Array_Enc[i] = 
+				EncArray[i].multiply(mPaillier.Encryption(r_Array[i]))
+							.mod(mPaillier.nsquare);
 			//System.out.print(mPaillier.Decryption(y_Array_Enc[i]) + " ");
 		}
 		//System.out.println();

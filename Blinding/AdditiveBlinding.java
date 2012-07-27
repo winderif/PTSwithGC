@@ -3,7 +3,6 @@ package Blinding;
 import java.math.BigInteger;
 import java.util.Random;
 import Crypto.CryptosystemPaillierServer;
-import Program.EncProgCommon;
 
 public abstract class AdditiveBlinding {
 	protected static final int RANDOM_BIT = 15;

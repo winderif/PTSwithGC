@@ -334,7 +334,7 @@ public class EncTaggingSystemServer extends ProgServer {
 			System.out.printf("array(%d,%d) = %s %s\n", 
 					(assignment[k][0]+1), 
 					(assignment[k][1]+1),
-					this.mEncHungarianMatrix[assignment[k][0]][assignment[k][1]].toString(), 
+					mPaillier.Decryption(this.mEncHungarianMatrix[assignment[k][0]][assignment[k][1]]), 
 					this.allTags[assignment[k][1]]);			
 		}
 		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);

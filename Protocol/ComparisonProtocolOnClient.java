@@ -50,7 +50,7 @@ public class ComparisonProtocolOnClient extends ComparisonProtocol {
 				// send [d^] to Bob
 				EncProgCommon.oos.writeObject(d_head_Enc);
 				
-				String d_bin = Long.toBinaryString(d_head.longValue());
+				String d_bin = d_head.toString(2);
 				//System.out.println(d_bin.toCharArray().length);
 				
 				// send [[ d_bin ]] = Enc.DGK( d_bin )
@@ -63,7 +63,7 @@ public class ComparisonProtocolOnClient extends ComparisonProtocol {
 						EncProgCommon.oos.writeObject(Enc_ZERO);
 					}
 					else {
-						EncProgCommon.oos.writeObject(EncDGK_ONE);
+						EncProgCommon.oos.writeObject(mDGK.Encryption(BigInteger.ONE));
 					}					
 				}
 				//System.out.println();
@@ -73,7 +73,7 @@ public class ComparisonProtocolOnClient extends ComparisonProtocol {
 				for(int i=0; i<L+1; i++) {
 					BigInteger tmp = mDGK.Decryption(new BigInteger(EncProgCommon.ois.readObject().toString()));
 					//System.out.println("bits = " + tmp);
-					if(BigInteger.ZERO.equals(tmp)) {	
+					if(BigInteger.ZERO.equals(tmp)) {
 						isCheck = 1;						
 					}											
 				}
