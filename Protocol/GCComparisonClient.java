@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import Crypto.*;
 import Program.EncProgCommon;
 import Utils.ClientState;
+import Utils.Print;
 import FastGC.Program.FindMinimumServer;
 
 public class GCComparisonClient extends ComparisonProtocol {
@@ -32,21 +33,25 @@ public class GCComparisonClient extends ComparisonProtocol {
 					System.out.println("[C][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph.");
 					break;
 				}
-				
+				// Garbled circuit type, type = 1 (Max), type = 0 (Min)
 				int type = EncProgCommon.ois.readInt();
-				K = EncProgCommon.ois.readInt();				
+				K = EncProgCommon.ois.readInt();	
+				
 				BigInteger[] y = new BigInteger[K];
 				// y = dec.([y])				
 				for(int i=0; i < K; i++) {
-					y[i] = mPaillier.Decryption(new BigInteger(EncProgCommon.ois.readObject().toString()));					
-					System.out.print(y[i] + " ");
+					BigInteger y_tmp = mPaillier.Decryption(
+							new BigInteger(EncProgCommon.ois.readObject().toString()));
+					// y_mod = y mod MAX
+					y[i] = y_tmp.mod(MAX);
 				}								
-				System.out.println();							
+				/***/
+				Print.printArray(y, "y");
 								
 				sInput = mergeInput(y);
 				
 				FindMinimumServer minimumServer 
-					= new FindMinimumServer(sInput, L, K, 1, type);
+					= new FindMinimumServer(sInput, L, K, type, L+RANDOM_BIT);
 				minimumServer.run();								
 				
 				BigInteger y_min = minimumServer.getOutput();

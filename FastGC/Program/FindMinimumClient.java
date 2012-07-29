@@ -16,21 +16,23 @@ public class FindMinimumClient extends ProgClient {
     private int sInputLen;
     private int cInputLen;
 
-    public FindMinimumClient(BigInteger bv, int length, int number) {
+    public FindMinimumClient(BigInteger bv, int bitLength, int number, int bitOutput) {
     	cBits = bv;
-    	FindMinimumCommon.bitVecLen = length;
+    	FindMinimumCommon.bitVecLen = bitLength;
     	FindMinimumCommon.valueNum = number;    	
+    	FindMinimumCommon.bitOutputRandom = bitOutput;
     }
 
     protected void init() throws Exception {
     	FindMinimumCommon.bitVecLen = FindMinimumCommon.ois.readInt();
-    	FindMinimumCommon.valueNum = FindMinimumCommon.ois.readInt();
-    	FindMinimumCommon.RandomValueNum = FindMinimumCommon.ois.readInt();
+    	FindMinimumCommon.valueNum = FindMinimumCommon.ois.readInt();    	
     	FindMinimumCommon.circuitType = FindMinimumCommon.ois.readInt();
+    	FindMinimumCommon.bitOutputRandom = FindMinimumCommon.ois.readInt();
     	FindMinimumCommon.initCircuits();
 
     	sInputLen = FindMinimumCommon.bitVecLen * FindMinimumCommon.valueNum;
-    	cInputLen = FindMinimumCommon.bitVecLen * (FindMinimumCommon.valueNum + FindMinimumCommon.RandomValueNum);
+    	cInputLen = FindMinimumCommon.bitVecLen * FindMinimumCommon.valueNum 
+    				+ FindMinimumCommon.bitOutputRandom;
     	
     	// OT initialize
     	otNumOfPairs = cInputLen;

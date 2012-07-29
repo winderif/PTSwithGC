@@ -12,7 +12,6 @@ public class ComparisonProtocolOnClient extends ComparisonProtocol {
 	private CryptosystemDGKClient mDGK;
 	
 	private static BigInteger EncP_ONE;
-	private static BigInteger EncDGK_ONE;
 	
 	private ClientState exit = ClientState.CLIENT_EXEC;			
 	
@@ -27,7 +26,6 @@ public class ComparisonProtocolOnClient extends ComparisonProtocol {
 		this.mDGK = dgk;
 		this.exit = ClientState.CLIENT_EXEC;	
 		EncP_ONE = mPaillier.Encryption(BigInteger.ONE);
-		EncDGK_ONE = mDGK.Encryption(BigInteger.ONE);
 	}
 	
 	public void run(){

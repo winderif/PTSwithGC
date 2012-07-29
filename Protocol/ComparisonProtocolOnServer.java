@@ -10,9 +10,7 @@ import Program.EncProgCommon;
 public class ComparisonProtocolOnServer extends ComparisonProtocol {
 	private CryptosystemPaillierServer mPaillier;
 	private CryptosystemDGKServer mDGK;
-	
-	// Security parameter KAPA = 100
-	private static final int KAPA = 100;
+		
 	// DGK cryptosystem plaintext space with 8-bit values
 	private static final int U = 8;
 	private static final BigInteger THREE = new BigInteger("3");		
@@ -70,8 +68,8 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 						
 			//System.out.println("z\t" + mPaillier.Decryption(z_Enc));
 			
-			// r is uniform random (KAPA + L + 1)-bit
-			BigInteger r = new BigInteger(KAPA + L + 1, new Random());
+			// r is uniform random (RANDOM_BIT + L + 1)-bit
+			BigInteger r = new BigInteger(RANDOM_BIT + L + 1, new Random());
 			//System.out.println("r\t" + r);
 					
 			// [d] = [z + r] = [z]*[r]
@@ -159,7 +157,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 			BigInteger Enc_Min = (EncM_head.equals(Enc_ZERO))?(EncB):(EncA);
 			//System.out.println("Enc_Min\t" + mPaillier.Decryption(Enc_Min));
 			reset();
-			return Enc_Min;
+			return Enc_Min; 
 			
 		} catch(Exception e) {
 			e.printStackTrace();

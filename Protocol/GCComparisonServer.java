@@ -1,6 +1,7 @@
 package Protocol;
 
 import java.math.BigInteger;
+import java.util.Random;
 import FastGC.Program.*;
 
 import Crypto.*;
@@ -10,8 +11,8 @@ import Utils.Print;
 public class GCComparisonServer extends ComparisonProtocol  {
 	private CryptosystemPaillierServer mPaillier;
 	private BigInteger cInput;
-	private static int RANDOM_BIT = 40;		
-	private int K;
+	
+	private static int K;
 	
 	public GCComparisonServer() {
 		this.mPaillier = null;	
@@ -25,31 +26,36 @@ public class GCComparisonServer extends ComparisonProtocol  {
 		K = EncArray.length;
 		BigInteger[] r_Array = new BigInteger[K + 1];
 		BigInteger[] y_Array_Enc = new BigInteger[K];
+		
+		/*** Printing */
+		Print.printEncArray(EncArray, "EncArray", mPaillier);
+		
+		/**
 		BigInteger r_min = BigInteger.ONE; 
 		BigInteger r_min_Enc = mPaillier.Encryption(r_min);
-					
-		/*** Printing */
-		Print.printEncArray(EncArray, "EncArray", mPaillier);		
+		*/
+		BigInteger r_min = new BigInteger(L + RANDOM_BIT, new Random()); 
+		BigInteger r_min_Enc = mPaillier.Encryption(r_min);
+		
+		r_Array[0] = r_min;						
 				
 		// initial r
-		for(int i=0; i < K; i++) {
+		for(int i=1; i < K+1; i++) {
+			/**
 			r_Array[i+1] = BigInteger.ONE;
-			//System.out.print(r_Array[i+1] + " ");
-		}
-		//System.out.println();
-						
-		r_Array[0] = r_min;
-
+			*/
+			BigInteger r = new BigInteger(L + KAPA, new Random());
+			// r_mod = r mod MAX
+			r_Array[i] = r.mod(MAX);			
+		}							
+		
 		// initial y, [y] = [x + r] = [x] * [r]		
 		for(int i=0; i < K; i++) {
 			y_Array_Enc[i] = 
-				EncArray[i].multiply(mPaillier.Encryption(r_Array[i]))
-							.mod(mPaillier.nsquare);
-			//System.out.print(mPaillier.Decryption(y_Array_Enc[i]) + " ");
+				EncArray[i].multiply(mPaillier.Encryption(r_Array[i + 1]))
+							.mod(mPaillier.nsquare);			
 		}
-		//System.out.println();
-				
-		
+						
 		try {
 			System.out.println("\t[S]\tsend input.");
 			EncProgCommon.oos.writeInt(type);			
@@ -71,7 +77,8 @@ public class GCComparisonServer extends ComparisonProtocol  {
 			System.out.println("\t[S]\trun gc.");
 			FastGC.Program.ProgClient.serverIPname = new String("localhost");
 			FastGC.Program.Program.iterCount = 1;
-			FindMinimumClient minimumClient = new FindMinimumClient(cInput, L, EncArray.length);
+			FindMinimumClient minimumClient = 
+				new FindMinimumClient(cInput, L, EncArray.length, L+RANDOM_BIT);
 			minimumClient.run();
 			
 			// Recv. [y_min]
@@ -116,8 +123,9 @@ public class GCComparisonServer extends ComparisonProtocol  {
 	}
 	
 	private BigInteger mergeInput(BigInteger[] input) {
-		BigInteger tmp = BigInteger.ZERO;
-		for(int i=0; i < input.length; i++) {
+		BigInteger tmp = input[0];
+		
+		for(int i=1; i < input.length; i++) {
 			tmp = tmp.shiftLeft(L).add(input[i]);
 		}
 		return tmp;

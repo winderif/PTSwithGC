@@ -22,21 +22,22 @@ public class FindMinimumServer extends ProgServer {
 
     private static final Random rnd = new Random();
 
-    public FindMinimumServer(BigInteger bv, int length, int number, int additional, int type) {
+    public FindMinimumServer(BigInteger bv, 
+    		int bitLength, int number, int type, int bitOutput) {
     	sBits = bv;
-    	FindMinimumCommon.bitVecLen = length;
-    	FindMinimumCommon.valueNum = number;
-    	FindMinimumCommon.RandomValueNum = additional;
+    	FindMinimumCommon.bitVecLen = bitLength;
+    	FindMinimumCommon.valueNum = number;    	
     	FindMinimumCommon.circuitType = type;
-    	cInputLen = length*(number + additional);
-    	sInputLen = length*number;
+    	FindMinimumCommon.bitOutputRandom = bitOutput;
+    	cInputLen = bitLength*number + bitOutput;
+    	sInputLen = bitLength*number;
     }
 
     protected void init() throws Exception {
     	FindMinimumCommon.oos.writeInt(FindMinimumCommon.bitVecLen);
-    	FindMinimumCommon.oos.writeInt(FindMinimumCommon.valueNum);
-    	FindMinimumCommon.oos.writeInt(FindMinimumCommon.RandomValueNum);
+    	FindMinimumCommon.oos.writeInt(FindMinimumCommon.valueNum);    	
     	FindMinimumCommon.oos.writeInt(FindMinimumCommon.circuitType);
+    	FindMinimumCommon.oos.writeInt(FindMinimumCommon.bitOutputRandom);
     	FindMinimumCommon.oos.flush();
 
     	FindMinimumCommon.initCircuits();

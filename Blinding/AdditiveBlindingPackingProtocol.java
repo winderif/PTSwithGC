@@ -36,9 +36,9 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			new BigInteger[(K_REMAINING != 0)?(K_CIPHER + 1):(K_CIPHER)];
 		
 		// MAX = 2^(L-1)
-		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);	
+		MAX = BigInteger.ONE.shiftLeft(DATA_BIT - 1);	
 		// shift_base = 2^(L + sigma) in Horner's method
-		SHIFT_BASE = BigInteger.ONE.shiftLeft(this.RANDOM_BIT + this.DATA_BIT);				
+		SHIFT_BASE = BigInteger.ONE.shiftLeft(RANDOM_BIT + DATA_BIT);				
 	}
 	
 	protected void execute() throws Exception {	
@@ -94,7 +94,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			EncDataShift = (EncDataShift.modPow(SHIFT_BASE, mPaillier.nsquare))
 										.multiply(this.mEncData[start + i]).mod(mPaillier.nsquare);
 			
-			randomShift = (randomShift.shiftLeft(this.RANDOM_BIT + this.DATA_BIT))
+			randomShift = (randomShift.shiftLeft(RANDOM_BIT + DATA_BIT))
 										.add(MAX.add(this.mRandomValues[start + i]));
 		}			
 		BigInteger EncRandomShift = mPaillier.Encryption(randomShift);		

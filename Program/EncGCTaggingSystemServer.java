@@ -146,18 +146,18 @@ public class EncGCTaggingSystemServer extends ProgServer {
     				mPaillier, mEncQueryAverageDescriptor, mDomainAverageDescriptor.elementAt(i));
     		
     		System.out.println(mPaillier.Decryption(mEncDomainDistance[i]));
-    	} 
+    	}
     	EncProgCommon.oos.writeObject(ClientState.CLIENT_EXIT);
     	EncProgCommon.oos.flush();
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
 		System.out.println("\t[S][SUCCESS]\tEvaluate Encrypted Domain Distance." + time);
 		
-		/** Debugging
+		/** Debugging 
 		mEncDomainDistance = new BigInteger[allDomains.length];
 		for(int i=0; i<mEncDomainDistance.length; i++) {
 			mEncDomainDistance[i] = 
-			    mPaillier.Encryption(BigInteger.probablePrime(10, new Random()));
+			    mPaillier.Encryption(new BigInteger(15, new Random()));
 			    //mPaillier.Encryption(new BigInteger(Long.valueOf(1000000+i).toString()));
 			System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");			
 		}
