@@ -69,7 +69,8 @@ public class ComparisonProtocolOnClient extends ComparisonProtocol {
 				// Check [[c_i * r_i]] = [[c_i]]^r_i one of then is zero				
 				int isCheck = 0;				
 				for(int i=0; i<L+1; i++) {
-					BigInteger tmp = mDGK.Decryption(new BigInteger(EncProgCommon.ois.readObject().toString()));
+					BigInteger tmp = 
+						mDGK.Decryption(new BigInteger(EncProgCommon.ois.readObject().toString()));
 					//System.out.println("bits = " + tmp);
 					if(BigInteger.ZERO.equals(tmp)) {
 						isCheck = 1;						
@@ -92,7 +93,7 @@ public class ComparisonProtocolOnClient extends ComparisonProtocol {
 				//System.out.println("(" + z_LBS_Enc + ")");
 				BigInteger z_LBS = mPaillier.Decryption(z_LBS_Enc);
 				//System.out.println("(" + z_LBS + ")");				
-				//System.out.println(EncX + "\t" + EncY);
+				
 				// z_LBS = 1 <=> x >= y, return No  [0]
 				// z_LBS = 0 <=> x <  y, return Yes [1]
 				BigInteger m_head = (z_LBS == BigInteger.ZERO)?

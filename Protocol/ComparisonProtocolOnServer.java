@@ -96,8 +96,7 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 			String r_bin = r_head.toString(2);
 			// r^_0 ... r^_L-1
 			for(int i=0; i<(L+1) - r_bin.length(); i++) {
-				r_bin_Array[i] = BigInteger.ZERO;
-				
+				r_bin_Array[i] = BigInteger.ZERO;			
 			}
 			for(int i=0; i<r_bin.length(); i++) {
 				r_bin_Array[i+ (L+1) - r_bin.length()] =

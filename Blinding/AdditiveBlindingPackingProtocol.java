@@ -10,7 +10,8 @@ import Utils.Print;
 public class AdditiveBlindingPackingProtocol extends AdditiveBlinding 
 											implements Packing {	
 	
-	private int K_BLIND = 16;
+	// K_BLIND = 512 / (15 + 15)
+	private int K_BLIND = 17;
 	private int K_REMAINING = 0;
 	private int K_CIPHER = 0;
 	
