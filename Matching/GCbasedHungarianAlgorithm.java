@@ -36,6 +36,17 @@ public class GCbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 		return tmpMax;
 	}
 	
+	protected BigInteger findEncSmallest(BigInteger[] array) throws Exception {
+		System.out.println("\t[START]\findEncSmallest()");
+		
+		BigInteger tmpMax;
+		// type = 0, is Min
+		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
+		tmpMax = gcc_s.findMinimumOfTwoEncValues(array, 0);
+			
+		return tmpMax;
+	}
+	
 	protected BigInteger findEncSmallest(
 			BigInteger[][] cost, int[] rowCover, 
 			int[] colCover, BigInteger maxCost) throws Exception {

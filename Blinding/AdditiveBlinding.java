@@ -5,8 +5,11 @@ import java.util.Random;
 import Crypto.CryptosystemPaillierServer;
 
 public abstract class AdditiveBlinding {
-	protected static final int RANDOM_BIT = 15;
+	// L-bit value
 	protected static final int DATA_BIT = 15;
+	// Statistical security parameter SIGMA = 15
+	protected static final int SECURITY_BIT = 15;
+	
 	protected final int NUM_DATA;
 	
 	protected CryptosystemPaillierServer mPaillier = null;
@@ -42,7 +45,7 @@ public abstract class AdditiveBlinding {
 		this.mRandomValues = new BigInteger[this.NUM_DATA];
 		for(int i=0; i<this.mRandomValues.length; i++) {
 			this.mRandomValues[i] = 
-				new BigInteger(RANDOM_BIT + DATA_BIT, new Random());
+				new BigInteger(SECURITY_BIT + DATA_BIT, new Random());
 		}
 	}	
 }

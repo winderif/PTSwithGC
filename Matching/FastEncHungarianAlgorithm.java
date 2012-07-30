@@ -12,6 +12,7 @@ public abstract class FastEncHungarianAlgorithm {
 	}
 	
 	abstract protected BigInteger findEncLargest(BigInteger[][] array) throws Exception ;
+	abstract protected BigInteger findEncSmallest(BigInteger[] array) throws Exception ;
 	abstract protected BigInteger findEncSmallest(
 			BigInteger[][] cost, int[] rowCover, 
 			int[] colCover, BigInteger maxCost) throws Exception ;
@@ -109,14 +110,14 @@ public abstract class FastEncHungarianAlgorithm {
 		BigInteger minval;
 		
 		for(int i=0; i<cost.length; i++) {	   								
-	   	    minval = cost[i][0];
+	   	    minval = findEncSmallest(cost[i]);
+	   	    /**
 	   	    for(int j=0; j<cost[i].length; j++) {//1st inner loop finds min val in row.
 	   	    	//System.out.print(".");
-	   	        if(findMinimum(minval, cost[i][j]).equals(cost[i][j])) {
-	   	        //if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{minval, cost[i][j]}, 0).equals(cost[i][j])) {
+	   	        if(findMinimum(minval, cost[i][j]).equals(cost[i][j])) {	   	        
 	   	            minval = cost[i][j];
 	   	        }
-			}
+			}*/
 			for(int j=0; j<cost[i].length; j++)	{//2nd inner loop subtracts it.				
 	   	        // [cost - minval] = [cost] * [minval]^(-1)
 				cost[i][j] = cost[i][j].multiply(minval.modInverse(mPaillier.nsquare)).mod(mPaillier.nsquare);	   	      

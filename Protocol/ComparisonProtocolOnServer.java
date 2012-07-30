@@ -64,12 +64,11 @@ public class ComparisonProtocolOnServer extends ComparisonProtocol {
 			// [z] = [ 2^L + a - b ] = [2^L]*[a]*[b]^(-1)			
 			BigInteger z_Enc = EncMAX.multiply(EncA)
 								.multiply(EncB.modInverse(mPaillier.nsquare))
-								.mod(mPaillier.nsquare);
-						
+								.mod(mPaillier.nsquare);					
 			//System.out.println("z\t" + mPaillier.Decryption(z_Enc));
 			
-			// r is uniform random (RANDOM_BIT + L + 1)-bit
-			BigInteger r = new BigInteger(RANDOM_BIT + L + 1, new Random());
+			// r is uniform random (SECURITY_BIT + L + 1)-bit
+			BigInteger r = new BigInteger(SECURITY_BIT + L + 1, new Random());
 			//System.out.println("r\t" + r);
 					
 			// [d] = [z + r] = [z]*[r]

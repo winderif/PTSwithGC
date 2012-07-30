@@ -105,22 +105,23 @@ public class FindMinimumServer extends ProgServer {
     			if (outputState.wires[i].value == 1)
     				output = output.setBit(i);
     			continue;
-	    }
-	    else if (outLabels[i].equals(outputState.wires[i].invd ? 
+    		}
+    		else if (outLabels[i].equals(outputState.wires[i].invd ? 
 					 outputState.wires[i].lbl :
 					 outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)))) {
-		    output = output.setBit(i);
-	    }
-	    else if (!outLabels[i].equals(outputState.wires[i].invd ? 
+    			output = output.setBit(i);
+    		}
+    		else if (!outLabels[i].equals(outputState.wires[i].invd ? 
 					  outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) :
-					  outputState.wires[i].lbl)) 
-		throw new Exception("Bad label encountered: i = " + i + "\t" +
+					  outputState.wires[i].lbl)) {
+    			throw new Exception("Bad label encountered: i = " + i + "\t" +
 				    outLabels[i] + " != (" + 
 				    outputState.wires[i].lbl + ", " +
 				    outputState.wires[i].lbl.xor(Wire.R.shiftLeft(1).setBit(0)) + ")");
-	}
+	    	}
+    	}
 	
-    	System.out.println("output (pp): " + output);    	    	    
+    	//System.out.println("output (pp): " + output);    	    	    
     	//StopWatch.taskTimeStamp("output labels received and interpreted");
     }
 

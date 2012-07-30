@@ -63,10 +63,6 @@ public class FindMinimumClient extends ProgClient {
 
     protected void interpretResult() throws Exception {
     	FindMinimumCommon.oos.writeObject(outputState.toLabels());
-    	/*
-    	for(int i=0; i<outputState.toLabels().length; i++) {
-    		System.out.println(outputState.toLabels()[i]);	
-    	} */   	
     	FindMinimumCommon.oos.flush();
     }
 

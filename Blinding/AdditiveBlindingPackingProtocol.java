@@ -38,7 +38,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 		// MAX = 2^(L-1)
 		MAX = BigInteger.ONE.shiftLeft(DATA_BIT - 1);	
 		// shift_base = 2^(L + sigma) in Horner's method
-		SHIFT_BASE = BigInteger.ONE.shiftLeft(RANDOM_BIT + DATA_BIT);				
+		SHIFT_BASE = BigInteger.ONE.shiftLeft(SECURITY_BIT + DATA_BIT);				
 	}
 	
 	protected void execute() throws Exception {	
@@ -49,12 +49,6 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 				packing(i * K_BLIND, K_BLIND);
 			
 			sendEncPackedValue(mEncPackedValues[i], K_BLIND);
-			
-			BigInteger s3_p = recvPackedValue();
-			
-			BigInteger s3K = getThirdTerm(s3_p, i * K_BLIND, K_BLIND);
-			
-			mEncS3 = mEncS3.multiply(s3K);
 		}		
 				
 		// If have remaining, then send [true]
@@ -65,16 +59,14 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 				packing(K_CIPHER * K_BLIND, K_REMAINING);
 			
 			sendEncPackedValue(mEncPackedValues[K_CIPHER], K_REMAINING);
-			
-			BigInteger s3_p = recvPackedValue();
-			
-			BigInteger s3K = getThirdTerm(s3_p, K_CIPHER * K_BLIND, K_REMAINING);	
-			
-			mEncS3 = mEncS3.multiply(s3K);
 		}
 		else {
 			EncProgCommon.oos.writeBoolean(false);
 		}
+		
+		BigInteger s3_p = recvPackedValue();
+		
+		mEncS3 = getThirdTerm(s3_p, 0, NUM_DATA);				
 	}
 	
 	public BigInteger packing(int start, int k_blind) {
@@ -94,7 +86,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			EncDataShift = (EncDataShift.modPow(SHIFT_BASE, mPaillier.nsquare))
 										.multiply(this.mEncData[start + i]).mod(mPaillier.nsquare);
 			
-			randomShift = (randomShift.shiftLeft(RANDOM_BIT + DATA_BIT))
+			randomShift = (randomShift.shiftLeft(SECURITY_BIT + DATA_BIT))
 										.add(MAX.add(this.mRandomValues[start + i]));
 		}			
 		BigInteger EncRandomShift = mPaillier.Encryption(randomShift);		
@@ -114,7 +106,7 @@ public class AdditiveBlindingPackingProtocol extends AdditiveBlinding
 			EncProgCommon.oos.flush();
 		} catch(IOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 	
 	private BigInteger recvPackedValue() {

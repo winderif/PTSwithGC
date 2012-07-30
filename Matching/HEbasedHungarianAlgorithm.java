@@ -68,6 +68,48 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 		System.out.println();	
 		return tmp1DArray[0];	
 	}
+
+	protected BigInteger findEncSmallest(BigInteger[] array) throws Exception {
+		int length = array.length;
+		BigInteger[] tmp1DArray = array.clone();;
+		BigInteger[] tmpMin = new BigInteger[length];		
+		
+		int iter = 1;
+		/*** Iteration stopping condition ***/
+		while(length != 1) {
+			System.out.print("iter:(" + iter++ + ")\t");
+			/*** Compare D(2k) and D(2k+1) ***/
+			for(int j=0; j<length/2; j++) {
+				System.out.print(j + " ");				
+				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {				
+					tmpMin[j] = tmp1DArray[j*2+1];
+					tmpMin[j+(length+1)/2] = tmp1DArray[j*2];
+				}
+				else {
+					tmpMin[j] = tmp1DArray[j*2];
+					tmpMin[j+(length+1)/2] = tmp1DArray[j*2+1];
+				}		
+			}
+			/*** No pair value assignment ***/
+			if((length/2)*2 < length) {
+				tmpMin[(length/2)] = tmp1DArray[length-1];
+			}
+			
+			for(int k=0; k<tmp1DArray.length; k++) {
+				tmp1DArray[k] = tmpMin[k];				
+			}
+			/** Debugging			 
+			for(int k=0; k<tmp1DArray.length; k++) {				
+				System.out.print(pc.Decryption(tmp1DArray[k]) + " ");
+			}
+			System.out.println();
+			*/		
+			
+			length = (length+1) / 2;	
+			System.out.println();
+		}
+		return tmp1DArray[0];
+	}
 	
 	protected BigInteger findEncSmallest(
 			BigInteger[][] cost, int[] rowCover, 

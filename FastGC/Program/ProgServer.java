@@ -41,9 +41,9 @@ public abstract class ProgServer extends Program {
     	sock = new ServerSocket(serverPort);            // create socket and bind to port
     	EncProgCommon.oos.writeInt(1);    	
     	EncProgCommon.oos.flush();
-    	System.out.println("waiting for client to connect");
+    	//System.out.print("[WAIT]");
     	clientSocket = sock.accept();                   // wait for client to connect
-    	System.out.println("client has connected");
+    	//System.out.println("[CONNECTED]");
 
     	CountingOutputStream cos = new CountingOutputStream(clientSocket.getOutputStream());
     	CountingInputStream  cis = new CountingInputStream(clientSocket.getInputStream());

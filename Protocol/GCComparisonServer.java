@@ -27,29 +27,23 @@ public class GCComparisonServer extends ComparisonProtocol  {
 		BigInteger[] r_Array = new BigInteger[K + 1];
 		BigInteger[] y_Array_Enc = new BigInteger[K];
 		
-		/*** Printing */
+		/** Printing 
 		Print.printEncArray(EncArray, "EncArray", mPaillier);
-		
-		/**
-		BigInteger r_min = BigInteger.ONE; 
-		BigInteger r_min_Enc = mPaillier.Encryption(r_min);
 		*/
-		BigInteger r_min = new BigInteger(L + RANDOM_BIT, new Random()); 
-		BigInteger r_min_Enc = mPaillier.Encryption(r_min);
 		
+		// Initial r_min		
+		BigInteger r_min = new BigInteger(L + SECURITY_BIT, new Random()); 
+		BigInteger r_min_Enc = mPaillier.Encryption(r_min);		
 		r_Array[0] = r_min;						
 				
-		// initial r
-		for(int i=1; i < K+1; i++) {
-			/**
-			r_Array[i+1] = BigInteger.ONE;
-			*/
-			BigInteger r = new BigInteger(L + KAPA, new Random());
+		// Initial r_i_mod = r_i mod MAX
+		for(int i=1; i < K+1; i++) {			
+			BigInteger r = new BigInteger(L + CORRECTNESS_BIT, new Random());
 			// r_mod = r mod MAX
 			r_Array[i] = r.mod(MAX);			
 		}							
 		
-		// initial y, [y] = [x + r] = [x] * [r]		
+		// Initial y, [y] = [x + r] = [x] * [r]		
 		for(int i=0; i < K; i++) {
 			y_Array_Enc[i] = 
 				EncArray[i].multiply(mPaillier.Encryption(r_Array[i + 1]))
@@ -57,7 +51,7 @@ public class GCComparisonServer extends ComparisonProtocol  {
 		}
 						
 		try {
-			System.out.println("\t[S]\tsend input.");
+			//System.out.println("\t[S]\tsend input.");
 			EncProgCommon.oos.writeInt(type);			
 			EncProgCommon.oos.writeInt(EncArray.length);			
 
@@ -73,45 +67,47 @@ public class GCComparisonServer extends ComparisonProtocol  {
 		cInput = mergeInput(r_Array);		
 		//System.out.println("cInput:" + cInput.toString());		
 				
-		try {
-			System.out.println("\t[S]\trun gc.");
-			FastGC.Program.ProgClient.serverIPname = new String("localhost");
-			FastGC.Program.Program.iterCount = 1;
-			FindMinimumClient minimumClient = 
-				new FindMinimumClient(cInput, L, EncArray.length, L+RANDOM_BIT);
-			minimumClient.run();
+		//System.out.println("\t[S]\trun gc.");
+		FastGC.Program.ProgClient.serverIPname = new String("localhost");
+		FastGC.Program.Program.iterCount = 1;
+		FindMinimumClient minimumClient = 
+			new FindMinimumClient(cInput, L, EncArray.length, L + SECURITY_BIT);
+		minimumClient.run();				
+		
+		
+		// Recv. [y_min]
+		BigInteger y_min_Enc =
+			new BigInteger(EncProgCommon.ois.readObject().toString());
+		//System.out.println("y_min_Enc:\t" + mPaillier.Decryption(y_min_Enc));
 			
-			// Recv. [y_min]
-			BigInteger y_min_Enc
-				= new BigInteger(EncProgCommon.ois.readObject().toString());
-			//System.out.println("y_min_Enc:\t" + mPaillier.Decryption(y_min_Enc));
+		// [x_min] = [y_min - x_min] = [y_min] * [r_min]^(-1) 
+		BigInteger x_min_Enc =
+			y_min_Enc.multiply(r_min_Enc.modInverse(mPaillier.nsquare))
+				  	.mod(mPaillier.nsquare);
+		//System.out.println("x_min_Enc:\t" + mPaillier.Decryption(x_min_Enc));
 			
-			// [x_min] = [y_min - x_min] = [y_min] * [r_min]^(-1) 
-			BigInteger x_min_Enc 
-				= y_min_Enc.multiply(r_min_Enc.modInverse(mPaillier.nsquare))
-				  			.mod(mPaillier.nsquare);
-			//System.out.println("x_min_Enc:\t" + mPaillier.Decryption(x_min_Enc));
-					
+		try {			
 			for(int i=0; i < K; i++) {
 				/**
 				 *  [diff] = [x(i) - x_min]
 				 *  if @diff is 0, x(i) is x_min
 				 */				
-				BigInteger diffEnc 
-					= EncArray[i].multiply(x_min_Enc.modInverse(mPaillier.nsquare))
+				BigInteger diffEnc =
+					EncArray[i].multiply(x_min_Enc.modInverse(mPaillier.nsquare))
 								.mod(mPaillier.nsquare);
 				//System.out.println(mPaillier.Decryption(diffEnc));
 				
 				EncProgCommon.oos.writeObject(diffEnc);
 				EncProgCommon.oos.flush();	
 			
-				BigInteger lambda
-					= new BigInteger(EncProgCommon.ois.readObject().toString());
+				BigInteger lambda =
+					new BigInteger(EncProgCommon.ois.readObject().toString());
 				if(lambda.equals(Enc_ZERO)) {
 					return EncArray[i];
 				}				
-				else
+				else {
 					continue;
+				}
 			}			
 			System.err.println("\t[S]\tNo found value");
 			return null;

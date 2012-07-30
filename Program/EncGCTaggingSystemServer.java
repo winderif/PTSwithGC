@@ -220,24 +220,23 @@ public class EncGCTaggingSystemServer extends ProgServer {
     		
     		EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
     	    if(gcc_s.findMinimumOfTwoEncValues(new BigInteger[]{tmpDistance, threshold}, 0).equals(tmpDistance)) {
-    	    	System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
-    	    	System.out.print(allDomains[i] + "\t");
+    	    	//System.out.print(mPaillier.Decryption(mEncDomainDistance[i]) + " ");
+    	    	//System.out.print(allDomains[i] + "\t");
     	    	for(String tag : tagClustersMap.get(allDomains[i])) {
-    	    		System.out.print(tag + " ");
+    	    		//System.out.print(tag + " ");
     	    		if(!tmpCandidateTags.containsKey(tag)) {
-    	    			System.out.print(tag + "-");
+    	    			//System.out.print(tag + "-");
     	    			tmpCandidateTags.put(tag, tagsDescriptorMap.get(tag));
     	    		}    	    		
     	    	}
-    	    	System.out.println();  	
+    	    	//System.out.println();  	
     	    }
     	}    	    
     	EncProgCommon.oos.writeObject(ClientState.CLIENT_EXIT);
     	EncProgCommon.oos.flush();
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
-    	System.out.println("\t[S][SUCCESS]\tFind Candidate Tag.");
-    	System.out.println("time: " + time);
+    	System.out.println("\t[S][SUCCESS]\tFind Candidate Tag." + time);    	
 
     	allTags = new String[tmpCandidateTags.keySet().size()];
     	tmpCandidateTags.keySet().toArray(allTags);
@@ -255,19 +254,15 @@ public class EncGCTaggingSystemServer extends ProgServer {
 		
 		this.mEncHungarianMatrix = new BigInteger[this.mEncQueryDescriptor.size()][this.mTagAverageDescriptor.size()];
 		for(int i=0; i<this.mEncQueryDescriptor.size(); i++) {
-			for(int j=0; j<this.mTagAverageDescriptor.size(); j++) {
-				System.out.printf("\t[S][START]\tComputing D(%d, %d)\n", i, j);
-				double start = System.nanoTime();
+			System.out.printf("\t[S][START]\tComputing D(%d)\n", i);
+			for(int j=0; j<this.mTagAverageDescriptor.size(); j++) {								
 				
 				EncProgCommon.oos.writeObject(ClientState.CLIENT_EXEC);
 				this.mEncHungarianMatrix[i][j] = mDistance.evaluate(
 						mPaillier, 
 						mEncQueryDescriptor.elementAt(i), 
 						mTagAverageDescriptor.elementAt(j));
-
-				double end = System.nanoTime();
-				double time = (end - start)/1000000000.0;
-				System.out.print(mPaillier.Decryption(mEncHungarianMatrix[i][j]) + " " + time);
+				
 				//System.out.print(mPaillier.Decryption(this.mEncHungarianMatrix[i][j]) + " ");
 			}
 			//System.out.println();

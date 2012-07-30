@@ -17,8 +17,10 @@ public class DistanceL2squarePackingClient extends ComputingScore {
 	public DistanceL2squarePackingClient(CryptosystemPaillierClient arg0) {
 		this.mPaillier = arg0;
 		this.exit = ClientState.CLIENT_EXEC;
-		MAX = BigInteger.ONE.shiftLeft(this.DATA_BIT - 1);
-		MASK = BigInteger.ONE.shiftLeft(this.RANDOM_BIT + this.DATA_BIT)
+		// 2^(L - 1)
+		MAX = BigInteger.ONE.shiftLeft(DATA_BIT - 1);
+		// 2^(SIGMA + L)		
+		MASK = BigInteger.ONE.shiftLeft(SECURITY_BIT + DATA_BIT)
 									.subtract(BigInteger.ONE);
 	}
 	
@@ -38,17 +40,21 @@ public class DistanceL2squarePackingClient extends ComputingScore {
 					break;
 				}
 				
+				BigInteger s3_c = BigInteger.ZERO;
 				int k_cipher = EncProgCommon.ois.readInt();
 				
 				for(int i=0; i<k_cipher; i++) {
-					parsePackedValue();
+					s3_c = s3_c.add(parsePackedValue());
 				}
 				
 				boolean isRemaining = EncProgCommon.ois.readBoolean();				
 				if(isRemaining) {
-					parsePackedValue();
+					s3_c = s3_c.add(parsePackedValue());
 				}
-															
+							
+				// send [s3'] to server
+				EncProgCommon.oos.writeObject(mPaillier.Encryption(s3_c));
+				EncProgCommon.oos.flush();
 			} catch(Exception e) {
 				e.printStackTrace();
 				break;
@@ -56,7 +62,7 @@ public class DistanceL2squarePackingClient extends ComputingScore {
 		}
 	}
 	
-	private void parsePackedValue() throws Exception {
+	private BigInteger parsePackedValue() throws Exception {
 		BigInteger s3_c = BigInteger.ZERO;
 		
 		int k_blind = EncProgCommon.ois.readInt();
@@ -68,12 +74,11 @@ public class DistanceL2squarePackingClient extends ComputingScore {
 			// x' = x_j - 2^(L-1)
 			BigInteger tmpX = (xPacked.and(MASK)).subtract(MAX);						
 			// shift
-			xPacked = xPacked.shiftRight(this.RANDOM_BIT + this.DATA_BIT);
+			xPacked = xPacked.shiftRight(SECURITY_BIT + DATA_BIT);
 			// x'^2 = x' * x'
 			s3_c = s3_c.add(tmpX.multiply(tmpX));												
 		}			
-		// send [s3'] to server
-		EncProgCommon.oos.writeObject(mPaillier.Encryption(s3_c));
-		EncProgCommon.oos.flush();	
+		
+		return s3_c;
 	}
 }

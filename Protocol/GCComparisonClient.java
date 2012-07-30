@@ -45,15 +45,15 @@ public class GCComparisonClient extends ComparisonProtocol {
 					// y_mod = y mod MAX
 					y[i] = y_tmp.mod(MAX);
 				}								
-				/***/
+				/**
 				Print.printArray(y, "y");
-								
+				*/			
 				sInput = mergeInput(y);
 				
 				FindMinimumServer minimumServer 
-					= new FindMinimumServer(sInput, L, K, type, L+RANDOM_BIT);
+					= new FindMinimumServer(sInput, L, K, type, L + SECURITY_BIT);
 				minimumServer.run();								
-				
+								
 				BigInteger y_min = minimumServer.getOutput();
 				BigInteger y_min_Enc = mPaillier.Encryption(y_min);				
 				EncProgCommon.oos.writeObject(y_min_Enc);
