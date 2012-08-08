@@ -5,7 +5,7 @@ import java.io.*;
 public class Batch {
 	private static void tagSuggestionClient() {
 		String databaseDirName =
-			"C:/Zone/javaworkspace/PTSwithGC/YouTube";
+			"D:/EclipseWorkspace/PTSwithGC/YouTube";
 		String commad =
 			"java -Xms256m -Xmx1024m -jar TestTaggingSystemClient.jar -d ";
 			//"java -Xms256m -Xmx1024m -jar TestEncTaggingSystemClient.jar -d ";
@@ -34,7 +34,7 @@ public class Batch {
 	
 	private static void tagSuggestionServer() {
 		String databaseDirName =
-			"C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
+			"D:/EclipseWorkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
 		String commad =
 			"java -Xms256m -Xmx1024m -jar TestTaggingSystemServer.jar -d ";
 			//"java -Xms256m -Xmx1024m -jar TestEncTaggingSystemServer.jar -d ";

@@ -9,15 +9,15 @@ public class ExtractTopSurf {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String databaseDirName 
-			= "C:/Zone/javaworkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
-		String dstDirName
-			= "C:/Zone/javaworkspace/PTSwithGC/feature_topsurf/";
+		String databaseDirName =
+			"D:/EclipseWorkspace/ForFinal/result/Search Image Dataset/YouTube-Tag";
+		String dstDirName = 
+			"D:/EclipseWorkspace/PTSwithGC/feature_topsurf/";
 				
-		String extractCommand
-			= "topsurf\\topsurf.exe extract topsurf\\dict 256 100 ";			
+		String extractCommand = 
+			"topsurf\\topsurf.exe extract topsurf\\dict 256 100 ";			
 		
-		String batchFileName = "extractTopsurf.bat";		
+		String batchFileName = "extractTopsurf.bat";	
 		
 		File databaseDirFile = new File(databaseDirName);
 		try {			
@@ -25,18 +25,21 @@ public class ExtractTopSurf {
 			PrintWriter out = new PrintWriter(outFile);
 			
 			for(File categoryDirFile : databaseDirFile.listFiles()) {
-				//System.out.println(categoryDirFile.getName());			
+				//System.out.println(categoryDirFile.getName());								
 				File dir = new File(dstDirName + categoryDirFile.getName());
+				//dir.mkdir();
 				
 				for(File top3DirFile : categoryDirFile.listFiles()) {														
 					//System.out.println(top3DirFile.getAbsolutePath());
 					File dir2 = new File(dir.getAbsolutePath() + "\\" + top3DirFile.getName());
+					//dir2.mkdir();
 					
 					for(File tag : top3DirFile.listFiles()) {
 						//System.out.print(tag.getName() + " ");
 						if(tag.isDirectory() && tag.list().length != 0) {
 							//System.out.print(tag.getName() + " ");
 							File dir3 = new File(dir2.getAbsolutePath() + "\\" + tag.getName());
+							//dir3.mkdir();
 							
 							for(File img : tag.listFiles()) {
 								if(img.getName().endsWith(".jpg")) {

@@ -32,13 +32,15 @@ class TestTaggingSystemClient {
 		ProgClient.serverIPname = (String) parser.getOptionValue(optionServerIPname, new String("localhost"));	
 		//ProgClient.queryDirName = (String) parser.getOptionValue(optionQueryDirName, new String("query"));
 		ProgClient.queryDirName = (String) parser.getOptionValue(optionQueryDirName, new String("query_s"));		
-		//ProgClient.queryDirName = "C:\\Zone\\javaworkspace\\PTSwithGC\\YouTube\\Comedy\\2";
+//		ProgClient.queryDirName = "D:\\EclipseWorkspace\\PTSwithGC\\YouTube\\Autos_Vehicles\\2";
     }
 
     public static void main(String[] args) throws Exception {
 	//	StopWatch.pointTimeStamp("Starting program");
     	process_cmdline_args(args);
 	
+    	System.out.println(ProgClient.queryDirName);
+    	
     	TaggingSystemClient taggingclient = new TaggingSystemClient();
     	taggingclient.run();
     }

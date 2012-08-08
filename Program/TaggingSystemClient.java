@@ -20,7 +20,7 @@ public class TaggingSystemClient extends ProgClient {
     }
     
     protected void execQueryTransfer() throws Exception {
-		System.out.println("[C][STRAT]\tsend Query datas.");
+//		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
 		TaggingSystemCommon.oos.writeInt(videoFrames.size());
 		//System.out.println(videoFrames.size());
@@ -28,7 +28,7 @@ public class TaggingSystemClient extends ProgClient {
 		//transferHistogram();
 		transferDescroptor();
 		
-		System.out.println("[C][SUCCESS]\tsend Query datas.");
+//		System.out.println("[C][SUCCESS]\tsend Query datas.");
     }
     
     private void transferHistogram() throws Exception {    	
@@ -78,10 +78,10 @@ public class TaggingSystemClient extends ProgClient {
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
     		mMatchingTags[i] = TaggingSystemCommon.ois.readObject().toString();
-    		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);    		
+//    		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);    		
     	}    	
     	
     	WriteOutput.writeTagResult(mMatchingTags, iter, videoFrames.size(), ProgClient.queryDirName);
-    	System.out.println("[C][SUCCESS]\tRecv result from server.");    	
+//    	System.out.println("[C][SUCCESS]\tRecv result from server.");    	
     }
 }

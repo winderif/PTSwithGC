@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.TreeMap;
-import java.util.Iterator;
 
 import Utils.Create;
 import Utils.FastHungarianAlgorithm;
@@ -43,7 +41,7 @@ public class TaggingSystemServer extends ProgServer {
     }
     
     protected void execQueryTransfer() throws Exception {
-    	System.out.println("\t[S][START]\treceive Query datas.");
+//    	System.out.println("\t[S][START]\treceive Query datas.");
     	double startTime = System.nanoTime();
     	
     	mQueryNum = TaggingSystemCommon.ois.readInt();
@@ -52,7 +50,7 @@ public class TaggingSystemServer extends ProgServer {
     	
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
- 		System.out.println("\t[S][SUCCESS]\treceive Query datas." + time); 		
+// 		System.out.println("\t[S][SUCCESS]\treceive Query datas." + time); 		
  		this.mExp.writeSheet(0, iter, 0, "Query Transfer", time); 		
  		this.mExp.writeSheet(0, iter, 6, "# of query", mQueryDescriptor.size());
     }
@@ -105,14 +103,14 @@ public class TaggingSystemServer extends ProgServer {
     	
     	/** If # tag < # query */ 
     	if(mTagAverageDescriptor.size() < mQueryDescriptor.size()) {
-    		System.out.println("\t[S][SUCCESS]\t# query < # tag.");
+//    		System.out.println("\t[S][SUCCESS]\t# query < # tag.");
     		mQueryDescriptor = new Vector<Map<Integer, Double>>();
     		mQueryDescriptor.add(mQueryAverageDescriptor);
     	}
     }
     
     private void evaluateDomainDistance() throws Exception {
-    	System.out.println("\t[S][START]\tEvaluate Domain Distance.");
+//    	System.out.println("\t[S][START]\tEvaluate Domain Distance.");
     	double startTime = System.nanoTime();
     	    	
     	mDomainDistance = new double[allDomains.length];
@@ -125,7 +123,7 @@ public class TaggingSystemServer extends ProgServer {
     	
     	double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
-    	System.out.println("\t[S][SUCCESS]\tEvaluate Domain Distance." + time);    	
+//    	System.out.println("\t[S][SUCCESS]\tEvaluate Domain Distance." + time);    	
  		this.mExp.writeSheet(0, iter, 1, "Evaluate Domain Distance", time);
     }
     
@@ -134,14 +132,14 @@ public class TaggingSystemServer extends ProgServer {
     	Arrays.sort(sortingDistance);    	    	
     	//System.out.println("MIN : \t" + sortingDistance[0]);
     	
-    	double threshold 
-		= (sortingDistance[sortingDistance.length-1] - sortingDistance[0])*0.2 + sortingDistance[0];   
+    	double threshold = 
+    		(sortingDistance[sortingDistance.length-1] - sortingDistance[0])*0.2 + sortingDistance[0];   
     	//System.out.println("T : \t" + threshold);
     	return threshold;
     }
     
     private void findCandidateTags(double threshold) throws Exception {
-    	System.out.println("\t[S][START]\tFind Candidate Tag.");
+//    	System.out.println("\t[S][START]\tFind Candidate Tag.");
     	double startTime = System.nanoTime();
     	        
     	HashMap<String, Map<Integer, Double>> tmpCandidateTags = Create.hashMap();
@@ -163,7 +161,7 @@ public class TaggingSystemServer extends ProgServer {
     	}    	
     	double endTime = System.nanoTime();
     	double time = (endTime - startTime)/1000000000.0;
-    	System.out.println("\t[S][SUCCESS]\tFind Candidate Tag." + time);    	
+//    	System.out.println("\t[S][SUCCESS]\tFind Candidate Tag." + time);    	
  		this.mExp.writeSheet(0, iter, 2, "Find Candidate Tag", time);
     	
     	allTags = new String[tmpCandidateTags.keySet().size()];
@@ -177,7 +175,7 @@ public class TaggingSystemServer extends ProgServer {
     }
     
     protected void execBuildBipartiteGraph() throws Exception {
-		System.out.println("\t[S][START]\tBuild Bipartile Graph.");
+//		System.out.println("\t[S][START]\tBuild Bipartile Graph.");
 		double startTime = System.nanoTime();
 		
 		mHungarianMatrix = new double[mQueryDescriptor.size()][mTagAverageDescriptor.size()];
@@ -193,12 +191,12 @@ public class TaggingSystemServer extends ProgServer {
 		//System.out.println();
 		double endTime = System.nanoTime();
 		double time = (endTime - startTime)/1000000000.0;
-		System.out.println("\t[S][SUCCESS]\tBuild Bipartile Graph." + time);		
+//		System.out.println("\t[S][SUCCESS]\tBuild Bipartile Graph." + time);		
  		this.mExp.writeSheet(0, iter, 3, "Build Bipartile Graph", time);
     }    
     
     protected void execFindBestMatching() throws Exception {
-		System.out.println("\t[S][START]\tFind Bset Matching for Bipartile Graph.");
+//		System.out.println("\t[S][START]\tFind Bset Matching for Bipartile Graph.");
 		
 		String sumType = "min";
 		int[][] assignment = new int[mHungarianMatrix.length][2];
@@ -210,9 +208,9 @@ public class TaggingSystemServer extends ProgServer {
 		double endTime = System.nanoTime();		
 		double time = (endTime - startTime)/1000000000.0;
 		
-		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);		
+//		System.out.println("\t[S][SUCCESS]\tFind Bset Matching for Encrypted Bipartile Graph." + time);		
  		this.mExp.writeSheet(0, iter, 4, "Find Bset Matching", time);
- 		
+/* 		
 		for(int k=0; k<assignment.length; k++) {
 			System.out.printf("array(%d,%d) = %f %s\n", 
 					(assignment[k][0]+1), 
@@ -220,7 +218,7 @@ public class TaggingSystemServer extends ProgServer {
 					mHungarianMatrix[assignment[k][0]][assignment[k][1]], 
 					allTags[assignment[k][1]]);			
 		}		
-		
+*/		
 		
 		if(mQueryDescriptor.size() == 1) {
 			mMatchingTags = new String[mQueryNum];
@@ -239,7 +237,7 @@ public class TaggingSystemServer extends ProgServer {
     }
     
     protected void execResultTransfer() throws Exception {
-    	System.out.println("\t[S][START]\tSend result to client.");
+//    	System.out.println("\t[S][START]\tSend result to client.");
     	for(int i=0; i<mMatchingTags.length; i++) {
     		TaggingSystemCommon.oos.writeObject(mMatchingTags[i]);
     	}
