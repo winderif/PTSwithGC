@@ -32,7 +32,10 @@ public abstract class ProgClient extends Program {
     	create_socket_and_connect();
 
     	super.run();
-
+    	
+    	// Wait server write Excel file
+    	ProgCommon.ois.readObject();
+    	
     	cleanup();
     }
 
@@ -40,7 +43,7 @@ public abstract class ProgClient extends Program {
     	super.init();
     	
     	//Program.iterCount = 1;
-    	System.out.println(Program.iterCount);
+//    	System.out.println(Program.iterCount);
     	ProgCommon.oos.writeInt(Program.iterCount);
     	ProgCommon.oos.flush();
     }        
@@ -100,7 +103,7 @@ public abstract class ProgClient extends Program {
 			System.exit(0);
 		}
 		else {
-			System.out.println("[C][START]\tRead query datas.");
+//			System.out.println("[C][START]\tRead query datas.");
 									
 			queryDataFile = dirFile.listFiles(
 					new FilenameFilter() {  
@@ -129,9 +132,9 @@ public abstract class ProgClient extends Program {
 				}
 				
 				tmpFrames.add(new VideoFrame(queryFile));
-				System.out.print(".");
+//				System.out.print(".");
 			}
-			System.out.println("x");
+//			System.out.println("x");
 			videoShots.add(tmpFrames);
 			tmpFrames = null;
 			/** debugging
@@ -145,7 +148,7 @@ public abstract class ProgClient extends Program {
     }    
 
     private void getQueryAverageHistorgram() throws Exception {
-    	System.out.println("[C][START]\tGet Query Average Color Histogram");
+//    	System.out.println("[C][START]\tGet Query Average Color Histogram");
     	double[] tmpHistogram = new double[BIN_HISTO];
     	queryAverageHistogram = new double[BIN_HISTO];
     	
@@ -160,11 +163,11 @@ public abstract class ProgClient extends Program {
 			queryAverageHistogram[j] /= videoFrames.size();
 			//System.out.println(queryAverageHistogram[j]);
 		}
-    	System.out.println("[C][SUCCESS]\tGet Query Average Color Histogram");
+//    	System.out.println("[C][SUCCESS]\tGet Query Average Color Histogram");
     }
     
     private void getQueryAverageDescriptor() {
-    	System.out.println("[C][START]\tGet Query Average Descriptor Map");
+//    	System.out.println("[C][START]\tGet Query Average Descriptor Map");
     	    	
     	queryAverageDescriptor = Create.linkedHashMap();
     	for(int i=0; i<BIN_HISTO; i++) {
@@ -173,7 +176,7 @@ public abstract class ProgClient extends Program {
     		}
     	}
     	
-    	System.out.println("[C][SUCCESS]\tGet Query Average Descriptor Map");    	
+//    	System.out.println("[C][SUCCESS]\tGet Query Average Descriptor Map");    	
     }
     
     private void cleanup() throws Exception {

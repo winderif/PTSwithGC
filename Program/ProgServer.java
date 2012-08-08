@@ -11,6 +11,7 @@ import java.io.*;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.io.input.CountingInputStream;
 
+import Utils.ClientState;
 import Utils.ImageClusteringByTags;
 import Utils.TagClusteringByDomain;
 import Utils.VideoFrame;
@@ -56,24 +57,24 @@ public abstract class ProgServer extends Program {
 
     	super.run();
 
-    	cleanup();
-    	this.mExp.close();
+    	// Server already written Excel file
+    	ProgCommon.oos.writeObject(ClientState.CLIENT_EXIT);
+    	
+    	cleanup();    	
     }
 
-    protected void init() throws Exception {
-    	this.mExp.createSheet("Exec_Time", 0);
-    	
+    protected void init() throws Exception {    	    	    	
     	super.init();
-    	
+    	    	
     	Program.iterCount = ProgCommon.ois.readInt();
-    	System.out.println(Program.iterCount);            	    	    
+//    	System.out.println(Program.iterCount);            	    	    
     }
 
     private void create_socket_and_listen() throws Exception {
     	sock = new ServerSocket(serverPort);            // create socket and bind to port
-		System.out.println("waiting for client to connect");
+//		System.out.println("waiting for client to connect");
 		clientSocket = sock.accept();                   // wait for client to connect
-		System.out.println("client has connected");
+//		System.out.println("client has connected");
 
 		CountingOutputStream cos = new CountingOutputStream(clientSocket.getOutputStream());
 		CountingInputStream  cis = new CountingInputStream(clientSocket.getInputStream());
@@ -83,11 +84,16 @@ public abstract class ProgServer extends Program {
     }
     
     protected void initialize() throws Exception {
+    	this.mExp.open();
+    	this.mExp.createSheet("Exec_Time", 0);
+    	
     	loadQuery();        
     	
     	generateImageClusters();
     	
     	generateTagClusters();    	
+    	
+    	this.mExp.close();
     }
     
     private void loadQuery() {
@@ -97,7 +103,7 @@ public abstract class ProgServer extends Program {
 			System.exit(0);
 		}
 		else {			
-			System.out.println("\t[S][START]\tRead database datas.");
+//			System.out.println("\t[S][START]\tRead database datas.");
 			
 			File[] tmpFileArray = null; 
 			Vector<VideoFrame> tmpVideoFrame = null;
@@ -132,35 +138,36 @@ public abstract class ProgServer extends Program {
 					}
 					databaseDataFile.add(tmpFileArray.clone());
 					databaseData.add(tmpVideoFrame);
-					System.out.print(".");
+//					System.out.print(".");
 				}															
 				//System.out.println(this.databaseTagDirFile[i].getName());
 			}
-			System.out.println("x");
+//			System.out.println("x");
 		}
     }
     
 	private void generateImageClusters() throws Exception {
-		System.out.println("\t[S][START]\tGenerate Image Clusters");
+//		System.out.println("\t[S][START]\tGenerate Image Clusters");
 		
 		imageClustersMap =
 			ImageClusteringByTags.getImageClusters(databaseData);    	        
 		allTags =  		 
 			ImageClusteringByTags.getAllTags(imageClustersMap);
-		System.out.println("\t[S][SUCCESS]\tGenerate Image Clusters");	
 		
-		System.out.println("\t[S][START]\tGet Average Histogram");
+//		System.out.println("\t[S][SUCCESS]\tGenerate Image Clusters");	
+		
+//		System.out.println("\t[S][START]\tGet Average Histogram");
 		mTagAverageHistogram = 
 			ImageClusteringByTags.getTagAverageHistogram(imageClustersMap, allTags);
-		System.out.println("\t[S][SUCCESS]\tGet Average Histogram");
+//		System.out.println("\t[S][SUCCESS]\tGet Average Histogram");
 		
 		tagsHistogramMap =
 			ImageClusteringByTags.getTagsHistogramMap(allTags, mTagAverageHistogram);
 		
-		System.out.println("\t[S][START]\tGet Average Descriptor");
+//		System.out.println("\t[S][START]\tGet Average Descriptor");
 		mTagAverageDescriptor =
 			ImageClusteringByTags.getTagsDescriptor(mTagAverageHistogram);
-		System.out.println("\t[S][SUCCESS]\tGet Average Descriptor");
+//		System.out.println("\t[S][SUCCESS]\tGet Average Descriptor");
 		/** Write # of tags*/
 		this.mExp.writeSheet(0, iter, 7, "# of Original Tags", mTagAverageDescriptor.size());
 		
@@ -185,18 +192,26 @@ public abstract class ProgServer extends Program {
 			allDomains = tmpDomainsData.allDomains;
 		}						
 		
-		System.out.println("\t[S][START]\tGet Domain Average Histogram");
+//		System.out.println("\t[S][START]\tGet Domain Average Histogram");
 		mDomainAverageHistogram =
 			TagClusteringByDomain.getDomainAverageColorHistogram(tagClustersMap, allDomains, tagsHistogramMap);
-		System.out.println("\t[S][SUCCESS]\tGet Domain Average Histogram");
+//		System.out.println("\t[S][SUCCESS]\tGet Domain Average Histogram");
 		
-		System.out.println("\t[S][START]\tGet Domain Average Descriptor");
+//		System.out.println("\t[S][START]\tGet Domain Average Descriptor");
 		mDomainAverageDescriptor =
 			TagClusteringByDomain.getDomainAverageColorDescriptor(mDomainAverageHistogram);
-		System.out.println("\t[S][SUCCESS]\tGet Domain Average Descriptor");
+//		System.out.println("\t[S][SUCCESS]\tGet Domain Average Descriptor");
 		/** Write # of domains */
 		this.mExp.writeSheet(0, iter, 8, "# of Domains", mDomainAverageDescriptor.size());
 	}	
+	
+	protected void execute() throws Exception {
+		this.mExp.open();
+		
+		super.execute();
+		
+		this.mExp.close();
+	}
 	
     private void cleanup() throws Exception {
     	ProgCommon.oos.close();                          // close everything
