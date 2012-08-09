@@ -20,7 +20,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 	protected BigInteger findEncLargest(BigInteger[][] array) throws Exception {
 		//Finds the largest element in a positive array.
 		//works for arrays where all values are >= 0.	
-		System.out.println("\t[START]\tfindEncLargest()");
+//		System.out.println("\t[START]\tfindEncLargest()");
 		int length = array.length * array[0].length;
 		BigInteger[] tmp1DArray = new BigInteger[length];	
 		BigInteger[] tmpMax = new BigInteger[length];
@@ -34,10 +34,10 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 		int iter = 1;
 		/*** Iteration stopping condition ***/
 		while(length != 1) {
-			System.out.print("iter (" + iter++ + ")\t");
+//			System.out.print("iter (" + iter++ + ")\t");
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
-				System.out.print(j + " ");				
+//				System.out.print(j + " ");				
 				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2])) {				
 					tmpMax[j] = tmp1DArray[j*2+1];
 					tmpMax[j+(length+1)/2] = tmp1DArray[j*2];
@@ -63,9 +63,9 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 			*/		
 			
 			length = (length+1) / 2;
-			System.out.println();
+//			System.out.println();
 		}
-		System.out.println();	
+//		System.out.println();	
 		return tmp1DArray[0];	
 	}
 
@@ -77,10 +77,10 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 		int iter = 1;
 		/*** Iteration stopping condition ***/
 		while(length != 1) {
-			System.out.print("iter:(" + iter++ + ")\t");
+//			System.out.print("iter:(" + iter++ + ")\t");
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
-				System.out.print(j + " ");				
+//				System.out.print(j + " ");				
 				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {				
 					tmpMin[j] = tmp1DArray[j*2+1];
 					tmpMin[j+(length+1)/2] = tmp1DArray[j*2];
@@ -106,7 +106,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 			*/		
 			
 			length = (length+1) / 2;	
-			System.out.println();
+//			System.out.println();
 		}
 		return tmp1DArray[0];
 	}
@@ -114,7 +114,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 	protected BigInteger findEncSmallest(
 			BigInteger[][] cost, int[] rowCover, 
 			int[] colCover, BigInteger maxCost) throws Exception {
-		System.out.println("\t[START]\tfindEncSmallest()");
+//		System.out.println("\t[START]\tfindEncSmallest()");
 		BigInteger minval = maxCost;
 		BigInteger[] tmp1DArray = new BigInteger[cost.length * cost[0].length];
 		int index = 0;
@@ -132,10 +132,10 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 		int iter = 1;
 		/*** Iteration stopping condition ***/
 		while(length != 1) {
-			System.out.print("iter:(" + iter++ + ")\t");
+//			System.out.print("iter:(" + iter++ + ")\t");
 			/*** Compare D(2k) and D(2k+1) ***/
 			for(int j=0; j<length/2; j++) {
-				System.out.print(j + " ");				
+//				System.out.print(j + " ");				
 				if(findMinimum(tmp1DArray[j*2], tmp1DArray[j*2+1]).equals(tmp1DArray[j*2+1])) {				
 					tmpMin[j] = tmp1DArray[j*2+1];
 					tmpMin[j+(length+1)/2] = tmp1DArray[j*2];
@@ -161,7 +161,7 @@ public class HEbasedHungarianAlgorithm extends FastEncHungarianAlgorithm {
 			*/		
 			
 			length = (length+1) / 2;	
-			System.out.println();
+//			System.out.println();
 		}
 		if(findMinimum(tmpMin[0], minval).equals(tmpMin[0]))
 			return tmpMin[0];

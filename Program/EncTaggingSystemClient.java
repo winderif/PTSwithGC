@@ -22,28 +22,25 @@ public class EncTaggingSystemClient extends ProgClient {
     	super.init();
     	
     	// key generation and send to server
-    	System.out.println("[C][STRAT]\tsend Paillier public key pair (n, g).");
+//    	System.out.println("[C][STRAT]\tsend Paillier public key pair (n, g).");
     	EncProgCommon.oos.writeObject(mPaillier.getPublicKey());
     	
-    	System.out.println("[C][STRAT]\tsend DGK public key pair (n, g, h, u).");
+//    	System.out.println("[C][STRAT]\tsend DGK public key pair (n, g, h, u).");
     	EncProgCommon.oos.writeObject(mDGK.getPublicKey());
 
     	EncProgCommon.oos.flush();
     }
     
     protected void execQueryTransfer() throws Exception {
-		System.out.println("[C][STRAT]\tsend Query datas.");
+//		System.out.println("[C][STRAT]\tsend Query datas.");
 		// Number of Query		
 		EncProgCommon.oos.writeInt(videoFrames.size());
-		//System.out.println(videoFrames.size());		
-		double startTime = System.nanoTime();
+		//System.out.println(videoFrames.size());			
 		
 		//transferHistogram();
 		transferDescriptor();
-		
-		double endTime = System.nanoTime();
-		double time = (endTime - startTime)/1000000000.0;    	    	
-    	System.out.println("[C][SUCCESS]\tsend Query datas." + time);
+				 	    
+//    	System.out.println("[C][SUCCESS]\tsend Query datas.");
     }
     
     private void transferHistogram() throws Exception {    	
@@ -79,13 +76,13 @@ public class EncTaggingSystemClient extends ProgClient {
     }
     
     protected void execFindCandidateTagClusters() throws Exception {
-    	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
+//    	System.out.println("[C][START]\tEvaluate Encrypted Domain Distance.");
     	ComputingScore computeClient = 
     		//new DistanceL2squareClient(mPaillier);
     		new DistanceL2squarePackingClient(mPaillier);	
     		//new DistanceWeightedL2squareClient(mPaillier);    		
     	computeClient.run();
-    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
+//    	System.out.println("[C][SUCCESS]\tEvaluate Encrypted Domain Distance.");    	
     	
     	ComparisonProtocolOnClient protocolClient = 
     		new ComparisonProtocolOnClient(mPaillier, mDGK); 
@@ -93,16 +90,16 @@ public class EncTaggingSystemClient extends ProgClient {
     }
     
     protected void execBuildBipartiteGraph() throws Exception {    
-    	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
+//    	System.out.println("[C][START]\tBuild Encrypted Bipartile Graph.");
     	ComputingScore computeClient = 
     		//new DistanceL2squareClient(mPaillier);
     		new DistanceL2squarePackingClient(mPaillier);	
     		//new DistanceWeightedL2squareClient(mPaillier);
     	computeClient.run();    	    
-    	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");    	
+//    	System.out.println("[C][SUCCESS]\tBuild Encrypted Bipartile Graph.");    	
     }    
     protected void execFindBestMatching() throws Exception {
-    	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");	
+//    	System.out.println("[C][START]\tFind Bset Matching for Encrypted Bipartile Graph.");	
     	ComparisonProtocolOnClient protocolClient = 
     		new ComparisonProtocolOnClient(mPaillier, mDGK); 
     	protocolClient.run();    	
@@ -112,10 +109,11 @@ public class EncTaggingSystemClient extends ProgClient {
     	mMatchingTags = new String[videoFrames.size()];	
     	for(int i=0; i<videoFrames.size(); i++) {
     		mMatchingTags[i] = (String)EncProgCommon.ois.readObject();
-    		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
+//    		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);
     	}
     	
-    	WriteOutput.writeTagResult(mMatchingTags, iter, videoFrames.size(), ProgClient.queryDirName);
-    	System.out.println("[C][SUCCESS]\tRecv result from server.");
+    	WriteOutput.writeTagResult(mMatchingTags, iter, videoFrames.size(), 
+    			ProgClient.queryDirName, "Exp_YouTube_orig_EncHE_TopSurf");
+//    	System.out.println("[C][SUCCESS]\tRecv result from server.");
     }
 }

@@ -47,10 +47,6 @@ public abstract class ProgServer extends Program {
 	protected Vector<Map<Integer, Double>> mDomainAverageDescriptor = null;		
 	
 	protected Experiment mExp = null;
-    
-	public ProgServer() {
-		this.mExp = new Experiment(this.databaseDirName);			
-	}
 	
     public void run() throws Exception {
     	create_socket_and_listen();

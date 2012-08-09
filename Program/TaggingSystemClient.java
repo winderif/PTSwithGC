@@ -81,7 +81,8 @@ public class TaggingSystemClient extends ProgClient {
 //    		System.out.println("[MATCH]\t" + (i+1) + "\t" + mMatchingTags[i]);    		
     	}    	
     	
-    	WriteOutput.writeTagResult(mMatchingTags, iter, videoFrames.size(), ProgClient.queryDirName);
+    	WriteOutput.writeTagResult(mMatchingTags, iter, videoFrames.size(), 
+    			ProgClient.queryDirName, "Exp_YouTube_orig_NoEnc_TopSurf");
 //    	System.out.println("[C][SUCCESS]\tRecv result from server.");    	
     }
 }

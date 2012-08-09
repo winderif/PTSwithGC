@@ -106,7 +106,7 @@ public abstract class FastEncHungarianAlgorithm {
 	}
 	
 	public int hg_step1(int step, BigInteger[][] cost) throws Exception {
-		System.out.println("[START]\thg_step1().");
+//		System.out.println("[START]\thg_step1().");
 		BigInteger minval;
 		
 		for(int i=0; i<cost.length; i++) {	   								
@@ -129,7 +129,7 @@ public abstract class FastEncHungarianAlgorithm {
 	}
 	
 	public int hg_step2(int step, BigInteger[][] cost, int[][] mask, int[] rowCover, int[] colCover) {
-		System.out.println("[START]\thg_step2().");
+//		System.out.println("[START]\thg_step2().");
 		for (int i=0; i<cost.length; i++) {	    
 	        for (int j=0; j<cost[i].length; j++) {	        
 	            if ((cost[i][j].equals(Enc_ZERO)) && (colCover[j] == 0) && (rowCover[i] == 0)) {	            	
@@ -150,7 +150,7 @@ public abstract class FastEncHungarianAlgorithm {
 	}
 	
 	public int hg_step3(int step, int[][] mask, int[] colCover) {
-		System.out.println("[START]\thg_step3().");
+//		System.out.println("[START]\thg_step3().");
 		for (int i=0; i<mask.length; i++) {	   
 	        for (int j=0; j<mask[i].length; j++) {	        
 	            if (mask[i][j] == 1) {	            
@@ -175,7 +175,7 @@ public abstract class FastEncHungarianAlgorithm {
 	public int hg_step4(
 			int step, BigInteger[][] cost, int[][] mask, 
 			int[] rowCover, int[] colCover, int[] zero_RC) {
-		System.out.println("[START]\thg_step4().");
+//		System.out.println("[START]\thg_step4().");
 		//What STEP 4 does:
 		//Find an uncovered zero in cost and prime it (if none go to step 6). Check for star in same row:
 		//if yes, cover the row and uncover the star's column. Repeat until no uncovered zeros are left
@@ -217,7 +217,7 @@ public abstract class FastEncHungarianAlgorithm {
 	}
 	
 	public int hg_step5(int step, int[][] mask, int[] rowCover, int[] colCover, int[] zero_RC) {
-		System.out.println("[START]\thg_step5().");
+//		System.out.println("[START]\thg_step5().");
 		//What STEP 5 does:	
 		//Construct series of alternating primes and stars. Start with prime from step 4.
 		//Take star in the same column. Next take prime in the same row as the star. Finish
@@ -259,7 +259,7 @@ public abstract class FastEncHungarianAlgorithm {
 	}
 	
 	public int hg_step6(int step, BigInteger[][] cost, int[] rowCover, int[] colCover, BigInteger maxCost) throws Exception {
-		System.out.println("[START]\thg_step6().");
+//		System.out.println("[START]\thg_step6().");
 		//What STEP 6 does:
 		//Find smallest uncovered value in cost: a. Add it to every element of covered rows
 		//b. Subtract it from every element of uncovered columns. Go to step 4.

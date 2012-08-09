@@ -7,24 +7,62 @@ import jxl.write.*;
 import jxl.write.Number;
 
 public class Accuracy {
-	private Vector<String[]> initialTagsTable = new Vector<String[]>();
-	private Vector<Vector<String[]>> suggestedTagsTable = new Vector<Vector<String[]>>();
+	private Vector<String[]> initialTagsTable = null;
+	private Vector<Vector<String[]>> suggestedTagsTable = null;
+	private File expFile = null;
 	
-	private FilenameFilter mFilenameFilter = new FilenameFilter() {  
-		public boolean accept(File file, String name) {  
-			//boolean ret = name.endsWith("_orig_NoEnc_TopSurf.txt");   
-			boolean ret = name.endsWith("_orig_NoEnc_TopSurf_WL2s.txt");
-			//boolean ret = name.endsWith("_impr_NoEnc_TopSurfL2s.txt");
-			//boolean ret = name.endsWith("_impr_NoEnc_TopSurf_WL2s.txt");				
-			return ret;  
-		}
-	};
 	private int categoryNum = 0;
 	private int topNum = 0;
 	
 	public WritableWorkbook workbook = null;
 	public WritableSheet excelSheet = null;
 	private WritableCellFormat wcf = null;
+	
+	private FilenameFilter mFilenameFilter = null;
+	
+	public Accuracy(String expFileName, final String filterName) {
+		this.initialTagsTable = new Vector<String[]>();
+		this.suggestedTagsTable = new Vector<Vector<String[]>>();
+		this.expFile = new File(expFileName);		
+		this.mFilenameFilter = new FilenameFilter() {  
+			public boolean accept(File file, String name) {  
+				boolean ret = name.endsWith(filterName);
+				return ret;  
+			}
+		};
+	}
+	
+	public void run() throws WriteException {
+		open();				
+		
+		loadInitialTags();
+		
+		loadSuggestionTags();
+		
+		evaluate();
+		
+		close();
+	}
+	
+	private void open() {
+		try {						
+			this.workbook = Workbook.createWorkbook(expFile);		
+			this.workbook.createSheet("Setup&Result", 0);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void close() {
+		try {				
+			this.workbook.write();
+			this.workbook.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch(WriteException ew) {
+			ew.printStackTrace();
+		}
+	}			
 	
 	private void combineCutTags(Vector<String> tmpMoreTags, String[] cutTag) {
 		int iter = cutTag.length;
@@ -119,10 +157,8 @@ public class Accuracy {
 		}
 	}
 	
-	public void loadSuggestionTags() throws WriteException  {
-		String databaseDirName =
-			"C:/Zone/javaworkspace/PTSwithGC/YouTube";
-	
+	public void loadSuggestionTags() throws WriteException  {		
+		String databaseDirName = "D:/EclipseWorkspace/PTSwithGC/YouTube";
 		File databaseDirFile = new File(databaseDirName);
 								
 		int sheetIndex = 1;
@@ -180,7 +216,7 @@ public class Accuracy {
 		return null;
 	}
 	
-	public void evaluation() throws WriteException {
+	public void evaluate() throws WriteException {
 		Vector<double[]> accuracy = new Vector<double[]>();
 		NumberFormat nf = new NumberFormat("0.00");
 		wcf = new WritableCellFormat(nf);
@@ -254,26 +290,12 @@ public class Accuracy {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//File expFile = new File("Exp_YouTube_orig_NoEnc_TopSurf_10000_L2s.xls");
-		File expFile = new File("Exp_YouTube_orig_NoEnc_TopSurf_10000_WL2s.xls");
-		//File expFile = new File("Exp_YouTube_impr_NoEnc_TopSurf_10000_L2s.xls");
-		//File expFile = new File("Exp_YouTube_impr_NoEnc_TopSurf_10000_WL2s.xls");
+	public static void main(String[] args) throws WriteException {
+		// TODO Auto-generated method stub		
 		
-		Accuracy mAccuracy = new Accuracy();
-		try {						
-			mAccuracy.workbook = Workbook.createWorkbook(expFile);		
-			mAccuracy.workbook.createSheet("Setup&Result", 0);
-						
-			mAccuracy.loadInitialTags();
-			mAccuracy.loadSuggestionTags();
-			mAccuracy.evaluation();
-			
-			mAccuracy.workbook.write();
-			mAccuracy.workbook.close();
-		}catch(Exception e) {
-			e.printStackTrace();
-		}		
+		Accuracy mAccuracy = new Accuracy("Exp_YouTube_orig_NoEnc_TopSurf.xls", "_orig_NoEnc_TopSurf.txt");
+//		Accuracy mAccuracy = new Accuracy("Exp_YouTube_orig_EncHE_TopSurf.xls", "_orig_EncHE_TopSurf.txt");			
+		
+		mAccuracy.run();
 	}
 }

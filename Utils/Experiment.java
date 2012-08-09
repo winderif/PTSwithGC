@@ -18,14 +18,15 @@ public class Experiment {
 	private static File xlsFile = null;
 	private static File xlsTmpFile = null;
 	
-	public Experiment(String dirName) {
+	public Experiment(String dirName, String outputName) {
 		/***/
 		//System.out.println(dirName);
 		
 		//fileName = new StringBuilder("Exp_YouTube_orig_NoEnc_TopSurf_10000_L2s");
 		//fileName = new StringBuilder("Exp_YouTube_impr_NoEnc_TopSurf_10000_L2s");
 //		fileName = new StringBuilder("Exp_YouTube_orig_EncHE_TopSurf_10000_L2s");
-		fileName = new StringBuilder("Exp_YouTube_orig_NoEnc_TopSurf");
+//		fileName = new StringBuilder("Exp_YouTube_orig_NoEnc_TopSurf");
+		fileName = new StringBuilder(outputName);
 		
 		String[] token1 = dirName.split("YouTube-Tag");
 		//System.out.println(token1[1]);

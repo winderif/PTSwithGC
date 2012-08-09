@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import Utils.Create;
+import Utils.Experiment;
 import Utils.FastHungarianAlgorithm;
 import Utils.Print;
 import Score.*;
@@ -29,6 +30,8 @@ public class TaggingSystemServer extends ProgServer {
 	private double[] mDomainDistance = null;		
 	
     public TaggingSystemServer() {
+    	this.mExp = new Experiment(
+    			databaseDirName, "Exp_YouTube_orig_NoEnc_TopSurf");
     }
 
     protected void init() throws Exception {    	
